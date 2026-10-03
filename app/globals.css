@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+/* 색상 값은 DESIGN.md 2장과 동일하게 유지한다. */
+@theme {
+  --color-bg: #FBFBF9;
+  --color-surface: #FFFFFF;
+  --color-surface-tint: #FFF1EC;
+  --color-text: #1C1917;
+  --color-text-muted: #57534E;
+  --color-text-subtle: #78716C;
+  --color-border: #E7E5E4;
+  --color-accent: #C2381F;
+  --color-accent-hover: #A82F19;
+  --color-on-accent: #FFFFFF;
+  --font-sans: var(--font-pretendard), system-ui, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #141414;
+    --color-surface: #1F1D1B;
+    --color-surface-tint: #2A1A15;
+    --color-text: #F2F1EE;
+    --color-text-muted: #A8A29E;
+    --color-text-subtle: #A8A29E;
+    --color-border: #2E2B28;
+    --color-accent: #FF7A5C;
+    --color-accent-hover: #FF9478;
+    --color-on-accent: #141414;
+  }
+}
+
+html {
+  color-scheme: light dark;
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+a,
+button {
+  touch-action: manipulation;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  word-break: keep-all;
+  line-height: 1.7;
+}
