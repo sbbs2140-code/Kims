@@ -89,7 +89,7 @@
     position: fixed; z-index: 35; left: 0; right: 0; bottom: 0;
     height: calc(var(--nav-h) + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom);
     background: var(--surface); border-top: 1px solid var(--line);
-    display: grid; grid-template-columns: repeat(4, 1fr);
+    display: grid; grid-template-columns: repeat(5, 1fr);
   }
   .nav button {
     border: 0; background: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
@@ -279,6 +279,71 @@
   .action-bar .names { flex: 1; min-width: 0; font-size: 14px; color: #C9D3E6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .action-bar .clear { border: 0; background: none; color: #C9D3E6; font-weight: 700; font-size: 14px; padding: 8px; }
 
+  /* ---------- 평가 ---------- */
+  .assess-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .assess-tabs .chip { min-height: 44px; }
+  .assess-tabs .chip small { font-weight: 600; opacity: .75; }
+  .chip-add { border-style: dashed; color: var(--navy); }
+  .assess-meta { display: flex; gap: 8px 16px; flex-wrap: wrap; color: var(--text-3); font-size: 14px; margin-bottom: 14px; }
+  .assess-meta b { color: var(--text-2); }
+  .assess { display: grid; gap: 20px; }
+  @media (min-width: 1024px) { .assess { grid-template-columns: minmax(0, 1fr) 440px; align-items: start; } }
+  .alist-tools { display: flex; gap: 8px; padding: 12px; border-bottom: 1px solid var(--line); flex-wrap: wrap; align-items: center; }
+  .alist-tools .spacer { flex: 1; }
+  .arow {
+    width: 100%; display: grid; grid-template-columns: 36px 1fr auto auto; align-items: center; gap: 12px;
+    min-height: 58px; padding: 8px 14px; border: 0; border-bottom: 1px solid var(--line); background: none; text-align: left;
+  }
+  .arow:last-child { border-bottom: 0; }
+  .arow:hover { background: var(--surface-2); }
+  .arow[aria-current="true"] { background: var(--navy-tint); box-shadow: inset 4px 0 0 var(--red); }
+  .arow .no { font-size: 13px; font-weight: 700; color: var(--text-3); text-align: center; }
+  .arow .nm { font-weight: 800; }
+  .arow .memo { display: block; font-size: 13px; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+  .arow .score { font-size: 20px; font-weight: 800; color: var(--navy); text-align: right; min-width: 44px; }
+  .arow .score.none { color: var(--line-strong); }
+  .arow-body { min-width: 0; }
+  .b-todo { background: var(--surface-2); color: var(--text-3); border: 1px dashed var(--line-strong); }
+  .b-absent { background: #FFF4E5; color: #8A4B00; }
+
+  .scorer { padding: 18px; display: grid; gap: 16px; }
+  @media (min-width: 1024px) { .lv { min-height: 58px; } }
+  .scorer-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+    position: sticky; top: 0; z-index: 2; margin: -18px -18px 0; padding: 18px 18px 10px; background: var(--surface); border-bottom: 1px solid var(--line); }
+  .scorer-head .who { font-size: 22px; font-weight: 800; line-height: 1.25; }
+  .scorer-head .sub { font-size: 14px; color: var(--text-3); font-weight: 600; }
+  .total { text-align: right; }
+  .total .v { font-size: 34px; font-weight: 800; color: var(--red); line-height: 1.1; }
+  .total .v small { font-size: 16px; color: var(--text-3); font-weight: 700; }
+  .total .l { font-size: 12px; color: var(--text-3); font-weight: 700; }
+  .crit { display: grid; gap: 8px; }
+  .crit-h { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .crit-h b { color: var(--navy); }
+  .crit-h span { font-size: 13px; color: var(--text-3); font-weight: 700; }
+  .levels { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .lv {
+    min-height: 64px; padding: 6px 4px; border-radius: 12px; border: 1.5px solid var(--line-strong); background: var(--surface);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; line-height: 1.25;
+  }
+  .lv b { font-size: 20px; font-weight: 800; color: var(--navy); }
+  .lv span { font-size: 12px; color: var(--text-3); font-weight: 600; text-align: center; }
+  .lv:hover { border-color: var(--navy); }
+  .lv[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); }
+  .lv[aria-pressed="true"] b, .lv[aria-pressed="true"] span { color: #fff; }
+  .scorer .seg button[aria-pressed="true"] { background: var(--navy); color: #fff; }
+  .scorer .seg button[aria-pressed="true"][data-st="absent"], .scorer .seg button[aria-pressed="true"][data-st="missing"] { background: #8A4B00; }
+  .base-note { padding: 12px 14px; border-radius: 12px; background: #FFF4E5; color: #6B3A00; font-size: 14px; }
+  .nav-row { display: flex; gap: 8px; }
+  .score-save { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; position: sticky; bottom: 0; margin: 0 -18px -18px; padding: 12px 18px 18px;
+    background: linear-gradient(to bottom, rgb(255 255 255 / 0), var(--surface) 14px); }
+  .score-save .btn-line { padding: 0 16px; }
+  .a-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
+  @media (max-width: 640px) { .a-summary { grid-template-columns: repeat(2, 1fr); } }
+  .a-table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  .a-table th, .a-table td { padding: 10px 8px; border-bottom: 1px solid var(--line); text-align: left; }
+  .a-table th { font-size: 13px; color: var(--text-3); font-weight: 700; }
+  .a-table td.r { text-align: right; font-weight: 800; color: var(--navy); }
+
   /* ---------- ② 일지 ---------- */
   .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
   .day { margin-bottom: 22px; }
@@ -394,6 +459,9 @@
   <symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></symbol>
   <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14"/></symbol>
   <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-clip" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M8.5 11l2 2 4-4M8.5 17h7"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
   <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18h10.5a4 4 0 0 0 .4-8A6 6 0 0 0 6.3 9.2 4.5 4.5 0 0 0 7 18z"/><path d="M9.5 13.5l2 2 3.5-3.5"/></symbol>
 </svg>
 
@@ -415,6 +483,7 @@
   <nav class="nav" aria-label="화면">
     <div class="brand-rail" aria-hidden="true"><div class="brand-mark"><i></i>관찰</div></div>
     <button data-view="lesson" aria-current="page"><svg class="ic"><use href="#i-users"/></svg>수업</button>
+    <button data-view="assess"><svg class="ic"><use href="#i-clip"/></svg>평가</button>
     <button data-view="log"><svg class="ic"><use href="#i-list"/></svg>일지</button>
     <button data-view="students"><svg class="ic"><use href="#i-user"/></svg>학생</button>
     <button data-view="reflect"><svg class="ic"><use href="#i-pen"/></svg>성찰</button>
@@ -453,6 +522,27 @@
         <aside class="card composer-wrap" id="composerWrap" aria-label="관찰 기록 입력">
           <div class="sheet-handle" aria-hidden="true"></div>
           <div class="composer" id="composer"></div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- 평가 -->
+    <section data-panel="assess" hidden>
+      <div class="view-head">
+        <div><h2>수행평가 채점</h2><p>평가를 고르고, 학생마다 기준별 점수와 평가 내용을 기록합니다.</p></div>
+        <button class="btn btn-line btn-sm" id="csvBtn">점수표 내려받기(CSV)</button>
+      </div>
+      <div class="assess-tabs" id="assessTabs"></div>
+      <div class="assess-meta" id="assessMeta"></div>
+      <div class="a-summary" id="aSummary"></div>
+      <div class="assess">
+        <div class="card" style="overflow:hidden">
+          <div class="alist-tools" id="aFilters"></div>
+          <div id="aList"></div>
+        </div>
+        <aside class="card composer-wrap" id="scoreWrap" aria-label="채점">
+          <div class="sheet-handle" aria-hidden="true"></div>
+          <div class="scorer" id="scorer"></div>
         </aside>
       </div>
     </section>
@@ -586,6 +676,44 @@
   let currentSid = null;
   let logFilter = "all";
 
+  // 수행평가: 기준(루브릭)별 수준 점수. 예시이며 실제 기준은 학교 평가계획에 맞춰 설정에서 만듦
+  const L4 = (max, step, descs) => descs.map((d, i) => ({ pt: max - step * i, d }));
+  const ASSESS_TEMPLATES = [
+    { title: "한자 어휘 쓰기", date: -12, criteria: [
+      { name: "자형 정확성", levels: L4(10, 2, ["모두 정확", "1~2자 오류", "3~4자 오류", "5자 이상"]) },
+      { name: "필순", levels: L4(5, 1, ["모두 맞음", "일부 틀림", "절반 틀림", "대부분 틀림"]) },
+      { name: "어휘 풀이", levels: L4(5, 1, ["정확·자세함", "대체로 정확", "일부만 풀이", "풀이 미흡"]) },
+    ] },
+    { title: "고사성어 이야기 발표", date: -3, criteria: [
+      { name: "내용 이해", levels: L4(10, 2, ["유래·뜻 정확", "대체로 정확", "일부 오해", "이해 부족"]) },
+      { name: "표현·전달", levels: L4(10, 2, ["분명·자연스러움", "대체로 분명", "다소 부족", "전달 어려움"]) },
+      { name: "자료 구성", levels: L4(10, 2, ["짜임·출처 충실", "대체로 충실", "일부 빠짐", "준비 부족"]) },
+    ] },
+  ];
+  const assessments = [];
+  CLASSES.forEach((c) => ASSESS_TEMPLATES.forEach((t, i) => {
+    const d = new Date(today); d.setDate(d.getDate() + t.date);
+    assessments.push({ id: `${c.id}-a${i}`, classId: c.id, title: t.title, date: ymd(d), criteria: t.criteria });
+  }));
+  const maxOf = (a) => a.criteria.reduce((n, c) => n + c.levels[0].pt, 0);
+  const baseOf = (a) => a.criteria.reduce((n, c) => n + c.levels[c.levels.length - 1].pt, 0);
+  const SCORE_MEMOS = ["설명이 정확하고 근거가 분명함", "자형은 바르나 필순 연습이 더 필요함", "발표 자료를 스스로 짜임 있게 구성함", "모르는 부분을 끝까지 찾아 보완함"];
+  const scores = {}; // key: 평가ID|학생ID → { status: "done"|"absent"|"missing", picks: [점수...], memo }
+  const skey = (aid, sid) => aid + "|" + sid;
+  assessments.forEach((a, ai) => {
+    students.filter((s) => s.classId === a.classId).forEach((s) => {
+      const r = rnd();
+      if (ai % 2 === 1 && r < 0.4) return; // 최근 평가는 채점 중
+      if (r > 0.95) { scores[skey(a.id, s.id)] = { status: "absent", picks: [], memo: "" }; return; }
+      scores[skey(a.id, s.id)] = { status: "done", picks: a.criteria.map((c) => c.levels[Math.min(3, Math.floor(rnd() * rnd() * 4))].pt), memo: rnd() < 0.5 ? pick(SCORE_MEMOS) : "" };
+    });
+  });
+  const totalOf = (a, sc) => !sc ? null : sc.status === "done" ? sc.picks.reduce((n, p) => n + (p || 0), 0) : baseOf(a);
+  let assessId = null;
+  let aFilter = "all";
+  let aSid = null;
+  let aDraft = null;
+
   const stuOf = (id) => students.find((s) => s.id === id);
   const classOf = (id) => CLASSES.find((c) => c.id === id);
   const inClass = () => students.filter((s) => s.classId === classId);
@@ -676,7 +804,7 @@
   $("abClear").addEventListener("click", () => { selected.clear(); renderRoster(); renderComposer(); renderActionBar(); });
   $("abOpen").addEventListener("click", openSheet);
   function openSheet() { $("composerWrap").classList.add("open"); $("backdrop").hidden = false; renderActionBar(); setTimeout(() => { const f = $("composer").querySelector(".areas .chip"); f && f.focus(); }, 50); }
-  function closeSheet() { $("composerWrap").classList.remove("open"); $("backdrop").hidden = true; renderActionBar(); }
+  function closeSheet() { document.querySelectorAll(".composer-wrap").forEach((w) => w.classList.remove("open")); $("backdrop").hidden = true; renderActionBar(); }
   $("backdrop").addEventListener("click", closeSheet);
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeSheet(); });
 
@@ -840,6 +968,11 @@
         <div class="kpi"><div class="v tnum" style="color:var(--red)">${by("care")}</div><div class="l">지도 필요</div></div>
         <div class="kpi"><div class="v tnum">${g >= 99 ? "-" : g + "일"}</div><div class="l">마지막 기록 후</div></div>
       </div>
+      <h4 class="sec-title">수행평가</h4>
+      <table class="a-table"><thead><tr><th>평가</th><th>평가 내용</th><th style="text-align:right">점수</th></tr></thead><tbody>
+      ${assessments.filter((a) => a.classId === s.classId).map((a) => { const x = scores[skey(a.id, s.id)]; const t = totalOf(a, x);
+        return `<tr><td>${esc(a.title)}</td><td class="muted">${x ? (x.status === "done" ? esc(x.memo || "-") : x.status === "absent" ? "결시" : "미제출") : "미채점"}</td><td class="r tnum">${t == null ? "-" : `${t}/${maxOf(a)}`}</td></tr>`; }).join("")}
+      </tbody></table>
       ${dist.length ? `<h4 class="sec-title">영역별 기록</h4>
       <div class="dist">${dist.map((d) => `<div class="dist-row"><span class="lab">${d.a}</span>
         <span class="track" style="width:${(d.t / maxT) * 100}%" role="img" aria-label="${d.a}: 긍정 ${d.g}, 보통 ${d.n}, 지도 필요 ${d.c}">
@@ -852,6 +985,140 @@
       : `<div class="composer-empty"><strong>아직 기록이 없습니다</strong>수업 화면에서 이 학생 카드를 눌러 첫 기록을 남겨 보세요.</div>`}`;
     const dl = $("dlBtn"); dl && dl.addEventListener("click", () => toast("본 제작에서는 텍스트 파일로 내려받습니다."));
   }
+
+  // ---------- 평가 ----------
+  const classAssess = () => assessments.filter((a) => a.classId === classId);
+  const curAssess = () => assessments.find((a) => a.id === assessId);
+
+  function renderAssess() {
+    if (!curAssess() || curAssess().classId !== classId) { const l = classAssess(); assessId = l[l.length - 1].id; aSid = null; aDraft = null; }
+    const a = curAssess();
+    const roster = inClass();
+    const scs = roster.map((s) => scores[skey(a.id, s.id)]);
+    const done = scs.filter(Boolean);
+    const totals = done.filter((x) => x.status === "done").map((x) => totalOf(a, x));
+    const avg = totals.length ? (totals.reduce((n, v) => n + v, 0) / totals.length).toFixed(1) : "-";
+
+    $("assessTabs").innerHTML = classAssess().map((x) => {
+      const n = inClass().filter((s) => scores[skey(x.id, s.id)]).length;
+      return `<button class="chip" data-aid="${x.id}" aria-pressed="${x.id === a.id}">${esc(x.title)} <small>${n}/${inClass().length}</small></button>`;
+    }).join("") + `<button class="chip chip-add" id="addAssess">${icon("plus")}새 평가</button>`;
+    $("assessMeta").innerHTML = `<span>평가일 <b>${fmt(a.date)}</b></span><span>만점 <b>${maxOf(a)}점</b></span><span>기준 <b>${a.criteria.map((c) => `${esc(c.name)} ${c.levels[0].pt}`).join(" · ")}</b></span>`;
+    $("aSummary").innerHTML = `
+      <div class="card stat"><div class="v tnum">${done.length}/${roster.length}</div><div class="l">채점 완료</div></div>
+      <div class="card stat"><div class="v red tnum">${roster.length - done.length}</div><div class="l">미채점</div></div>
+      <div class="card stat"><div class="v tnum">${avg}</div><div class="l">평균(채점 학생)</div></div>
+      <div class="card stat"><div class="v tnum">${done.filter((x) => x.status !== "done").length}</div><div class="l">결시·미제출</div></div>`;
+    const cnt = { all: roster.length, todo: roster.length - done.length, done: done.length };
+    $("aFilters").innerHTML = [["all", "전체"], ["todo", "미채점"], ["done", "채점 완료"]].map(([k, l]) => `<button class="chip" data-af="${k}" aria-pressed="${aFilter === k}">${l}<span class="n">${cnt[k]}</span></button>`).join("");
+    const list = roster.filter((s) => { const x = scores[skey(a.id, s.id)]; return aFilter === "all" || (aFilter === "todo" ? !x : !!x); });
+    $("aList").innerHTML = list.map((s) => {
+      const x = scores[skey(a.id, s.id)];
+      const t = totalOf(a, x);
+      const st = !x ? `<span class="badge b-todo">미채점</span>` : x.status === "done" ? "" : `<span class="badge b-absent">${x.status === "absent" ? "결시" : "미제출"}</span>`;
+      return `<button class="arow" data-sid="${s.id}" aria-current="${s.id === aSid}">
+        <span class="no">${s.no}</span>
+        <span class="arow-body"><span class="nm">${esc(s.name)}</span>${x && x.memo ? `<span class="memo">${esc(x.memo)}</span>` : ""}</span>
+        ${st || "<span></span>"}<span class="score tnum${t == null ? " none" : ""}">${t == null ? "-" : t}</span></button>`;
+    }).join("") || `<p class="muted" style="padding:16px">해당하는 학생이 없습니다.</p>`;
+    renderScorer();
+  }
+
+  function loadDraft(sid) {
+    const a = curAssess();
+    const x = scores[skey(a.id, sid)];
+    aSid = sid;
+    aDraft = x ? { status: x.status, picks: [...x.picks], memo: x.memo } : { status: "done", picks: a.criteria.map(() => null), memo: "" };
+  }
+
+  function renderScorer() {
+    const box = $("scorer");
+    const a = curAssess();
+    if (!aSid) {
+      box.innerHTML = `<div class="composer-empty"><div class="big">${icon("clip", "")}</div><strong>학생을 고르세요</strong>목록에서 학생을 누르면 여기에서 채점합니다. 저장하면 다음 미채점 학생으로 넘어갑니다.</div>`;
+      return;
+    }
+    const s = stuOf(aSid);
+    const d = aDraft;
+    const filled = d.picks.every((p) => p != null);
+    const total = d.status === "done" ? d.picks.reduce((n, p) => n + (p || 0), 0) : baseOf(a);
+    box.innerHTML = `
+      <div class="scorer-head">
+        <div><p class="sub">${esc(a.title)}</p><p class="who">${s.no} ${esc(s.name)}</p></div>
+        <div class="total" aria-live="polite"><div class="v tnum">${d.status === "done" && !filled ? "-" : total}<small> / ${maxOf(a)}</small></div><div class="l">합계</div></div>
+      </div>
+      <div class="seg" role="group" aria-label="응시 상태">
+        <button data-s="status" data-st="done" aria-pressed="${d.status === "done"}">채점</button>
+        <button data-s="status" data-st="absent" aria-pressed="${d.status === "absent"}">결시</button>
+        <button data-s="status" data-st="missing" aria-pressed="${d.status === "missing"}">미제출</button>
+      </div>
+      ${d.status === "done" ? a.criteria.map((c, ci) => `
+        <div class="crit"><div class="crit-h"><b>${esc(c.name)}</b><span>${c.levels[0].pt}점</span></div>
+          <div class="levels" role="group" aria-label="${esc(c.name)}">${c.levels.map((l) => `
+            <button class="lv" data-s="lv" data-ci="${ci}" data-pt="${l.pt}" aria-pressed="${d.picks[ci] === l.pt}"><b class="tnum">${l.pt}</b><span>${esc(l.d)}</span></button>`).join("")}</div></div>`).join("")
+        : `<p class="base-note">${d.status === "absent" ? "결시" : "미제출"} 학생은 기본 점수 <b>${baseOf(a)}점</b>으로 표시했습니다(시안 예시). 실제 처리 기준은 학교 학업성적관리규정을 확인해 설정에서 정합니다.</p>`}
+      <div><label class="label" for="aMemo">평가 내용 기록</label>
+        <textarea id="aMemo" rows="2" style="min-height:76px" placeholder="잘한 점, 보완할 점, 특기할 만한 과정을 적습니다.">${esc(d.memo)}</textarea>
+        <div class="areas" style="margin-top:8px">${SCORE_MEMOS.map((m) => `<button class="chip" style="font-size:14px;min-height:36px" data-s="memo" data-v="${esc(m)}">${icon("plus")}${esc(m)}</button>`).join("")}</div></div>
+      <div class="score-save">
+        <button class="btn btn-line" data-s="prev" aria-label="이전 학생">${icon("left", "")}</button>
+        <button class="btn btn-red" data-s="saveNext" ${d.status === "done" && !filled ? "disabled" : ""}>저장하고 다음 학생</button>
+        <button class="btn btn-line" data-s="next" aria-label="다음 학생">${icon("right", "")}</button>
+      </div>`;
+  }
+
+  $("assessTabs").addEventListener("click", (e) => {
+    if (e.target.closest("#addAssess")) { toast("새 평가와 채점 기준은 설정 화면에서 만듭니다(본 제작)."); return; }
+    const b = e.target.closest("[data-aid]"); if (!b) return;
+    assessId = b.dataset.aid; aSid = null; aDraft = null; closeSheet(); renderAssess();
+  });
+  $("aFilters").addEventListener("click", (e) => { const b = e.target.closest("[data-af]"); if (!b) return; aFilter = b.dataset.af; renderAssess(); });
+  $("aList").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-sid]"); if (!b) return;
+    loadDraft(b.dataset.sid); renderAssess();
+    if (!isDesktop()) { $("scoreWrap").classList.add("open"); $("backdrop").hidden = false; }
+  });
+  $("scorer").addEventListener("input", (e) => { if (e.target.id === "aMemo") aDraft.memo = e.target.value; });
+  $("scorer").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-s]"); if (!b) return;
+    const k = b.dataset.s;
+    if (k === "status") { aDraft.status = b.dataset.st; renderScorer(); }
+    if (k === "lv") { aDraft.picks[+b.dataset.ci] = +b.dataset.pt; renderScorer(); const n = $("scorer").querySelector(`[data-ci="${+b.dataset.ci + 1}"][aria-pressed="false"]`); (n ? $("scorer").querySelector(`[data-ci="${+b.dataset.ci + 1}"]`) : $("scorer").querySelector(`[data-ci="${b.dataset.ci}"][data-pt="${b.dataset.pt}"]`)).focus(); }
+    if (k === "memo") { aDraft.memo = aDraft.memo.trim() ? aDraft.memo.trim() + " " + b.dataset.v : b.dataset.v; renderScorer(); $("aMemo").focus(); }
+    if (k === "prev" || k === "next") step(k === "next" ? 1 : -1, false);
+    if (k === "saveNext") {
+      const a = curAssess(); const s = stuOf(aSid);
+      scores[skey(a.id, aSid)] = { status: aDraft.status, picks: aDraft.status === "done" ? [...aDraft.picks] : [], memo: aDraft.memo.trim() };
+      toast(`${s.name} ${totalOf(a, scores[skey(a.id, aSid)])}점 저장`);
+      step(1, true);
+    }
+  });
+  // 다음(이전) 학생으로. 저장 후에는 다음 미채점 학생을 우선 찾음
+  function step(dir, preferTodo) {
+    const a = curAssess(); const ids = inClass().map((s) => s.id);
+    let i = ids.indexOf(aSid);
+    if (preferTodo) {
+      for (let k = 1; k <= ids.length; k++) { const id = ids[(i + k) % ids.length]; if (!scores[skey(a.id, id)]) { loadDraft(id); renderAssess(); return; } }
+      aSid = null; aDraft = null; closeSheet(); renderAssess(); toast("모든 학생을 채점했습니다."); return;
+    }
+    i = (i + dir + ids.length) % ids.length; loadDraft(ids[i]); renderAssess();
+  }
+
+  $("csvBtn").addEventListener("click", () => {
+    const a = curAssess();
+    const q = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+    const rows = [["번호", "이름", "상태", ...a.criteria.map((c) => `${c.name}(${c.levels[0].pt})`), `합계(${maxOf(a)})`, "평가 내용"]];
+    inClass().forEach((s) => {
+      const x = scores[skey(a.id, s.id)];
+      rows.push([s.no, s.name, !x ? "미채점" : { done: "채점", absent: "결시", missing: "미제출" }[x.status],
+        ...a.criteria.map((c, i) => x && x.status === "done" ? x.picks[i] : ""), x ? totalOf(a, x) : "", x ? x.memo : ""]);
+    });
+    const blob = new Blob(["\uFEFF" + rows.map((r) => r.map(q).join(",")).join("\r\n")], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob); const el = document.createElement("a");
+    el.href = url; el.download = `수행평가_${classOf(classId).name}_${a.title}.csv`; document.body.appendChild(el); el.click(); el.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    toast("점수표를 내려받았습니다.");
+  });
 
   // ---------- ④ 성찰 ----------
   function renderReflect() {
@@ -879,6 +1146,7 @@
     if (view === "log") renderLog();
     if (view === "students") renderStudents();
     if (view === "reflect") renderReflect();
+    if (view === "assess") renderAssess();
   }
   matchMedia("(min-width: 1024px)").addEventListener("change", () => { closeSheet(); renderComposer(); });
   renderAll();
