@@ -3,32 +3,32 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#FFFFFF">
+<meta name="theme-color" content="#F6F2FA">
 <title>수업 관찰 기록 v2 시안</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
   :root {
-    --bg: #F3F5F9;
+    --bg: #F6F2FA;
     --surface: #FFFFFF;
-    --surface-2: #F7F8FB;
-    --line: #E1E6EF;
-    --line-strong: #C9D1DE;
-    --text: #141B2D;
-    --text-2: #4A5468;
-    --text-3: #6B7488;
-    --navy: #1B2A4A;
-    --navy-2: #2B3E66;
-    --navy-tint: #E8EDF6;
-    --red: #C8102E;
-    --red-2: #A50D26;
-    --red-tint: #FCEBEE;
-    --ok: #1F6B4F;
-    --ok-tint: #E6F2EC;
-    --r-card: 16px;
-    --r-input: 12px;
-    --shadow-1: 0 1px 2px rgb(20 27 45 / .06);
-    --shadow-2: 0 12px 40px rgb(20 27 45 / .16);
-    --nav-h: 68px;
+    --surface-2: #F7F3FB;
+    --line: #EEE9F2;
+    --line-strong: #DCD3E8;
+    --text: #2A2340;
+    --text-2: #5E5675;
+    --text-3: #6F6886;
+    --navy: #5A3EC0;
+    --navy-2: #4A30A8;
+    --navy-tint: #F1EBFD;
+    --red: #C2416B;
+    --red-2: #A8325A;
+    --red-tint: #FDEAF1;
+    --ok: #1F7A57;
+    --ok-tint: #E7F5EE;
+    --r-card: 22px;
+    --r-input: 14px;
+    --shadow-1: 0 10px 30px rgb(92 70 140 / .08), 0 2px 6px rgb(92 70 140 / .05);
+    --shadow-2: 0 20px 50px rgb(60 40 110 / .22);
+    --nav-h: 72px;
     --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
   }
   * { box-sizing: border-box; }
@@ -84,43 +84,42 @@
   .class-menu button[aria-checked="true"] { background: var(--navy-tint); color: var(--navy); }
   .class-menu small { color: var(--text-3); font-weight: 500; }
 
-  /* 아래 탭(휴대폰) / 왼쪽 레일(PC) */
+  /* 아래 메뉴(휴대폰) / 왼쪽 사이드바(PC) */
   .nav {
     position: fixed; z-index: 35; left: 0; right: 0; bottom: 0;
-    height: calc(var(--nav-h) + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom);
-    background: var(--surface); border-top: 1px solid var(--line);
-    display: grid; grid-template-columns: repeat(5, 1fr);
+    height: calc(var(--nav-h) + env(safe-area-inset-bottom)); padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
+    background: linear-gradient(180deg, #C4B1F1, #B096EA); border-radius: 22px 22px 0 0; box-shadow: 0 -8px 24px rgb(92 70 140 / .12);
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: 2px;
   }
   .nav button {
     border: 0; background: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
-    font-size: 13px; font-weight: 600; color: var(--text-3); position: relative;
+    font-size: 12px; font-weight: 700; color: #3E2F6B; border-radius: 14px; transition: background-color .15s;
   }
-  .nav button[aria-current="page"] { color: var(--navy); }
-  .nav button[aria-current="page"]::before {
-    content: ""; position: absolute; top: 0; left: 30%; right: 30%; height: 3px; border-radius: 0 0 3px 3px; background: var(--red);
-  }
-  .nav .ic { width: 24px; height: 24px; }
+  .nav button:hover { background: rgb(255 255 255 / .35); }
+  .nav button[aria-current="page"] { background: #fff; color: var(--navy); box-shadow: 0 6px 14px rgb(80 50 150 / .18); }
+  .nav .ic { width: 22px; height: 22px; }
+  .brand-rail, .side-art { display: none; }
 
   main { max-width: 1400px; margin: 0 auto; padding: 16px; }
   .view-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin: 4px 0 16px; flex-wrap: wrap; }
-  .view-head h2 { font-size: 24px; font-weight: 800; color: var(--navy); }
+  .view-head h2 { font-size: 26px; font-weight: 800; color: var(--text); letter-spacing: -0.02em; }
   .view-head p { color: var(--text-2); font-size: 15px; margin-top: 2px; }
 
   @media (min-width: 1024px) {
-    .app { padding-bottom: 0; padding-left: 96px; }
+    .app { padding-bottom: 0; padding-left: 248px; }
     .nav {
-      top: 0; right: auto; width: 96px; height: 100dvh; padding: 88px 0 0; grid-template-columns: 1fr; grid-auto-rows: 84px; align-content: start;
-      border-top: 0; border-right: 1px solid var(--line);
+      top: 16px; bottom: 16px; left: 16px; right: auto; width: 216px; height: auto; padding: 24px 16px; border-radius: 28px;
+      display: flex; flex-direction: column; gap: 6px; background: linear-gradient(180deg, #C9B8F2 0%, #B49CEC 55%, #A88EE8 100%);
+      box-shadow: 0 20px 50px rgb(92 70 140 / .18);
     }
-    .nav button[aria-current="page"]::before { top: 18%; bottom: 18%; left: 0; right: auto; width: 4px; height: auto; border-radius: 0 3px 3px 0; }
-    .nav button { font-size: 14px; }
-    .nav .brand-rail { position: absolute; top: 16px; left: 0; right: 0; display: grid; place-items: center; }
-    main { padding: 24px 32px; }
+    .nav button { flex: 0 0 auto; flex-direction: row; justify-content: flex-start; gap: 12px; min-height: 48px; padding: 0 16px; font-size: 15px; border-radius: 16px; }
+    .nav button[aria-current="page"] { font-weight: 800; }
+    .brand-rail { display: grid; place-items: center; margin-bottom: 18px; }
+    .side-art { display: grid; place-items: center; margin-top: auto; }
+    main { padding: 20px 32px 32px; }
   }
-  .brand-rail { display: none; }
-  @media (min-width: 1024px) { .brand-rail { display: grid; } }
-  .brand-mark { width: 44px; height: 44px; border-radius: 12px; background: var(--navy); display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 15px; letter-spacing: -0.02em; }
-  .brand-mark i { display: block; width: 6px; height: 18px; border-radius: 2px; background: var(--red); margin-right: 4px; }
+  .logo { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 22px;
+    background: radial-gradient(circle at 35% 30%, #FFD3C2, #F7A98F 70%); box-shadow: inset 0 -4px 8px rgb(200 100 80 / .25), 0 8px 18px rgb(120 80 160 / .25); }
 
   /* ---------- 공통 요소 ---------- */
   .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-card); }
@@ -436,7 +435,7 @@
     max-width: calc(100vw - 24px);
   }
   .toast.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
-  .toast button { border: 0; background: rgb(255 255 255 / .14); color: #fff; font-weight: 800; height: 36px; padding: 0 14px; border-radius: 99px; }
+  .toast button { white-space: nowrap; flex-shrink: 0; border: 0; background: rgb(255 255 255 / .14); color: #fff; font-weight: 800; height: 36px; padding: 0 14px; border-radius: 99px; }
   @media (min-width: 1024px) { .toast { bottom: 24px; left: calc(50% + 48px); } }
 
   .note {
@@ -445,12 +444,169 @@
   }
   .note b { color: var(--navy); }
 
+  /* ---------- 파스텔 공통 ---------- */
+  .topbar { background: rgb(246 242 250 / .85); border-bottom: 0; }
+  .class-btn { border: 0; box-shadow: var(--shadow-1); }
+  .class-btn .dot { background: linear-gradient(160deg, #B79BF5, #8B6BE0); }
+  .round {
+    display: grid; place-items: center; width: 44px; height: 44px; border-radius: 999px; border: 0;
+    background: var(--surface); box-shadow: var(--shadow-1); color: var(--text-2);
+  }
+  .round:hover { color: var(--navy); }
+  .avatar { width: 46px; height: 46px; border-radius: 999px; border: 3px solid #fff; box-shadow: var(--shadow-1); background: #FFE6DC; display: grid; place-items: center; overflow: hidden; flex-shrink: 0; }
+  .card { border: 0; box-shadow: var(--shadow-1); }
+  .btn-red { background: linear-gradient(160deg, #7B5BDD, #6142CC); color: #fff; box-shadow: 0 8px 18px rgb(97 66 204 / .28); }
+  .btn-red:hover { background: linear-gradient(160deg, #7051D6, #5538C0); }
+  .btn-red:disabled { background: #D8CEF3; color: #6F6886; box-shadow: none; }
+  .btn-navy { background: var(--navy); }
+  .btn-line { border-color: var(--line-strong); }
+  .stu { border-color: transparent; box-shadow: var(--shadow-1); border-radius: 16px; }
+  .stu:hover { border-color: #C9B8F2; }
+  .stu.gap { border-color: #EBA7BE; background: #FFF7FA; }
+  .stu[aria-pressed="true"] { background: linear-gradient(160deg, #7B5BDD, #5A3EC0); }
+  .stu[aria-pressed="true"] .no, .stu[aria-pressed="true"] .more, .stu[aria-pressed="true"] .gapdays { color: #E4DAFF; }
+  .stu[aria-pressed="true"] .pip.care { background: #FFB3C9; }
+  .stu .check { background: #fff; color: var(--navy); }
+  .action-bar { background: linear-gradient(160deg, #6E50D6, #5A3EC0); }
+  .action-bar .names, .action-bar .clear { color: #E4DAFF; }
+  .action-bar .btn-red { background: #fff; color: var(--navy); box-shadow: none; }
+  .stat { background: var(--surface); }
+  .b-area { background: var(--navy-tint); color: var(--navy); }
+  .b-care { color: #A8325A; }
+  .b-absent { background: #FFF0DC; color: #8A5200; }
+  .scorer .seg button[aria-pressed="true"][data-st="absent"], .scorer .seg button[aria-pressed="true"][data-st="missing"] { background: #A0610B; }
+  .base-note { background: #FFF5E6; color: #6B4300; }
+  .lv { border-color: var(--line-strong); }
+  .lv[aria-pressed="true"] { background: linear-gradient(160deg, #7B5BDD, #5A3EC0); border-color: #5A3EC0; }
+  .srow[aria-current="true"], .arow[aria-current="true"] { box-shadow: inset 4px 0 0 #8B6BE0; }
+  .tl.assess::before { background: #8B6BE0; border-color: #8B6BE0; }
+  .b-assess { background: linear-gradient(160deg, #7B5BDD, #5A3EC0); }
+  .phrase:hover { background: var(--navy-tint); }
+  .toast { background: #2A2340; }
+  .note { border-color: var(--line-strong); }
+  @media (min-width: 1024px) { .toast { left: calc(50% + 124px); } .composer-wrap { top: 84px; } }
+
+  /* ---------- 홈(대시보드) ---------- */
+  .home-head { margin: 4px 0 18px; }
+  .home-head h2 { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; }
+  .home-head p { color: var(--text-2); margin-top: 2px; }
+  .card-h { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  .card-h h3 { font-size: 16px; font-weight: 800; }
+  .pill-btn { display: inline-flex; align-items: center; height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); font-size: 13px; font-weight: 700; color: var(--text-2); }
+  .pill-btn:hover { border-color: #A58BE6; color: var(--navy); }
+  [data-panel="home"] .card { padding: 20px; position: relative; overflow: hidden; }
+  .row1 { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 18px; }
+  .row2 { display: grid; grid-template-columns: 1.6fr 1fr; gap: 18px; margin-top: 18px; }
+  .row3 { display: grid; grid-template-columns: 1.1fr .8fr 1fr; gap: 18px; margin-top: 18px; }
+  [data-panel="home"] .hero { display: grid; grid-template-columns: 180px 1fr; align-items: center; min-height: 196px; padding: 0 22px 0 0; background: linear-gradient(135deg, #FFDCCD 0%, #FBD1DC 55%, #EBD8F7 100%); }
+  .hero-art { align-self: end; display: grid; place-items: end center; }
+  .hero h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; white-space: nowrap; }
+  .hero p { margin-top: 8px; color: var(--text-2); }
+  .dstat { display: grid; align-content: start; gap: 6px; min-height: 196px; }
+  .dstat.lav { background: linear-gradient(160deg, #F6F1FF, #EEE6FD); }
+  .dstat.peach { background: linear-gradient(160deg, #FFF4EF, #FDE6DC); }
+  .dstat.mint { background: linear-gradient(160deg, #F1FAF5, #E1F3EA); }
+  .dstat .label { font-weight: 700; font-size: 14px; }
+  .tile { width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; color: #fff; margin: 6px 0 4px;
+    box-shadow: inset 0 -4px 8px rgb(0 0 0 / .12), inset 0 3px 6px rgb(255 255 255 / .45), 0 8px 16px rgb(0 0 0 / .08); }
+  .tile .ic { width: 24px; height: 24px; }
+  .t-lav { background: linear-gradient(160deg, #B79BF5, #8B6BE0); }
+  .t-peach { background: linear-gradient(160deg, #FFA98A, #F07A57); }
+  .t-mint { background: linear-gradient(160deg, #7FD8B1, #3FAE86); }
+  .t-pink { background: linear-gradient(160deg, #F7A9C4, #E07A9E); }
+  .t-amber { background: linear-gradient(160deg, #FFD27E, #E7A93A); }
+  .dstat .num { font-size: 38px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .dstat .num small { font-size: 18px; color: var(--text-3); font-weight: 700; }
+  .trend { display: flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 800; color: #23905F; }
+  .trend.down { color: var(--red); }
+  .trend .ic { width: 15px; height: 15px; stroke-width: 2.6; }
+  .trend span { color: var(--text-3); font-weight: 600; }
+  .dsub { font-size: 13px; color: var(--text-3); font-weight: 600; }
+  .chart-wrap { position: relative; }
+  .chart-wrap svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .tip { position: absolute; pointer-events: none; transform: translate(-50%, -100%); margin-top: -14px; background: #fff; border-radius: 12px; padding: 6px 12px;
+    box-shadow: 0 8px 20px rgb(92 70 140 / .18); text-align: center; white-space: nowrap; font-size: 12px; color: var(--text-3); transition: left .12s, top .12s; }
+  .tip b { display: block; font-size: 18px; color: var(--text); line-height: 1.2; }
+  .seg-tabs { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--navy-tint); }
+  .seg-tabs button { height: 30px; padding: 0 12px; border: 0; border-radius: 999px; background: none; font-size: 13px; font-weight: 700; color: var(--text-2); }
+  .seg-tabs button[aria-pressed="true"] { background: #fff; color: var(--navy); box-shadow: 0 2px 6px rgb(92 70 140 / .15); }
+  .tasks { display: grid; gap: 4px; }
+  .task { display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; align-items: center; padding: 8px 6px; border-radius: 14px; border: 0; background: none; text-align: left; width: 100%; }
+  .task:hover { background: #FAF7FD; }
+  .task .tile { width: 40px; height: 40px; border-radius: 12px; margin: 0; }
+  .task .tile .ic { width: 20px; height: 20px; }
+  .task b { display: block; font-size: 14px; }
+  .task .when { font-size: 12px; color: var(--text-3); }
+  .status { height: 26px; padding: 0 10px; border-radius: 999px; font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; white-space: nowrap; }
+  .s-doing { background: #FFF0DC; color: #8A5200; }
+  .s-todo { background: var(--navy-tint); color: var(--navy); }
+  .s-soon { background: #E3F1FC; color: #245F91; }
+  .s-done { background: var(--ok-tint); color: var(--ok); }
+  .progress { display: grid; grid-template-columns: 150px 1fr; gap: 18px; align-items: center; }
+  .ring { position: relative; width: 150px; height: 150px; }
+  .ring svg { width: 150px; height: 150px; transform: rotate(-90deg); }
+  .ring .center { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; }
+  .ring .center b { font-size: 30px; font-weight: 800; line-height: 1; display: block; }
+  .ring .center span { font-size: 12px; color: var(--text-3); font-weight: 600; }
+  .plegend { display: grid; gap: 10px; }
+  .plg { display: grid; grid-template-columns: 10px 1fr auto; gap: 8px; align-items: center; font-size: 13px; }
+  .plg i { width: 10px; height: 10px; border-radius: 99px; }
+  .plg .bar { grid-column: 2 / 4; height: 6px; border-radius: 99px; background: #F2EEF7; overflow: hidden; margin-top: -4px; }
+  .plg .bar span { display: block; height: 100%; border-radius: 99px; }
+  .plg b { font-variant-numeric: tabular-nums; }
+  .remind { background: linear-gradient(160deg, #F4EEFF, #E9E0FB); display: grid; grid-template-columns: 96px 1fr; gap: 6px; align-items: center; }
+  .remind h3 { font-size: 16px; font-weight: 800; }
+  .remind p { font-size: 13px; color: var(--text-2); margin: 6px 0 12px; }
+  .btn-lav { display: inline-flex; align-items: center; justify-content: center; height: 40px; padding: 0 16px; border: 0; border-radius: 12px;
+    background: linear-gradient(160deg, #7B5BDD, #6142CC); color: #fff; font-weight: 800; font-size: 14px; box-shadow: 0 8px 16px rgb(97 66 204 / .28); }
+  .cheer { background: linear-gradient(160deg, #FFF8E3, #FFEFC2); display: grid; grid-template-columns: 1fr 1.1fr; align-items: center; gap: 8px; }
+  .cheer h3 { font-size: 20px; font-weight: 800; line-height: 1.35; }
+  .cheer p { margin-top: 8px; color: var(--text-2); font-size: 14px; }
+  @media (max-width: 1279px) {
+    .row1 { grid-template-columns: 1fr 1fr 1fr; }
+    [data-panel="home"] .hero { grid-column: 1 / -1; }
+    .row3 { grid-template-columns: 1fr 1fr; }
+    .cheer { grid-column: 1 / -1; }
+  }
+  @media (max-width: 860px) { .row2, .row3 { grid-template-columns: 1fr; } }
+  @media (max-width: 640px) {
+    .row1 { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .dstat { min-height: 0; padding: 16px !important; }
+    .dstat:last-child { grid-column: 1 / -1; }
+    .dstat .num { font-size: 30px; }
+    [data-panel="home"] .hero { grid-template-columns: 120px 1fr; min-height: 150px; padding: 0 16px 0 0; }
+    .hero-art svg { width: 130px; height: auto; }
+    .hero h3 { font-size: 20px; }
+    .home-head h2 { font-size: 24px; }
+    .progress { grid-template-columns: 1fr; justify-items: center; }
+    .plegend { width: 100%; }
+    .cheer { grid-template-columns: 1fr 120px; }
+    .cheer-art svg { width: 120px; height: auto; }
+    .avatar { display: none; }
+  }
+
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
 </head>
 <body>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="gFur" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#FFE3D3"/><stop offset=".7" stop-color="#F6B59A"/><stop offset="1" stop-color="#E9967A"/></radialGradient>
+    <radialGradient id="gMuzzle" cx="45%" cy="35%" r="70%"><stop offset="0" stop-color="#FFF8F3"/><stop offset="1" stop-color="#FBE0D2"/></radialGradient>
+    <linearGradient id="gHoodie" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C6AEF7"/><stop offset="1" stop-color="#9B7DE6"/></linearGradient>
+    <radialGradient id="gLeaf" cx="40%" cy="30%" r="80%"><stop offset="0" stop-color="#B9E6A5"/><stop offset=".6" stop-color="#7CC47A"/><stop offset="1" stop-color="#4E9B5A"/></radialGradient>
+    <linearGradient id="gPot" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F5EEE6"/><stop offset="1" stop-color="#DCCFC2"/></linearGradient>
+    <linearGradient id="gTerra" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6B9A4"/><stop offset="1" stop-color="#E08C72"/></linearGradient>
+    <radialGradient id="gCloud" cx="45%" cy="30%" r="75%"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".75" stop-color="#F6F3FA"/><stop offset="1" stop-color="#E6E0EF"/></radialGradient>
+    <linearGradient id="gArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8B6BE0" stop-opacity=".28"/><stop offset="1" stop-color="#8B6BE0" stop-opacity="0"/></linearGradient>
+    <linearGradient id="gRing" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#B79BF5"/><stop offset="1" stop-color="#8B6BE0"/></linearGradient>
+  </defs>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+  <symbol id="i-note" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M9 11h7M9 15h7"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 9a6 6 0 1 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9z"/><path d="M10 20a2 2 0 0 0 4 0"/></symbol>
+  <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+  <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
   <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.3-5.5 6.5-5.5s5.7 2 6.5 5.5"/><path d="M15.5 4.8a3.5 3.5 0 0 1 0 6.4M18 14.8c1.8.7 3 2.5 3.5 5.2"/></symbol>
   <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/></symbol>
   <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6.5 8-6.5s7 2.5 8 6.5"/></symbol>
@@ -480,23 +636,105 @@
       <span class="proto-tag">시안</span>
       <span class="date" id="todayLabel"></span>
       <span class="badge b-good" title="구글 시트와 동기화됨" style="display:inline-flex"><svg class="ic sm"><use href="#i-cloud"/></svg><span class="sr-only">저장됨</span></span>
-      <button class="icon-btn" aria-label="설정" id="settingsBtn"><svg class="ic"><use href="#i-gear"/></svg></button>
+      <button class="round" aria-label="설정" id="settingsBtn"><svg class="ic"><use href="#i-gear"/></svg></button>
+      <div class="avatar" role="img" aria-label="내 정보"><svg viewBox="0 0 50 50" width="40" height="40"><circle cx="13" cy="15" r="7" fill="#F6B59A"/><circle cx="37" cy="15" r="7" fill="#F6B59A"/><circle cx="25" cy="30" r="17" fill="url(#gFur)"/><ellipse cx="25" cy="35" rx="7" ry="5" fill="url(#gMuzzle)"/><circle cx="19" cy="28" r="2" fill="#3A2C2A"/><circle cx="31" cy="28" r="2" fill="#3A2C2A"/><ellipse cx="25" cy="33" rx="2.4" ry="1.6" fill="#3A2C2A"/></svg></div>
     </div>
     <div class="class-menu" id="classMenu" role="menu" hidden></div>
   </header>
 
   <nav class="nav" aria-label="화면">
-    <div class="brand-rail" aria-hidden="true"><div class="brand-mark"><i></i>관찰</div></div>
-    <button data-view="lesson" aria-current="page"><svg class="ic"><use href="#i-users"/></svg>수업</button>
+    <div class="brand-rail" aria-hidden="true"><div class="logo">
+      <svg width="44" height="40" viewBox="0 0 44 40"><circle cx="9" cy="9" r="7" fill="#fff"/><circle cx="35" cy="9" r="7" fill="#fff"/><circle cx="9" cy="9" r="3.5" fill="#FFC9B6"/><circle cx="35" cy="9" r="3.5" fill="#FFC9B6"/><ellipse cx="22" cy="22" rx="17" ry="15" fill="#fff"/><circle cx="15.5" cy="20" r="2.2" fill="#3A2C2A"/><circle cx="28.5" cy="20" r="2.2" fill="#3A2C2A"/><ellipse cx="22" cy="27" rx="6" ry="4.5" fill="#FFE6DB"/><ellipse cx="22" cy="25.5" rx="2.4" ry="1.7" fill="#3A2C2A"/></svg>
+    </div></div>
+    <button data-view="home" aria-current="page"><svg class="ic"><use href="#i-home"/></svg>홈</button>
+    <button data-view="lesson"><svg class="ic"><use href="#i-users"/></svg>수업</button>
     <button data-view="assess"><svg class="ic"><use href="#i-clip"/></svg>평가</button>
     <button data-view="log"><svg class="ic"><use href="#i-list"/></svg>일지</button>
     <button data-view="students"><svg class="ic"><use href="#i-user"/></svg>학생</button>
     <button data-view="reflect"><svg class="ic"><use href="#i-pen"/></svg>성찰</button>
+    <div class="side-art" aria-hidden="true">
+      <svg width="150" height="170" viewBox="0 0 150 170">
+        <ellipse cx="75" cy="152" rx="62" ry="14" fill="#9C80E3"/><rect x="13" y="134" width="124" height="18" fill="#A98FE8"/><ellipse cx="75" cy="134" rx="62" ry="14" fill="#C4B0F3"/>
+        <path d="M44 92h62l-7 40H51z" fill="url(#gPot)"/><ellipse cx="75" cy="92" rx="31" ry="7" fill="#EFE5DA"/><ellipse cx="75" cy="92" rx="25" ry="4.5" fill="#B49680"/>
+        <ellipse cx="75" cy="56" rx="9" ry="22" fill="url(#gLeaf)"/><ellipse cx="59" cy="66" rx="8" ry="20" transform="rotate(-30 59 66)" fill="url(#gLeaf)"/><ellipse cx="91" cy="66" rx="8" ry="20" transform="rotate(30 91 66)" fill="url(#gLeaf)"/>
+        <ellipse cx="50" cy="80" rx="7" ry="17" transform="rotate(-60 50 80)" fill="url(#gLeaf)"/><ellipse cx="100" cy="80" rx="7" ry="17" transform="rotate(60 100 80)" fill="url(#gLeaf)"/>
+        <ellipse cx="66" cy="78" rx="7" ry="15" transform="rotate(-15 66 78)" fill="url(#gLeaf)"/><ellipse cx="84" cy="78" rx="7" ry="15" transform="rotate(15 84 78)" fill="url(#gLeaf)"/>
+      </svg>
+    </div>
   </nav>
 
   <main>
+    <!-- 홈(대시보드) -->
+    <section data-panel="home">
+      <div class="home-head">
+        <h2>대시보드 <span aria-hidden="true">👋</span></h2>
+        <p>다시 오신 것을 환영해요, 선생님! <span aria-hidden="true">💜</span></p>
+      </div>
+      <div class="row1">
+        <article class="card hero">
+          <div class="hero-art" aria-hidden="true">
+            <svg width="180" height="176" viewBox="0 0 190 186">
+              <path d="M30 186c4-38 30-58 65-58s61 20 65 58z" fill="url(#gHoodie)"/>
+              <path d="M70 132c8 10 17 14 25 14s17-4 25-14" fill="none" stroke="#B59BEF" stroke-width="5" stroke-linecap="round"/>
+              <circle cx="48" cy="40" r="20" fill="url(#gFur)"/><circle cx="142" cy="40" r="20" fill="url(#gFur)"/>
+              <circle cx="48" cy="40" r="10" fill="#FFD0BE"/><circle cx="142" cy="40" r="10" fill="#FFD0BE"/>
+              <ellipse cx="95" cy="82" rx="58" ry="52" fill="url(#gFur)"/><ellipse cx="95" cy="100" rx="24" ry="17" fill="url(#gMuzzle)"/>
+              <ellipse cx="72" cy="80" rx="6" ry="7.5" fill="#2E2220"/><circle cx="74" cy="77" r="2.2" fill="#fff"/>
+              <path d="M110 81q8-8 16 0" fill="none" stroke="#2E2220" stroke-width="4" stroke-linecap="round"/>
+              <ellipse cx="95" cy="94" rx="6.5" ry="4.5" fill="#2E2220"/><path d="M88 104q7 7 14 0" fill="none" stroke="#2E2220" stroke-width="3" stroke-linecap="round"/>
+              <ellipse cx="60" cy="98" rx="9" ry="6" fill="#FF9DA8" opacity=".55"/><ellipse cx="130" cy="98" rx="9" ry="6" fill="#FF9DA8" opacity=".55"/>
+              <ellipse cx="140" cy="118" rx="17" ry="14" fill="url(#gFur)"/><path d="M128 112q6-4 12 0M131 118q6-4 12 0" fill="none" stroke="#E9967A" stroke-width="2" stroke-linecap="round"/>
+              <path d="M126 128q10 30 24 58h18q-10-34-30-60z" fill="url(#gHoodie)"/>
+            </svg>
+          </div>
+          <div><h3 id="greet">좋은 아침이에요!</h3><p>오늘도 학생들의 성장을 기록해 볼까요? <span aria-hidden="true">💜</span></p>
+            <button class="btn btn-red btn-sm" style="margin-top:14px" data-go="lesson">수업 기록 시작</button></div>
+        </article>
+        <article class="card dstat lav"><p class="label">이번 주 관찰 기록</p><div class="tile t-lav" aria-hidden="true"><svg class="ic"><use href="#i-note"/></svg></div><p class="num" id="hObs"></p><p class="trend" id="hObsT"></p></article>
+        <article class="card dstat peach"><p class="label">수행평가 채점</p><div class="tile t-peach" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg></div><p class="num" id="hScore"></p><p class="dsub" id="hScoreT"></p></article>
+        <article class="card dstat mint"><p class="label">이번 주 관찰한 학생</p><div class="tile t-mint" aria-hidden="true"><svg class="ic"><use href="#i-users"/></svg></div><p class="num" id="hStu"></p><p class="trend" id="hStuT"></p></article>
+      </div>
+      <div class="row2">
+        <article class="card">
+          <div class="card-h"><h3 id="chartTitle">요일별 관찰 기록</h3>
+            <div class="seg-tabs" role="group" aria-label="기간"><button data-range="this" aria-pressed="true">이번 주</button><button data-range="last" aria-pressed="false">지난주</button></div></div>
+          <div class="chart-wrap" id="chart" role="img" aria-labelledby="chartTitle" aria-describedby="chartDesc"><div class="tip" id="tip" hidden></div></div>
+          <p class="sr-only" id="chartDesc"></p>
+        </article>
+        <article class="card">
+          <div class="card-h"><h3>할 일</h3><span class="muted" style="font-size:13px">누르면 해당 화면으로 갑니다</span></div>
+          <div class="tasks" id="hTasks"></div>
+        </article>
+      </div>
+      <div class="row3">
+        <article class="card">
+          <div class="card-h"><h3>학급별 채점 진행</h3><button class="pill-btn" data-go="assess">평가로 가기</button></div>
+          <p class="muted" style="font-size:13px;margin:-8px 0 12px">학급마다 가장 최근 수행평가 기준</p>
+          <div class="progress"><div class="ring" id="ring"></div><div class="plegend" id="plegend"></div></div>
+        </article>
+        <article class="card remind">
+          <div aria-hidden="true"><svg width="96" height="130" viewBox="0 0 96 130">
+            <path d="M22 92h52l-6 34H28z" fill="url(#gTerra)"/><rect x="18" y="86" width="60" height="10" rx="5" fill="#F3A78E"/>
+            <rect x="34" y="22" width="28" height="70" rx="14" fill="url(#gLeaf)"/><path d="M34 60h-8a8 8 0 0 1-8-8V42a6 6 0 0 1 12 0v6h4" fill="url(#gLeaf)"/><path d="M62 50h7a7 7 0 0 0 7-7v-7a5.5 5.5 0 0 0-11 0v4h-3" fill="url(#gLeaf)"/>
+            <path d="M42 34v6M54 46v6M44 62v6M53 72v6" stroke="#E9F7DF" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="48" cy="18" r="6" fill="#F7A9C4"/><circle cx="42" cy="20" r="5" fill="#F7A9C4"/><circle cx="54" cy="20" r="5" fill="#F7A9C4"/><circle cx="48" cy="20" r="3" fill="#FFE07A"/></svg></div>
+          <div><h3>잊지 마세요!</h3><p id="hRemind"></p><button class="btn-lav" data-go="assess">채점하기</button></div>
+        </article>
+        <article class="card cheer">
+          <div class="cheer-art" aria-hidden="true"><svg width="170" height="120" viewBox="0 0 170 120">
+            <ellipse cx="85" cy="108" rx="62" ry="7" fill="#EBD9A6" opacity=".6"/>
+            <circle cx="58" cy="62" r="34" fill="url(#gCloud)"/><circle cx="100" cy="50" r="40" fill="url(#gCloud)"/><circle cx="132" cy="72" r="28" fill="url(#gCloud)"/><circle cx="36" cy="80" r="22" fill="url(#gCloud)"/>
+            <rect x="34" y="66" width="114" height="36" rx="18" fill="url(#gCloud)"/>
+            <ellipse cx="78" cy="70" rx="4" ry="5" fill="#2E2220"/><ellipse cx="104" cy="70" rx="4" ry="5" fill="#2E2220"/>
+            <path d="M84 80q7 6 14 0" fill="none" stroke="#2E2220" stroke-width="3" stroke-linecap="round"/>
+            <ellipse cx="68" cy="80" rx="7" ry="4.5" fill="#FFB3C1" opacity=".7"/><ellipse cx="114" cy="80" rx="7" ry="4.5" fill="#FFB3C1" opacity=".7"/></svg></div>
+          <div><h3>오늘도 잘하고<br>계세요! <span aria-hidden="true">💜</span></h3><p>작은 기록이 모여 학생의 성장이 됩니다.</p></div>
+        </article>
+      </div>
+    </section>
+
     <!-- ① 수업 -->
-    <section data-panel="lesson">
+    <section data-panel="lesson" hidden>
       <div class="lesson">
         <div>
           <div class="stats-strip">
@@ -674,7 +912,7 @@
 
   // ---------- 상태 ----------
   let classId = "c23";
-  let view = "lesson";
+  let view = "home";
   let selected = new Set();
   let gapOnly = false;
   let draft = { area: "", tone: "normal", content: "", feedback: "", showFb: false };
@@ -1150,6 +1388,122 @@
   $("q4").addEventListener("input", () => ($("q4").dataset.touched = "1"));
   $("reflSave").addEventListener("click", () => toast("성찰을 저장했습니다. (시안)"));
 
+  // ---------- 홈(대시보드) ----------
+  const DOW = ["월", "화", "수", "목", "금"];
+  const monday = (() => { const d = new Date(today); const k = (d.getDay() + 6) % 7; d.setDate(d.getDate() - k); return d; })();
+  const weekDays = (off) => DOW.map((_, i) => { const d = new Date(monday); d.setDate(d.getDate() + i - off * 7); return ymd(d); });
+  const inWeek = (off) => { const days = weekDays(off); return obs.filter((o) => days.includes(o.date)); };
+  let range = "this";
+
+  function trendHtml(cur, prev, unit) {
+    const diff = cur - prev;
+    if (!prev && !cur) return `<span>지난주와 같음</span>`;
+    const up = diff >= 0;
+    return `<span style="display:contents" class="${up ? "" : "down"}"><svg class="ic" aria-hidden="true"><use href="#i-arrow-${up ? "up" : "down"}"/></svg>${Math.abs(diff)}${unit}</span><span> 지난주보다</span>`;
+  }
+
+  function latestAssess(cid) {
+    const l = assessments.filter((a) => a.classId === cid).sort((a, b) => a.date.localeCompare(b.date));
+    return l[l.length - 1];
+  }
+
+  function renderHome() {
+    const h = new Date().getHours();
+    $("greet").textContent = h < 11 ? "좋은 아침이에요!" : h < 17 ? "좋은 오후예요!" : "오늘 하루 수고하셨어요!";
+    const tw = inWeek(0), lw = inWeek(1);
+    $("hObs").innerHTML = `${tw.length}<small>건</small>`;
+    $("hObsT").className = "trend" + (tw.length < lw.length ? " down" : "");
+    $("hObsT").innerHTML = trendHtml(tw.length, lw.length, "건");
+    const sw = new Set(tw.map((o) => o.sid)).size, sl = new Set(lw.map((o) => o.sid)).size;
+    $("hStu").innerHTML = `${sw}<small>/${students.length}</small>`;
+    $("hStuT").className = "trend" + (sw < sl ? " down" : "");
+    $("hStuT").innerHTML = trendHtml(sw, sl, "명");
+
+    const per = CLASSES.map((c) => { const a = latestAssess(c.id); const roster = students.filter((s) => s.classId === c.id);
+      const done = roster.filter((s) => scores[skey(a.id, s.id)]).length; return { c, a, done, total: roster.length }; });
+    const done = per.reduce((n, x) => n + x.done, 0), total = per.reduce((n, x) => n + x.total, 0);
+    const pct = Math.round((done / total) * 100);
+    $("hScore").innerHTML = `${pct}<small>%</small>`;
+    $("hScoreT").textContent = `미채점 ${total - done}명 · 최근 평가 기준`;
+    $("hRemind").innerHTML = total - done ? `채점하지 않은 학생이 <b>${total - done}명</b> 남았어요.` : "모든 학생을 채점했어요.";
+
+    // 학급별 진행: 전체 진행률 링 + 학급별 막대(학급 색은 색각 검사를 통과한 순서로 고정)
+    const COLORS = ["#8B6BE0", "#E07A9E", "#D99A2B", "#3FAE86"];
+    const R = 60, C = 2 * Math.PI * R;
+    $("ring").innerHTML = `<svg viewBox="0 0 150 150" aria-hidden="true"><circle cx="75" cy="75" r="${R}" fill="none" stroke="#F1ECF8" stroke-width="18"/>
+      <circle cx="75" cy="75" r="${R}" fill="none" stroke="url(#gRing)" stroke-width="18" stroke-linecap="round" stroke-dasharray="${(C * pct) / 100} ${C}"/></svg>
+      <div class="center" role="img" aria-label="전체 채점 진행률 ${pct}%, ${total}명 중 ${done}명 완료"><div><b>${pct}%</b><span>전체 완료</span></div></div>`;
+    $("plegend").innerHTML = per.map((x, i) => { const p = Math.round((x.done / x.total) * 100);
+      return `<div class="plg"><i style="background:${COLORS[i]}"></i><span>${esc(x.c.name)}반 <span class="muted">${x.done}/${x.total}명</span></span><b>${p}%</b>
+        <div class="bar" role="img" aria-label="${esc(x.c.name)}반 ${p}%"><span style="width:${p}%;background:${COLORS[i]}"></span></div></div>`; }).join("");
+
+    // 할 일: 실제 데이터에서 만듦
+    const tasks = [];
+    per.filter((x) => x.total - x.done).sort((a, b) => (b.total - b.done) - (a.total - a.done)).slice(0, 1).forEach((x) =>
+      tasks.push({ tile: "t-pink", ic: "clip", t: `${x.c.name} ${x.a.title} 채점`, w: `미채점 ${x.total - x.done}명`, st: ["s-doing", "진행 중"], go: "assess", cid: x.c.id }));
+    const careRecent = new Set(obs.filter((o) => o.tone === "care" && daysAgo(o.date) < 7).map((o) => o.sid));
+    if (careRecent.size) tasks.push({ tile: "t-mint", ic: "alert", t: "지도 필요 학생 확인", w: `최근 7일 · ${careRecent.size}명`, st: ["s-soon", "확인"], go: "students", sort: "care" });
+    const gaps = CLASSES.map((c) => ({ c, n: students.filter((s) => s.classId === c.id && gapDays(s.id) >= 14).length })).sort((a, b) => b.n - a.n)[0];
+    if (gaps.n) tasks.push({ tile: "t-lav", ic: "users", t: "2주 미관찰 학생 관찰", w: `${gaps.c.name} · ${gaps.n}명`, st: ["s-todo", "할 일"], go: "lesson", cid: gaps.c.id, gap: true });
+    tasks.push({ tile: "t-amber", ic: "pen", t: "오늘 수업 성찰 쓰기", w: `${classOf(classId).name} · 수업 후`, st: ["s-todo", "할 일"], go: "reflect" });
+    $("hTasks").innerHTML = tasks.slice(0, 4).map((t, i) => `<button class="task" data-task="${i}"><span class="tile ${t.tile}" aria-hidden="true"><svg class="ic"><use href="#i-${t.ic}"/></svg></span>
+      <span><b>${esc(t.t)}</b><span class="when">${esc(t.w)}</span></span><span class="status ${t.st[0]}">${t.st[1]}</span></button>`).join("");
+    $("hTasks").onclick = (e) => {
+      const b = e.target.closest("[data-task]"); if (!b) return;
+      const t = tasks[+b.dataset.task];
+      if (t.cid) { classId = t.cid; selected.clear(); currentSid = null; }
+      if (t.gap) { gapOnly = true; $("gapFilter").setAttribute("aria-pressed", "true"); }
+      if (t.go === "assess") aFilter = "todo";
+      if (t.sort) $("sSort").value = t.sort;
+      go(t.go);
+    };
+    drawChart();
+  }
+
+  // 요일별 관찰 기록: 꺾은선 1개(전 학급), 지난주와 전환, 마우스·터치로 값 표시
+  const CW = 560, CH = 250, CP = { l: 34, r: 16, t: 52, b: 30 };
+  function drawChart() {
+    const days = weekDays(range === "this" ? 0 : 1);
+    const vals = days.map((d) => obs.filter((o) => o.date === d).length);
+    const yMax = Math.max(5, Math.ceil(Math.max(...vals) / 5) * 5);
+    const ticks = Array.from({ length: yMax / 5 + 1 }, (_, i) => i * 5).filter((t, i, a) => a.length <= 7 || t % 10 === 0);
+    const x = (i) => CP.l + (i * (CW - CP.l - CP.r)) / (DOW.length - 1);
+    const y = (v) => CP.t + (1 - v / yMax) * (CH - CP.t - CP.b);
+    const pts = vals.map((v, i) => [x(i), y(v)]);
+    let line = `M${pts[0][0]},${pts[0][1]}`;
+    for (let i = 0; i < pts.length - 1; i++) { const [x0, y0] = pts[i], [x1, y1] = pts[i + 1], cx = (x0 + x1) / 2; line += ` C${cx},${y0} ${cx},${y1} ${x1},${y1}`; }
+    const step = (CW - CP.l - CP.r) / (DOW.length - 1);
+    const svg = `<svg viewBox="0 0 ${CW} ${CH}" aria-hidden="true">
+      ${ticks.map((t) => `<line x1="${CP.l}" x2="${CW - CP.r}" y1="${y(t)}" y2="${y(t)}" stroke="#EFEAF5"/><text x="${CP.l - 10}" y="${y(t) + 4}" text-anchor="end" font-size="11" fill="#6F6886">${t}</text>`).join("")}
+      ${days.map((d, i) => `<text x="${x(i)}" y="${CH - 8}" text-anchor="middle" font-size="12" fill="#6F6886" font-weight="600">${DOW[i]}</text>`).join("")}
+      <path d="${line} L${x(4)},${y(0)} L${x(0)},${y(0)} Z" fill="url(#gArea)"/>
+      <line id="cross" x1="0" x2="0" y1="${CP.t}" y2="${y(0)}" stroke="#C9B8F2" stroke-width="1.5" stroke-dasharray="4 4" opacity="0"/>
+      <path d="${line}" fill="none" stroke="#8B6BE0" stroke-width="3" stroke-linecap="round"/>
+      ${pts.map(([px, py], i) => `<circle class="pt" data-i="${i}" cx="${px}" cy="${py}" r="5" fill="#fff" stroke="#8B6BE0" stroke-width="2.5"/>`).join("")}
+      ${pts.map(([px], i) => `<rect class="hit" data-i="${i}" x="${px - step / 2}" y="${CP.t}" width="${step}" height="${CH - CP.t - CP.b}" fill="transparent"/>`).join("")}</svg>`;
+    const wrap = $("chart");
+    wrap.querySelectorAll("svg").forEach((n) => n.remove());
+    wrap.insertAdjacentHTML("afterbegin", svg);
+    $("chartDesc").textContent = `${range === "this" ? "이번 주" : "지난주"} 요일별 관찰 기록 수: ` + DOW.map((d, i) => `${d} ${vals[i]}건`).join(", ");
+    const show = (i) => {
+      const el = wrap.querySelector("svg"); const k = el.getBoundingClientRect().width / CW;
+      const tip = $("tip"); tip.hidden = false;
+      tip.innerHTML = `<b>${vals[i]}건</b>${fmt(days[i])}`;
+      tip.style.left = x(i) * k + "px"; tip.style.top = y(vals[i]) * k + "px";
+      const c = el.querySelector("#cross"); c.setAttribute("x1", x(i)); c.setAttribute("x2", x(i)); c.setAttribute("opacity", "1");
+      el.querySelectorAll(".pt").forEach((p) => p.setAttribute("r", +p.dataset.i === i ? 7 : 5));
+    };
+    show(vals.indexOf(Math.max(...vals)));
+    wrap.querySelectorAll(".hit").forEach((r) => { r.addEventListener("pointerenter", () => show(+r.dataset.i)); r.addEventListener("pointerdown", () => show(+r.dataset.i)); });
+  }
+  document.querySelectorAll("[data-range]").forEach((b) => b.addEventListener("click", () => {
+    range = b.dataset.range;
+    document.querySelectorAll("[data-range]").forEach((o) => o.setAttribute("aria-pressed", String(o === b)));
+    drawChart();
+  }));
+  window.addEventListener("resize", () => { if (view === "home") drawChart(); });
+  document.addEventListener("click", (e) => { const b = e.target.closest("[data-go]"); if (b) go(b.dataset.go); });
+
   // ---------- 전체 ----------
   function renderAll() {
     renderClassBtn();
@@ -1158,6 +1512,7 @@
     if (view === "students") renderStudents();
     if (view === "reflect") renderReflect();
     if (view === "assess") renderAssess();
+    if (view === "home") renderHome();
   }
   matchMedia("(min-width: 1024px)").addEventListener("change", () => { closeSheet(); renderComposer(); });
   renderAll();
