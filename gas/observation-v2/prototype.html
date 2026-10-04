@@ -320,7 +320,8 @@
   .crit-h { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
   .crit-h b { color: var(--navy); }
   .crit-h span { font-size: 13px; color: var(--text-3); font-weight: 700; }
-  .levels { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .levels { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  @media (max-width: 420px) { .levels { gap: 4px; } .lv { padding: 6px 2px; } .lv span { font-size: 11px; } }
   .lv {
     min-height: 64px; padding: 6px 4px; border-radius: 12px; border: 1.5px solid var(--line-strong); background: var(--surface);
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; line-height: 1.25;
@@ -406,6 +407,10 @@
   .tl::before { content: ""; position: absolute; left: -28px; top: 6px; width: 16px; height: 16px; border-radius: 99px; background: var(--surface); border: 3px solid var(--navy); }
   .tl.care::before { border-color: var(--red); }
   .tl.good::before { border-color: var(--ok); }
+  .tl.assess::before { border-radius: 4px; background: var(--navy); border-color: var(--navy); }
+  .tl.assess .score-line { font-weight: 800; color: var(--navy); }
+  .tl.assess .crit-line { font-size: 13px; color: var(--text-3); margin-top: 2px; }
+  .b-assess { background: var(--navy); color: #fff; }
   .tl .when { font-size: 13px; font-weight: 700; color: var(--text-3); display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
   .tl p { margin-top: 2px; }
   .tl .fb { font-size: 14px; color: var(--text-2); margin-top: 4px; padding-left: 10px; border-left: 3px solid var(--red); }
@@ -677,17 +682,17 @@
   let logFilter = "all";
 
   // 수행평가: 기준(루브릭)별 수준 점수. 예시이며 실제 기준은 학교 평가계획에 맞춰 설정에서 만듦
-  const L4 = (max, step, descs) => descs.map((d, i) => ({ pt: max - step * i, d }));
+  const L5 = (max, step, descs) => descs.map((d, i) => ({ pt: max - step * i, d }));
   const ASSESS_TEMPLATES = [
     { title: "한자 어휘 쓰기", date: -12, criteria: [
-      { name: "자형 정확성", levels: L4(10, 2, ["모두 정확", "1~2자 오류", "3~4자 오류", "5자 이상"]) },
-      { name: "필순", levels: L4(5, 1, ["모두 맞음", "일부 틀림", "절반 틀림", "대부분 틀림"]) },
-      { name: "어휘 풀이", levels: L4(5, 1, ["정확·자세함", "대체로 정확", "일부만 풀이", "풀이 미흡"]) },
+      { name: "자형 정확성", levels: L5(10, 2, ["모두 정확", "1자 오류", "2~3자 오류", "4~5자 오류", "6자 이상"]) },
+      { name: "필순", levels: L5(5, 1, ["모두 맞음", "1~2자 틀림", "절반쯤 틀림", "대부분 틀림", "시도하지 않음"]) },
+      { name: "어휘 풀이", levels: L5(5, 1, ["정확·자세함", "대체로 정확", "절반 정도", "일부만 풀이", "풀이 없음"]) },
     ] },
     { title: "고사성어 이야기 발표", date: -3, criteria: [
-      { name: "내용 이해", levels: L4(10, 2, ["유래·뜻 정확", "대체로 정확", "일부 오해", "이해 부족"]) },
-      { name: "표현·전달", levels: L4(10, 2, ["분명·자연스러움", "대체로 분명", "다소 부족", "전달 어려움"]) },
-      { name: "자료 구성", levels: L4(10, 2, ["짜임·출처 충실", "대체로 충실", "일부 빠짐", "준비 부족"]) },
+      { name: "내용 이해", levels: L5(10, 2, ["유래·뜻 정확", "대체로 정확", "일부 오해", "이해 부족", "내용 없음"]) },
+      { name: "표현·전달", levels: L5(10, 2, ["분명·자연스러움", "대체로 분명", "다소 부족", "전달 어려움", "발표 미흡"]) },
+      { name: "자료 구성", levels: L5(10, 2, ["짜임·출처 충실", "대체로 충실", "일부 빠짐", "준비 부족", "자료 없음"]) },
     ] },
   ];
   const assessments = [];
@@ -705,7 +710,7 @@
       const r = rnd();
       if (ai % 2 === 1 && r < 0.4) return; // 최근 평가는 채점 중
       if (r > 0.95) { scores[skey(a.id, s.id)] = { status: "absent", picks: [], memo: "" }; return; }
-      scores[skey(a.id, s.id)] = { status: "done", picks: a.criteria.map((c) => c.levels[Math.min(3, Math.floor(rnd() * rnd() * 4))].pt), memo: rnd() < 0.5 ? pick(SCORE_MEMOS) : "" };
+      scores[skey(a.id, s.id)] = { status: "done", picks: a.criteria.map((c) => c.levels[Math.min(4, Math.floor(rnd() * rnd() * 5))].pt), memo: rnd() < 0.5 ? pick(SCORE_MEMOS) : "" };
     });
   });
   const totalOf = (a, sc) => !sc ? null : sc.status === "done" ? sc.picks.reduce((n, p) => n + (p || 0), 0) : baseOf(a);
@@ -955,6 +960,8 @@
     const list = obsOf(s.id).sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
     const by = (t) => list.filter((o) => o.tone === t).length;
     const g = gapDays(s.id);
+    const aItems = assessments.filter((a) => a.classId === s.classId && scores[skey(a.id, s.id)]).map((a) => ({ kind: "assess", date: a.date, a, x: scores[skey(a.id, s.id)] }));
+    const timeline = list.map((o) => ({ kind: "obs", date: o.date, o })).concat(aItems).sort((p, q) => p.date.localeCompare(q.date));
     const dist = AREAS.map((a) => { const os = list.filter((o) => o.area === a); return { a, g: os.filter((o) => o.tone === "good").length, n: os.filter((o) => o.tone === "normal").length, c: os.filter((o) => o.tone === "care").length, t: os.length }; }).filter((d) => d.t);
     const maxT = Math.max(1, ...dist.map((d) => d.t));
     box.innerHTML = `
@@ -971,17 +978,21 @@
       <h4 class="sec-title">수행평가</h4>
       <table class="a-table"><thead><tr><th>평가</th><th>평가 내용</th><th style="text-align:right">점수</th></tr></thead><tbody>
       ${assessments.filter((a) => a.classId === s.classId).map((a) => { const x = scores[skey(a.id, s.id)]; const t = totalOf(a, x);
-        return `<tr><td>${esc(a.title)}</td><td class="muted">${x ? (x.status === "done" ? esc(x.memo || "-") : x.status === "absent" ? "결시" : "미제출") : "미채점"}</td><td class="r tnum">${t == null ? "-" : `${t}/${maxOf(a)}`}</td></tr>`; }).join("")}
+        return `<tr><td>${esc(a.title)}</td><td class="muted">${x ? (x.status === "done" ? esc(x.memo || "-") : x.status === "absent" ? "결시(기본 점수)" : "미제출(기본 점수)") : "미채점"}</td><td class="r tnum">${t == null ? "-" : `${t}/${maxOf(a)}`}</td></tr>`; }).join("")}
       </tbody></table>
       ${dist.length ? `<h4 class="sec-title">영역별 기록</h4>
       <div class="dist">${dist.map((d) => `<div class="dist-row"><span class="lab">${d.a}</span>
         <span class="track" style="width:${(d.t / maxT) * 100}%" role="img" aria-label="${d.a}: 긍정 ${d.g}, 보통 ${d.n}, 지도 필요 ${d.c}">
           <i class="g" style="flex:${d.g}"></i><i class="n" style="flex:${d.n}"></i><i class="c" style="flex:${d.c}"></i></span>
         <span class="num tnum">${d.t}</span></div>`).join("")}</div>
-      <div class="legend" style="margin-top:10px"><span><i class="lg-dot" style="background:var(--ok)"></i>긍정</span><span><i class="lg-dot"></i>보통</span><span><i class="lg-care"></i>지도 필요</span></div>
-      <h4 class="sec-title">시간순 기록</h4>
-      <div class="timeline">${list.map((o) => `<div class="tl ${o.tone}"><div class="when">${fmt(o.date)} <span class="badge b-area">${esc(o.area)}</span>${toneBadge(o.tone)}</div>
-        <p>${esc(o.content)}</p>${o.feedback ? `<p class="fb">${esc(o.feedback)}</p>` : ""}</div>`).join("")}</div>`
+      <div class="legend" style="margin-top:10px"><span><i class="lg-dot" style="background:var(--ok)"></i>긍정</span><span><i class="lg-dot"></i>보통</span><span><i class="lg-care"></i>지도 필요</span></div>` : ""}
+      <h4 class="sec-title">시간순 기록 <span class="muted" style="font-weight:600">관찰 ${list.length}건 · 수행평가 ${aItems.length}건</span></h4>
+      ${timeline.length ? `<div class="timeline">${timeline.map((it) => it.kind === "obs" ? (() => { const o = it.o; return `<div class="tl ${o.tone}"><div class="when">${fmt(o.date)} <span class="badge b-area">${esc(o.area)}</span>${toneBadge(o.tone)}</div>
+        <p>${esc(o.content)}</p>${o.feedback ? `<p class="fb">${esc(o.feedback)}</p>` : ""}</div>`; })()
+        : (() => { const { a, x } = it; return `<div class="tl assess"><div class="when">${fmt(a.date)} <span class="badge b-assess">수행평가</span><span>${esc(a.title)}</span></div>
+        <p class="score-line tnum">${totalOf(a, x)} / ${maxOf(a)}점${x.status !== "done" ? ` <span class="badge b-absent">${x.status === "absent" ? "결시" : "미제출"} · 기본 점수</span>` : ""}</p>
+        ${x.status === "done" ? `<p class="crit-line">${a.criteria.map((c, i) => `${esc(c.name)} ${x.picks[i]}/${c.levels[0].pt}`).join(" · ")}</p>` : ""}
+        ${x.memo ? `<p class="fb">${esc(x.memo)}</p>` : ""}</div>`; })()).join("")}</div>`
       : `<div class="composer-empty"><strong>아직 기록이 없습니다</strong>수업 화면에서 이 학생 카드를 눌러 첫 기록을 남겨 보세요.</div>`}`;
     const dl = $("dlBtn"); dl && dl.addEventListener("click", () => toast("본 제작에서는 텍스트 파일로 내려받습니다."));
   }
@@ -1003,7 +1014,7 @@
       const n = inClass().filter((s) => scores[skey(x.id, s.id)]).length;
       return `<button class="chip" data-aid="${x.id}" aria-pressed="${x.id === a.id}">${esc(x.title)} <small>${n}/${inClass().length}</small></button>`;
     }).join("") + `<button class="chip chip-add" id="addAssess">${icon("plus")}새 평가</button>`;
-    $("assessMeta").innerHTML = `<span>평가일 <b>${fmt(a.date)}</b></span><span>만점 <b>${maxOf(a)}점</b></span><span>기준 <b>${a.criteria.map((c) => `${esc(c.name)} ${c.levels[0].pt}`).join(" · ")}</b></span>`;
+    $("assessMeta").innerHTML = `<span>평가일 <b>${fmt(a.date)}</b></span><span>만점 <b>${maxOf(a)}점</b></span><span>기본 점수 <b>${baseOf(a)}점</b></span><span>기준 <b>${a.criteria.map((c) => `${esc(c.name)} ${c.levels[0].pt}`).join(" · ")}</b></span>`;
     $("aSummary").innerHTML = `
       <div class="card stat"><div class="v tnum">${done.length}/${roster.length}</div><div class="l">채점 완료</div></div>
       <div class="card stat"><div class="v red tnum">${roster.length - done.length}</div><div class="l">미채점</div></div>
@@ -1056,7 +1067,7 @@
         <div class="crit"><div class="crit-h"><b>${esc(c.name)}</b><span>${c.levels[0].pt}점</span></div>
           <div class="levels" role="group" aria-label="${esc(c.name)}">${c.levels.map((l) => `
             <button class="lv" data-s="lv" data-ci="${ci}" data-pt="${l.pt}" aria-pressed="${d.picks[ci] === l.pt}"><b class="tnum">${l.pt}</b><span>${esc(l.d)}</span></button>`).join("")}</div></div>`).join("")
-        : `<p class="base-note">${d.status === "absent" ? "결시" : "미제출"} 학생은 기본 점수 <b>${baseOf(a)}점</b>으로 표시했습니다(시안 예시). 실제 처리 기준은 학교 학업성적관리규정을 확인해 설정에서 정합니다.</p>`}
+        : `<p class="base-note">${d.status === "absent" ? "결시" : "미제출"} 학생은 <b>기본 점수 ${baseOf(a)}점</b>을 줍니다. 기본 점수는 각 기준의 가장 낮은 수준 점수를 더한 값이며, 평가 설정에서 바꿀 수 있습니다.</p>`}
       <div><label class="label" for="aMemo">평가 내용 기록</label>
         <textarea id="aMemo" rows="2" style="min-height:76px" placeholder="잘한 점, 보완할 점, 특기할 만한 과정을 적습니다.">${esc(d.memo)}</textarea>
         <div class="areas" style="margin-top:8px">${SCORE_MEMOS.map((m) => `<button class="chip" style="font-size:14px;min-height:36px" data-s="memo" data-v="${esc(m)}">${icon("plus")}${esc(m)}</button>`).join("")}</div></div>
