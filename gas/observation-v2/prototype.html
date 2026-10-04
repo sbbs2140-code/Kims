@@ -1,0 +1,888 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFFFFF">
+<title>수업 관찰 기록 v2 시안</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  :root {
+    --bg: #F3F5F9;
+    --surface: #FFFFFF;
+    --surface-2: #F7F8FB;
+    --line: #E1E6EF;
+    --line-strong: #C9D1DE;
+    --text: #141B2D;
+    --text-2: #4A5468;
+    --text-3: #6B7488;
+    --navy: #1B2A4A;
+    --navy-2: #2B3E66;
+    --navy-tint: #E8EDF6;
+    --red: #C8102E;
+    --red-2: #A50D26;
+    --red-tint: #FCEBEE;
+    --ok: #1F6B4F;
+    --ok-tint: #E6F2EC;
+    --r-card: 16px;
+    --r-input: 12px;
+    --shadow-1: 0 1px 2px rgb(20 27 45 / .06);
+    --shadow-2: 0 12px 40px rgb(20 27 45 / .16);
+    --nav-h: 68px;
+    --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text); font-family: var(--font);
+    font-size: 16px; line-height: 1.6; word-break: keep-all; overflow-wrap: anywhere;
+    -webkit-font-smoothing: antialiased;
+  }
+  button, input, textarea, select { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  h1, h2, h3, h4, p { margin: 0; }
+  h1, h2, h3 { line-height: 1.3; letter-spacing: -0.015em; }
+  [hidden] { display: none !important; }
+  :focus-visible { outline: 3px solid var(--red); outline-offset: 2px; border-radius: 8px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .ic { width: 22px; height: 22px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .ic.sm { width: 18px; height: 18px; }
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  /* ---------- 뼈대 ---------- */
+  .app { min-height: 100dvh; padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom)); }
+  .topbar {
+    position: sticky; top: 0; z-index: 30; background: rgb(255 255 255 / .92);
+    backdrop-filter: saturate(1.4) blur(10px); -webkit-backdrop-filter: saturate(1.4) blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar-in { display: flex; align-items: center; gap: 12px; height: 64px; padding: 0 16px; max-width: 1400px; margin: 0 auto; }
+  .class-btn {
+    display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 14px 0 12px;
+    border-radius: 999px; border: 1px solid var(--line); background: var(--surface);
+    font-weight: 700; font-size: 17px; color: var(--navy); white-space: nowrap;
+  }
+  .class-btn .dot { width: 10px; height: 10px; border-radius: 99px; background: var(--red); }
+  .class-btn .sub { font-weight: 600; color: var(--text-3); font-size: 15px; }
+  .topbar .date { margin-left: auto; color: var(--text-2); font-weight: 600; font-size: 15px; white-space: nowrap; }
+  .proto-tag { font-size: 12px; font-weight: 700; color: var(--red); background: var(--red-tint); padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+  .icon-btn {
+    display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 99px;
+    border: 0; background: transparent; color: var(--text-2);
+  }
+  .icon-btn:hover { background: var(--surface-2); color: var(--navy); }
+
+  .class-menu {
+    position: absolute; top: 58px; left: 16px; z-index: 40; width: min(320px, calc(100vw - 32px));
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-card); box-shadow: var(--shadow-2); padding: 8px;
+  }
+  .class-menu button {
+    width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    min-height: 52px; padding: 0 14px; border: 0; border-radius: 12px; background: none; text-align: left; font-weight: 600;
+  }
+  .class-menu button:hover { background: var(--surface-2); }
+  .class-menu button[aria-checked="true"] { background: var(--navy-tint); color: var(--navy); }
+  .class-menu small { color: var(--text-3); font-weight: 500; }
+
+  /* 아래 탭(휴대폰) / 왼쪽 레일(PC) */
+  .nav {
+    position: fixed; z-index: 35; left: 0; right: 0; bottom: 0;
+    height: calc(var(--nav-h) + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom);
+    background: var(--surface); border-top: 1px solid var(--line);
+    display: grid; grid-template-columns: repeat(4, 1fr);
+  }
+  .nav button {
+    border: 0; background: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+    font-size: 13px; font-weight: 600; color: var(--text-3); position: relative;
+  }
+  .nav button[aria-current="page"] { color: var(--navy); }
+  .nav button[aria-current="page"]::before {
+    content: ""; position: absolute; top: 0; left: 30%; right: 30%; height: 3px; border-radius: 0 0 3px 3px; background: var(--red);
+  }
+  .nav .ic { width: 24px; height: 24px; }
+
+  main { max-width: 1400px; margin: 0 auto; padding: 16px; }
+  .view-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin: 4px 0 16px; flex-wrap: wrap; }
+  .view-head h2 { font-size: 24px; font-weight: 800; color: var(--navy); }
+  .view-head p { color: var(--text-2); font-size: 15px; margin-top: 2px; }
+
+  @media (min-width: 1024px) {
+    .app { padding-bottom: 0; padding-left: 96px; }
+    .nav {
+      top: 0; right: auto; width: 96px; height: 100dvh; padding: 88px 0 0; grid-template-columns: 1fr; grid-auto-rows: 84px; align-content: start;
+      border-top: 0; border-right: 1px solid var(--line);
+    }
+    .nav button[aria-current="page"]::before { top: 18%; bottom: 18%; left: 0; right: auto; width: 4px; height: auto; border-radius: 0 3px 3px 0; }
+    .nav button { font-size: 14px; }
+    .nav .brand-rail { position: absolute; top: 16px; left: 0; right: 0; display: grid; place-items: center; }
+    main { padding: 24px 32px; }
+  }
+  .brand-rail { display: none; }
+  @media (min-width: 1024px) { .brand-rail { display: grid; } }
+  .brand-mark { width: 44px; height: 44px; border-radius: 12px; background: var(--navy); display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 15px; letter-spacing: -0.02em; }
+  .brand-mark i { display: block; width: 6px; height: 18px; border-radius: 2px; background: var(--red); margin-right: 4px; }
+
+  /* ---------- 공통 요소 ---------- */
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-card); }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; padding: 0 22px;
+    border-radius: 999px; border: 1px solid transparent; font-weight: 700; font-size: 16px; white-space: nowrap;
+    transition: background-color .15s, transform .1s, border-color .15s;
+  }
+  .btn:active { transform: scale(.98); }
+  .btn-red { background: var(--red); color: #fff; }
+  .btn-red:hover { background: var(--red-2); }
+  .btn-red:disabled { background: #E4A3AE; cursor: not-allowed; }
+  .btn-navy { background: var(--navy); color: #fff; }
+  .btn-navy:hover { background: var(--navy-2); }
+  .btn-line { background: var(--surface); border-color: var(--line-strong); color: var(--navy); }
+  .btn-line:hover { border-color: var(--navy); }
+  .btn-sm { min-height: 40px; padding: 0 14px; font-size: 14px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border-radius: 999px;
+    border: 1px solid var(--line-strong); background: var(--surface); font-size: 15px; font-weight: 600; color: var(--text-2);
+    transition: background-color .12s, border-color .12s, color .12s;
+  }
+  .chip:hover { border-color: var(--navy); color: var(--navy); }
+  .chip[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .chip .n { font-size: 13px; opacity: .75; }
+  .seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 4px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 14px; }
+  .seg button { min-height: 46px; border: 0; border-radius: 10px; background: none; font-weight: 700; color: var(--text-2); display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+  .seg button[aria-pressed="true"][data-tone="good"] { background: var(--ok); color: #fff; }
+  .seg button[aria-pressed="true"][data-tone="normal"] { background: var(--navy); color: #fff; }
+  .seg button[aria-pressed="true"][data-tone="care"] { background: var(--red); color: #fff; }
+  textarea, input[type="text"], input[type="search"] {
+    width: 100%; min-height: 52px; padding: 12px 14px; border: 1.5px solid var(--line-strong); border-radius: var(--r-input);
+    background: var(--surface); font-size: 16px; line-height: 1.6;
+  }
+  textarea { resize: vertical; min-height: 96px; }
+  textarea:focus, input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-tint); }
+  .label { display: block; font-size: 14px; font-weight: 700; color: var(--text-2); margin-bottom: 8px; }
+  .badge { display: inline-flex; align-items: center; gap: 4px; height: 26px; padding: 0 9px; border-radius: 99px; font-size: 13px; font-weight: 700; white-space: nowrap; }
+  .b-area { background: var(--navy-tint); color: var(--navy); }
+  .b-good { background: var(--ok-tint); color: var(--ok); }
+  .b-care { background: var(--red-tint); color: var(--red); }
+  .b-normal { background: var(--surface-2); color: var(--text-2); border: 1px solid var(--line); }
+  .muted { color: var(--text-3); }
+
+  /* ---------- ① 수업 ---------- */
+  .lesson { display: grid; gap: 20px; }
+  @media (min-width: 1024px) { .lesson { grid-template-columns: minmax(0, 1fr) 400px; align-items: start; } }
+
+  .stats-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+  .stat { padding: 12px 14px; }
+  .stat .v { font-size: 24px; font-weight: 800; color: var(--navy); line-height: 1.2; }
+  .stat .v.red { color: var(--red); }
+  .stat .l { font-size: 13px; color: var(--text-3); font-weight: 600; }
+
+  .grid-tools { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .grid-tools .spacer { flex: 1; }
+  .legend { display: flex; gap: 12px; font-size: 13px; color: var(--text-3); flex-wrap: wrap; }
+  .legend span { display: inline-flex; align-items: center; gap: 4px; }
+  .lg-dot { width: 8px; height: 8px; border-radius: 99px; background: var(--navy); }
+  .lg-care { width: 8px; height: 8px; border-radius: 99px; background: var(--red); }
+  .lg-gap { width: 14px; height: 10px; border-radius: 3px; border: 1.5px dashed var(--red); }
+
+  .roster { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
+  @media (max-width: 420px) { .roster { grid-template-columns: repeat(3, 1fr); gap: 8px; } }
+  .stu {
+    position: relative; min-height: 88px; padding: 10px 10px 8px; border-radius: 14px; text-align: left;
+    background: var(--surface); border: 1.5px solid var(--line); box-shadow: var(--shadow-1);
+    display: flex; flex-direction: column; justify-content: space-between; gap: 4px;
+    transition: background-color .12s, border-color .12s, transform .1s;
+  }
+  .stu:hover { border-color: var(--navy); }
+  .stu:active { transform: scale(.97); }
+  .stu .no { font-size: 12px; font-weight: 700; color: var(--text-3); }
+  .stu .nm { font-size: 17px; font-weight: 800; letter-spacing: -0.01em; line-height: 1.25; }
+  .stu .meta { display: flex; align-items: center; gap: 3px; min-height: 12px; }
+  .stu .pip { width: 7px; height: 7px; border-radius: 99px; background: var(--navy); opacity: .85; }
+  .stu .pip.care { background: var(--red); opacity: 1; }
+  .stu .more { font-size: 11px; font-weight: 700; color: var(--text-3); margin-left: 2px; }
+  .stu.gap { border-style: dashed; border-color: #E38A99; background: #FFFAFB; }
+  .stu.gap .gapdays { font-size: 11px; font-weight: 700; color: var(--red); }
+  .stu.today::after { content: ""; position: absolute; top: 10px; right: 10px; width: 8px; height: 8px; border-radius: 99px; background: var(--ok); }
+  .stu[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); border-style: solid; color: #fff; }
+  .stu[aria-pressed="true"] .no, .stu[aria-pressed="true"] .more, .stu[aria-pressed="true"] .gapdays { color: #C9D3E6; }
+  .stu[aria-pressed="true"] .pip { background: #fff; }
+  .stu[aria-pressed="true"] .pip.care { background: #FF8A9C; }
+  .stu .check {
+    position: absolute; top: 8px; right: 8px; width: 22px; height: 22px; border-radius: 99px; background: var(--red); color: #fff;
+    display: none; place-items: center;
+  }
+  .stu[aria-pressed="true"] .check { display: grid; }
+  .stu[aria-pressed="true"].today::after { display: none; }
+
+  .feed { margin-top: 20px; }
+  .feed h3 { font-size: 17px; font-weight: 800; color: var(--navy); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .feed-list { display: grid; gap: 8px; }
+  .feed-item { padding: 12px 14px; display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; }
+  .feed-item time { font-size: 13px; color: var(--text-3); font-weight: 600; padding-top: 2px; }
+  .feed-item .who { font-weight: 800; }
+  .feed-item .txt { grid-column: 2; color: var(--text-2); font-size: 15px; }
+  .feed-item .tags { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+
+  /* 입력 패널: PC 오른쪽 고정 / 휴대폰 아래에서 올라오는 시트 */
+  .composer { padding: 18px; display: grid; gap: 18px; }
+  .composer-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .composer-head h3 { font-size: 18px; font-weight: 800; color: var(--navy); }
+  .picked { display: flex; flex-wrap: wrap; gap: 6px; }
+  .picked .p {
+    display: inline-flex; align-items: center; gap: 4px; height: 34px; padding: 0 6px 0 12px; border-radius: 99px;
+    background: var(--navy-tint); color: var(--navy); font-weight: 700; font-size: 15px; border: 0;
+  }
+  .picked .p .x { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 99px; }
+  .picked .p:hover .x { background: rgb(27 42 74 / .1); }
+  .areas { display: flex; flex-wrap: wrap; gap: 6px; }
+  .phrases { display: flex; flex-direction: column; gap: 6px; }
+  .phrase {
+    text-align: left; min-height: 44px; padding: 8px 12px; border-radius: 12px; border: 1px dashed var(--line-strong);
+    background: var(--surface-2); font-size: 15px; color: var(--text-2); display: flex; gap: 8px; align-items: center;
+  }
+  .phrase:hover { border-color: var(--navy); color: var(--navy); background: var(--navy-tint); }
+  .phrase .ic { color: var(--text-3); }
+  .more-toggle { border: 0; background: none; color: var(--navy); font-weight: 700; font-size: 15px; padding: 6px 0; display: inline-flex; gap: 6px; align-items: center; }
+  .composer-empty { text-align: center; padding: 28px 12px; color: var(--text-3); }
+  .composer-empty .big { width: 56px; height: 56px; border-radius: 16px; background: var(--navy-tint); color: var(--navy); display: grid; place-items: center; margin: 0 auto 12px; }
+  .composer-empty strong { display: block; color: var(--navy); font-size: 17px; margin-bottom: 4px; }
+  .save-row {
+    display: grid; grid-template-columns: 1fr auto; gap: 8px;
+    position: sticky; bottom: 0; margin: 0 -18px -18px; padding: 12px 18px 18px;
+    background: linear-gradient(to bottom, rgb(255 255 255 / 0), var(--surface) 14px);
+  }
+  @media (max-width: 480px) {
+    .topbar .date { font-size: 14px; }
+    .proto-tag { display: none; }
+  }
+
+  @media (min-width: 1024px) {
+    .composer-wrap { position: sticky; top: 88px; max-height: calc(100dvh - 112px); overflow: auto; }
+    .sheet-backdrop, .sheet-handle, .action-bar { display: none !important; }
+  }
+  @media (max-width: 1023px) {
+    .composer-wrap {
+      position: fixed; z-index: 50; left: 0; right: 0; bottom: 0; max-height: 88dvh; overflow: auto;
+      border-radius: 20px 20px 0 0; border: 0; box-shadow: var(--shadow-2);
+      transform: translateY(105%); transition: transform .28s cubic-bezier(.16, 1, .3, 1);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    .composer-wrap.open { transform: none; }
+    .sheet-handle { width: 44px; height: 5px; border-radius: 99px; background: var(--line-strong); margin: 10px auto 0; }
+    .sheet-backdrop { position: fixed; inset: 0; z-index: 45; background: rgb(20 27 45 / .45); }
+  }
+  .action-bar {
+    position: fixed; z-index: 36; left: 12px; right: 12px; bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 10px);
+    display: flex; align-items: center; gap: 10px; padding: 8px 8px 8px 18px; border-radius: 999px;
+    background: var(--navy); color: #fff; box-shadow: var(--shadow-2);
+  }
+  .action-bar .cnt { font-weight: 800; }
+  .action-bar .names { flex: 1; min-width: 0; font-size: 14px; color: #C9D3E6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .action-bar .clear { border: 0; background: none; color: #C9D3E6; font-weight: 700; font-size: 14px; padding: 8px; }
+
+  /* ---------- ② 일지 ---------- */
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .day { margin-bottom: 22px; }
+  .day-h { display: flex; align-items: baseline; gap: 8px; margin-bottom: 10px; }
+  .day-h h3 { font-size: 18px; font-weight: 800; color: var(--navy); }
+  .entry { padding: 14px 16px; display: grid; gap: 8px; }
+  .entry + .entry { margin-top: 8px; }
+  .entry-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .entry-top .who { font-weight: 800; font-size: 17px; }
+  .entry-top .acts { margin-left: auto; display: flex; gap: 4px; }
+  .entry .fb { padding-left: 10px; border-left: 3px solid var(--red); color: var(--text-2); font-size: 15px; }
+
+  /* ---------- ③ 학생 ---------- */
+  .students { display: grid; gap: 20px; }
+  @media (min-width: 1024px) { .students { grid-template-columns: 380px minmax(0, 1fr); align-items: start; } }
+  .slist { overflow: hidden; }
+  .slist-tools { padding: 12px; display: flex; gap: 8px; border-bottom: 1px solid var(--line); }
+  .slist-tools input { min-height: 44px; }
+  .slist-tools select {
+    min-height: 44px; border: 1.5px solid var(--line-strong); border-radius: 12px; padding: 0 10px; background: var(--surface); font-weight: 600; font-size: 14px;
+  }
+  .srow {
+    width: 100%; display: grid; grid-template-columns: 36px 1fr auto; align-items: center; gap: 10px;
+    padding: 10px 14px; min-height: 60px; border: 0; border-bottom: 1px solid var(--line); background: none; text-align: left;
+  }
+  .srow:last-child { border-bottom: 0; }
+  .srow:hover { background: var(--surface-2); }
+  .srow[aria-current="true"] { background: var(--navy-tint); box-shadow: inset 4px 0 0 var(--red); }
+  .srow .no { font-size: 13px; font-weight: 700; color: var(--text-3); text-align: center; }
+  .srow .nm { font-weight: 800; }
+  .srow .sub { font-size: 13px; color: var(--text-3); }
+  .srow .sub.red { color: var(--red); font-weight: 700; }
+  .srow .bar { width: 64px; height: 6px; border-radius: 99px; background: var(--surface-2); overflow: hidden; margin-top: 4px; }
+  .srow .bar i { display: block; height: 100%; background: var(--navy); }
+  .srow .cnt { font-weight: 800; color: var(--navy); text-align: right; }
+  .slist-body { max-height: 70dvh; overflow: auto; }
+
+  .detail { padding: 20px; }
+  .detail-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .detail-head h3 { font-size: 26px; font-weight: 800; }
+  .detail-head .sub { color: var(--text-3); font-weight: 600; }
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 18px 0; }
+  @media (max-width: 520px) { .kpis { grid-template-columns: repeat(2, 1fr); } }
+  .kpi { padding: 12px; border-radius: 12px; background: var(--surface-2); }
+  .kpi .v { font-size: 22px; font-weight: 800; line-height: 1.2; }
+  .kpi .l { font-size: 13px; color: var(--text-3); font-weight: 600; }
+  .sec-title { font-size: 15px; font-weight: 800; color: var(--navy); margin: 22px 0 10px; }
+  .dist { display: grid; gap: 8px; }
+  .dist-row { display: grid; grid-template-columns: 76px 1fr 28px; gap: 10px; align-items: center; font-size: 14px; }
+  .dist-row .lab { font-weight: 600; color: var(--text-2); }
+  .dist-row .track { height: 12px; border-radius: 99px; background: var(--surface-2); overflow: hidden; display: flex; }
+  .dist-row .track i { display: block; height: 100%; }
+  .dist-row .track .g { background: var(--ok); }
+  .dist-row .track .n { background: var(--navy); }
+  .dist-row .track .c { background: var(--red); }
+  .dist-row .num { font-weight: 800; text-align: right; }
+  .timeline { position: relative; display: grid; gap: 14px; padding-left: 28px; }
+  .timeline::before { content: ""; position: absolute; left: 7px; top: 6px; bottom: 6px; width: 2px; background: var(--line); }
+  .tl { position: relative; }
+  .tl::before { content: ""; position: absolute; left: -28px; top: 6px; width: 16px; height: 16px; border-radius: 99px; background: var(--surface); border: 3px solid var(--navy); }
+  .tl.care::before { border-color: var(--red); }
+  .tl.good::before { border-color: var(--ok); }
+  .tl .when { font-size: 13px; font-weight: 700; color: var(--text-3); display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  .tl p { margin-top: 2px; }
+  .tl .fb { font-size: 14px; color: var(--text-2); margin-top: 4px; padding-left: 10px; border-left: 3px solid var(--red); }
+
+  /* ---------- ④ 성찰 ---------- */
+  .reflect { display: grid; gap: 20px; }
+  @media (min-width: 1024px) { .reflect { grid-template-columns: 360px minmax(0, 1fr); align-items: start; } }
+  .summary { padding: 18px; }
+  .summary h3 { font-size: 17px; font-weight: 800; color: var(--navy); margin-bottom: 12px; }
+  .summary .row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+  .summary .row:last-of-type { border-bottom: 0; }
+  .q { padding: 18px; display: grid; gap: 16px; }
+  .q-item label { display: flex; align-items: center; gap: 8px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
+  .q-item .no { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 99px; background: var(--red); color: #fff; font-size: 13px; }
+  .q-item .hintline { font-size: 13px; color: var(--text-3); margin-top: 6px; }
+
+  /* ---------- 알림 ---------- */
+  .toast {
+    position: fixed; z-index: 60; left: 50%; bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 16px);
+    transform: translate(-50%, 16px); opacity: 0; pointer-events: none;
+    display: flex; align-items: center; gap: 14px; padding: 10px 10px 10px 18px; border-radius: 999px;
+    background: var(--text); color: #fff; font-weight: 700; box-shadow: var(--shadow-2); transition: opacity .2s, transform .2s;
+    max-width: calc(100vw - 24px);
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+  .toast button { border: 0; background: rgb(255 255 255 / .14); color: #fff; font-weight: 800; height: 36px; padding: 0 14px; border-radius: 99px; }
+  @media (min-width: 1024px) { .toast { bottom: 24px; left: calc(50% + 48px); } }
+
+  .note {
+    margin-top: 28px; padding: 14px 16px; border-radius: var(--r-card); background: var(--surface); border: 1px dashed var(--line-strong);
+    font-size: 14px; color: var(--text-2);
+  }
+  .note b { color: var(--navy); }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.3-5.5 6.5-5.5s5.7 2 6.5 5.5"/><path d="M15.5 4.8a3.5 3.5 0 0 1 0 6.4M18 14.8c1.8.7 3 2.5 3.5 5.2"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6.5 8-6.5s7 2.5 8 6.5"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3l9.5 17h-19L12 3z"/><path d="M12 10v4M12 17.5v.1"/></symbol>
+  <symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18h10.5a4 4 0 0 0 .4-8A6 6 0 0 0 6.3 9.2 4.5 4.5 0 0 0 7 18z"/><path d="M9.5 13.5l2 2 3.5-3.5"/></symbol>
+</svg>
+
+<div class="app">
+  <header class="topbar">
+    <div class="topbar-in">
+      <button class="class-btn" id="classBtn" aria-haspopup="menu" aria-expanded="false">
+        <span class="dot" aria-hidden="true"></span><span id="className">2-3</span><span class="sub" id="classSubject">한문</span>
+        <svg class="ic sm"><use href="#i-down"/></svg>
+      </button>
+      <span class="proto-tag">시안</span>
+      <span class="date" id="todayLabel"></span>
+      <span class="badge b-good" title="구글 시트와 동기화됨" style="display:inline-flex"><svg class="ic sm"><use href="#i-cloud"/></svg><span class="sr-only">저장됨</span></span>
+      <button class="icon-btn" aria-label="설정" id="settingsBtn"><svg class="ic"><use href="#i-gear"/></svg></button>
+    </div>
+    <div class="class-menu" id="classMenu" role="menu" hidden></div>
+  </header>
+
+  <nav class="nav" aria-label="화면">
+    <div class="brand-rail" aria-hidden="true"><div class="brand-mark"><i></i>관찰</div></div>
+    <button data-view="lesson" aria-current="page"><svg class="ic"><use href="#i-users"/></svg>수업</button>
+    <button data-view="log"><svg class="ic"><use href="#i-list"/></svg>일지</button>
+    <button data-view="students"><svg class="ic"><use href="#i-user"/></svg>학생</button>
+    <button data-view="reflect"><svg class="ic"><use href="#i-pen"/></svg>성찰</button>
+  </nav>
+
+  <main>
+    <!-- ① 수업 -->
+    <section data-panel="lesson">
+      <div class="lesson">
+        <div>
+          <div class="stats-strip">
+            <div class="card stat"><div class="v tnum" id="stToday">0</div><div class="l">오늘 기록</div></div>
+            <div class="card stat"><div class="v tnum" id="stWeek">0</div><div class="l">이번 주 관찰 학생</div></div>
+            <div class="card stat"><div class="v red tnum" id="stGap">0</div><div class="l">2주 이상 미관찰</div></div>
+          </div>
+
+          <div class="grid-tools">
+            <button class="chip" id="gapFilter" aria-pressed="false"><svg class="ic sm"><use href="#i-alert"/></svg>미관찰 학생만</button>
+            <button class="chip" id="selectAll" aria-pressed="false">모둠·전체 선택</button>
+            <span class="spacer"></span>
+            <div class="legend" aria-hidden="true">
+              <span><i class="lg-dot"></i>기록 1건</span>
+              <span><i class="lg-care"></i>지도 필요</span>
+              <span><i class="lg-gap"></i>2주 미관찰</span>
+            </div>
+          </div>
+
+          <div class="roster" id="roster" role="group" aria-label="학생 명단"></div>
+
+          <div class="feed">
+            <h3><svg class="ic sm"><use href="#i-clock"/></svg>이 수업 기록</h3>
+            <div class="feed-list" id="feed"></div>
+          </div>
+        </div>
+
+        <aside class="card composer-wrap" id="composerWrap" aria-label="관찰 기록 입력">
+          <div class="sheet-handle" aria-hidden="true"></div>
+          <div class="composer" id="composer"></div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ② 일지 -->
+    <section data-panel="log" hidden>
+      <div class="view-head">
+        <div><h2>관찰 일지</h2><p>최근 기록부터 날짜별로 봅니다.</p></div>
+      </div>
+      <div class="filters" id="logFilters"></div>
+      <div id="logList"></div>
+    </section>
+
+    <!-- ③ 학생 -->
+    <section data-panel="students" hidden>
+      <div class="view-head">
+        <div><h2>학생별 기록</h2><p>관찰이 적은 학생을 먼저 보거나, 한 학생의 기록을 모아 봅니다.</p></div>
+      </div>
+      <div class="students">
+        <div class="card slist">
+          <div class="slist-tools">
+            <input type="search" id="sSearch" placeholder="이름·번호 검색" aria-label="학생 검색">
+            <select id="sSort" aria-label="정렬">
+              <option value="no">번호순</option>
+              <option value="few">관찰 적은 순</option>
+              <option value="care">지도 필요 많은 순</option>
+            </select>
+          </div>
+          <div class="slist-body" id="sList"></div>
+        </div>
+        <div class="card detail" id="sDetail"></div>
+      </div>
+    </section>
+
+    <!-- ④ 성찰 -->
+    <section data-panel="reflect" hidden>
+      <div class="view-head">
+        <div><h2>수업 성찰</h2><p id="reflSub"></p></div>
+        <button class="btn btn-red" id="reflSave">성찰 저장</button>
+      </div>
+      <div class="reflect">
+        <div class="card summary" id="reflSummary"></div>
+        <div class="card q">
+          <div class="q-item"><label for="q1"><span class="no">1</span>오늘 수업에서 잘된 점</label><textarea id="q1" rows="3"></textarea></div>
+          <div class="q-item"><label for="q2"><span class="no">2</span>학생들이 어려워한 내용</label><textarea id="q2" rows="3"></textarea></div>
+          <div class="q-item"><label for="q3"><span class="no">3</span>다음 수업에서 개선할 점</label><textarea id="q3" rows="3"></textarea></div>
+          <div class="q-item"><label for="q4"><span class="no">4</span>추가 지도가 필요한 학생</label><textarea id="q4" rows="2"></textarea>
+            <p class="hintline">오늘 '지도 필요'로 기록한 학생을 미리 채웠습니다.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <p class="note"><b>시안 안내</b> · 학생 이름은 모두 예시 가명이며, 새로고침하면 처음 상태로 돌아갑니다. 설정 화면(학급·명단 등록, 빠른 문구, 데이터 관리)은 본 제작에서 만듭니다.</p>
+  </main>
+</div>
+
+<div class="sheet-backdrop" id="backdrop" hidden></div>
+<div class="action-bar" id="actionBar" hidden>
+  <span class="cnt" id="abCount"></span><span class="names" id="abNames"></span>
+  <button class="clear" id="abClear">해제</button>
+  <button class="btn btn-red btn-sm" id="abOpen">기록하기</button>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"><span id="toastMsg"></span><button id="toastUndo" hidden>되돌리기</button></div>
+
+<script>
+(function () {
+  "use strict";
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const icon = (n, cls = "sm") => `<svg class="ic ${cls}" aria-hidden="true"><use href="#i-${n}"/></svg>`;
+
+  // ---------- 예시 데이터 (모두 가명) ----------
+  const AREAS = ["수업 태도", "개념 이해", "실습 수행", "문제 해결", "의사소통", "협업", "진로탐색", "과제수행", "기타"];
+  const TONES = { good: "긍정", normal: "보통", care: "지도 필요" };
+  const PHRASES = {
+    "수업 태도": ["수업 시작 전 교과서와 학습지를 미리 준비함", "설명을 들으며 핵심을 스스로 정리함", "활동 중 집중이 자주 흐트러짐"],
+    "개념 이해": ["한자의 부수와 뜻을 연결해 설명함", "훈과 음을 혼동함(예: 확인 필요 한자 기록)", "새 어휘를 예문 속에서 바르게 풀이함"],
+    "실습 수행": ["필순에 맞게 바르게 씀", "획의 방향을 반대로 쓰는 경우가 있음", "제시된 시간 안에 쓰기 활동을 마침"],
+    "문제 해결": ["모르는 한자를 부수로 추측해 뜻을 찾아냄", "막히는 문제를 짝에게 질문하며 해결함", "풀이 과정 없이 답만 적음"],
+    "의사소통": ["자신의 풀이를 근거를 들어 발표함", "발표할 때 목소리가 작아 다시 말하도록 도움", "친구 발표에 질문을 덧붙임"],
+    "협업": ["모둠에서 역할을 나누고 진행을 이끎", "모둠원의 의견을 끝까지 듣고 정리함", "모둠 활동에 참여가 적음"],
+    "진로탐색": ["한자 어휘와 관심 직업을 연결해 조사함", "고전 구절에서 자신의 다짐을 찾아 씀"],
+    "과제수행": ["과제를 기한 안에 성실하게 제출함", "과제가 미완성이어서 보충 기회를 줌"],
+    "기타": ["수업 후 따로 질문하러 옴", "건강상 이유로 활동을 쉬었음"],
+  };
+  const SURN = ["김", "이", "박", "최", "정", "강", "조", "윤", "장", "임", "한", "오", "서", "신", "권"];
+  const GIVEN = ["서윤", "도현", "하은", "시우", "지안", "예준", "수아", "주원", "하린", "은우", "채원", "지호", "다은", "건우", "유나", "현서", "민재", "서연", "태윤", "가온", "나래", "로운", "다온", "이안", "소율", "윤재", "아린", "준서"];
+
+  let seed = 20261004;
+  const rnd = () => ((seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648);
+  const pick = (a) => a[Math.floor(rnd() * a.length)];
+
+  const CLASSES = [
+    { id: "c23", name: "2-3", subject: "한문", size: 24 },
+    { id: "c24", name: "2-4", subject: "한문", size: 25 },
+    { id: "c31", name: "3-1", subject: "한문", size: 22 },
+  ];
+  const students = [];
+  CLASSES.forEach((c, ci) => {
+    for (let i = 1; i <= c.size; i++) {
+      students.push({ id: `${c.id}-${i}`, classId: c.id, no: i, name: SURN[(i * 7 + ci * 3) % SURN.length] + GIVEN[(i * 5 + ci * 11) % GIVEN.length] });
+    }
+  });
+
+  const pad = (n) => String(n).padStart(2, "0");
+  const ymd = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const TODAY = ymd(today);
+  const daysAgo = (s) => Math.round((today - new Date(s + "T00:00:00")) / 86400000);
+  const WEEK = ["일", "월", "화", "수", "목", "금", "토"];
+  const fmt = (s) => { const d = new Date(s + "T00:00:00"); return `${d.getMonth() + 1}월 ${d.getDate()}일 (${WEEK[d.getDay()]})`; };
+
+  let obs = [];
+  let idSeq = 1;
+  students.forEach((s) => {
+    const n = rnd() < 0.15 ? Math.floor(rnd() * 2) : 2 + Math.floor(rnd() * 5);
+    for (let k = 0; k < n; k++) {
+      const d = new Date(today); d.setDate(d.getDate() - (1 + Math.floor(rnd() * rnd() * 34)));
+      const area = pick(AREAS.slice(0, 6));
+      const r = rnd(); const tone = r < 0.45 ? "good" : r < 0.82 ? "normal" : "care";
+      obs.push({ id: idSeq++, sid: s.id, classId: s.classId, date: ymd(d), time: `${pad(9 + Math.floor(rnd() * 6))}:${pad(Math.floor(rnd() * 60))}`, area, tone, content: pick(PHRASES[area]), feedback: tone === "care" ? "다음 시간에 먼저 확인하고 짧게 다시 설명함" : "" });
+    }
+  });
+
+  // ---------- 상태 ----------
+  let classId = "c23";
+  let view = "lesson";
+  let selected = new Set();
+  let gapOnly = false;
+  let draft = { area: "", tone: "normal", content: "", feedback: "", showFb: false };
+  let currentSid = null;
+  let logFilter = "all";
+
+  const stuOf = (id) => students.find((s) => s.id === id);
+  const classOf = (id) => CLASSES.find((c) => c.id === id);
+  const inClass = () => students.filter((s) => s.classId === classId);
+  const obsOf = (sid) => obs.filter((o) => o.sid === sid);
+  const lastDate = (sid) => obsOf(sid).map((o) => o.date).sort().pop();
+  const gapDays = (sid) => { const l = lastDate(sid); return l ? daysAgo(l) : 99; };
+  const isDesktop = () => matchMedia("(min-width: 1024px)").matches;
+
+  // ---------- 상단 ----------
+  $("todayLabel").textContent = fmt(TODAY);
+  function renderClassBtn() {
+    const c = classOf(classId);
+    $("className").textContent = c.name; $("classSubject").textContent = c.subject;
+    $("classMenu").innerHTML = CLASSES.map((x) => `<button role="menuitemradio" aria-checked="${x.id === classId}" data-cid="${x.id}"><span>${esc(x.name)} ${esc(x.subject)}</span><small>${x.size}명</small></button>`).join("");
+  }
+  $("classBtn").addEventListener("click", (e) => {
+    e.stopPropagation();
+    const m = $("classMenu"); m.hidden = !m.hidden; $("classBtn").setAttribute("aria-expanded", String(!m.hidden));
+  });
+  $("classMenu").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-cid]"); if (!b) return;
+    classId = b.dataset.cid; selected.clear(); currentSid = null;
+    $("classMenu").hidden = true; $("classBtn").setAttribute("aria-expanded", "false");
+    renderAll();
+  });
+  document.addEventListener("click", (e) => { if (!e.target.closest("#classMenu, #classBtn")) { $("classMenu").hidden = true; $("classBtn").setAttribute("aria-expanded", "false"); } });
+  $("settingsBtn").addEventListener("click", () => toast("설정 화면은 본 제작에서 만듭니다."));
+
+  // ---------- 화면 전환 ----------
+  document.querySelectorAll(".nav button").forEach((b) => b.addEventListener("click", () => go(b.dataset.view)));
+  function go(v) {
+    view = v;
+    document.querySelectorAll(".nav button").forEach((b) => { if (b.dataset.view === v) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); });
+    document.querySelectorAll("[data-panel]").forEach((p) => (p.hidden = p.dataset.panel !== v));
+    closeSheet();
+    renderAll();
+    window.scrollTo({ top: 0 });
+  }
+
+  // ---------- ① 수업 ----------
+  function renderStats() {
+    const ids = new Set(inClass().map((s) => s.id));
+    const mine = obs.filter((o) => ids.has(o.sid));
+    $("stToday").textContent = mine.filter((o) => o.date === TODAY).length;
+    $("stWeek").textContent = new Set(mine.filter((o) => daysAgo(o.date) < 7).map((o) => o.sid)).size + "/" + ids.size;
+    $("stGap").textContent = inClass().filter((s) => gapDays(s.id) >= 14).length;
+  }
+
+  function renderRoster() {
+    const list = inClass().filter((s) => !gapOnly || gapDays(s.id) >= 14);
+    $("roster").innerHTML = list.length ? list.map((s) => {
+      const os = obsOf(s.id);
+      const recent = os.filter((o) => daysAgo(o.date) < 30);
+      const care = recent.filter((o) => o.tone === "care").length;
+      const g = gapDays(s.id);
+      const pips = Math.min(recent.length, 5);
+      const pipHtml = Array.from({ length: pips }, (_, i) => `<i class="pip${i < care ? " care" : ""}"></i>`).join("") + (recent.length > 5 ? `<span class="more">+${recent.length - 5}</span>` : "");
+      const todayDone = os.some((o) => o.date === TODAY);
+      const label = `${s.no}번 ${s.name}, 최근 30일 기록 ${recent.length}건${care ? `, 지도 필요 ${care}건` : ""}${g >= 14 ? `, ${g >= 99 ? "기록 없음" : g + "일째 미관찰"}` : ""}${todayDone ? ", 오늘 기록함" : ""}`;
+      return `<button class="stu${g >= 14 ? " gap" : ""}${todayDone ? " today" : ""}" data-sid="${s.id}" aria-pressed="${selected.has(s.id)}" aria-label="${esc(label)}">
+        <span class="no">${s.no}</span><span class="nm">${esc(s.name)}</span>
+        <span class="meta">${g >= 14 ? `<span class="gapdays">${g >= 99 ? "기록 없음" : g + "일째"}</span>` : pipHtml}</span>
+        <span class="check">${icon("check")}</span></button>`;
+    }).join("") : `<p class="muted">2주 이상 관찰하지 않은 학생이 없습니다.</p>`;
+  }
+  $("roster").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-sid]"); if (!b) return;
+    const id = b.dataset.sid;
+    selected.has(id) ? selected.delete(id) : selected.add(id);
+    b.setAttribute("aria-pressed", String(selected.has(id)));
+    renderComposer(); renderActionBar();
+  });
+  $("gapFilter").addEventListener("click", () => { gapOnly = !gapOnly; $("gapFilter").setAttribute("aria-pressed", String(gapOnly)); renderRoster(); });
+  $("selectAll").addEventListener("click", () => {
+    const ids = inClass().map((s) => s.id);
+    const all = ids.every((id) => selected.has(id));
+    ids.forEach((id) => (all ? selected.delete(id) : selected.add(id)));
+    renderRoster(); renderComposer(); renderActionBar();
+  });
+
+  function renderActionBar() {
+    const bar = $("actionBar");
+    if (isDesktop() || view !== "lesson" || !selected.size || $("composerWrap").classList.contains("open")) { bar.hidden = true; return; }
+    bar.hidden = false;
+    $("abCount").textContent = `${selected.size}명`;
+    $("abNames").textContent = [...selected].map((id) => stuOf(id).name).join(", ");
+  }
+  $("abClear").addEventListener("click", () => { selected.clear(); renderRoster(); renderComposer(); renderActionBar(); });
+  $("abOpen").addEventListener("click", openSheet);
+  function openSheet() { $("composerWrap").classList.add("open"); $("backdrop").hidden = false; renderActionBar(); setTimeout(() => { const f = $("composer").querySelector(".areas .chip"); f && f.focus(); }, 50); }
+  function closeSheet() { $("composerWrap").classList.remove("open"); $("backdrop").hidden = true; renderActionBar(); }
+  $("backdrop").addEventListener("click", closeSheet);
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeSheet(); });
+
+  function renderComposer() {
+    const c = $("composer");
+    if (!selected.size) {
+      c.innerHTML = `<div class="composer-empty"><div class="big">${icon("users", "")}</div><strong>학생 카드를 누르세요</strong>여러 명을 함께 골라 같은 내용을 한 번에 기록할 수 있습니다.</div>`;
+      return;
+    }
+    const phrases = draft.area ? PHRASES[draft.area] : [];
+    c.innerHTML = `
+      <div class="composer-head"><h3>${selected.size}명 기록</h3>
+        <button class="icon-btn" data-c="close" aria-label="입력 닫기" style="${isDesktop() ? "display:none" : ""}">${icon("x", "")}</button></div>
+      <div class="picked">${[...selected].map((id) => { const s = stuOf(id); return `<button class="p" data-c="unpick" data-sid="${id}" aria-label="${esc(s.name)} 선택 해제">${s.no} ${esc(s.name)}<span class="x">${icon("x")}</span></button>`; }).join("")}</div>
+      <div><span class="label" id="lblArea">관찰 영역</span>
+        <div class="areas" role="group" aria-labelledby="lblArea">${AREAS.map((a) => `<button class="chip" data-c="area" data-v="${a}" aria-pressed="${draft.area === a}">${a}</button>`).join("")}</div></div>
+      <div><span class="label" id="lblTone">구분</span>
+        <div class="seg" role="group" aria-labelledby="lblTone">
+          <button data-c="tone" data-tone="good" aria-pressed="${draft.tone === "good"}">${icon("plus")}긍정</button>
+          <button data-c="tone" data-tone="normal" aria-pressed="${draft.tone === "normal"}">${icon("dot")}보통</button>
+          <button data-c="tone" data-tone="care" aria-pressed="${draft.tone === "care"}">${icon("alert")}지도 필요</button>
+        </div></div>
+      ${phrases.length ? `<div><span class="label">빠른 문구 <span class="muted" style="font-weight:500">누르면 메모에 들어갑니다</span></span>
+        <div class="phrases">${phrases.map((p) => `<button class="phrase" data-c="phrase" data-v="${esc(p)}">${icon("plus")}${esc(p)}</button>`).join("")}</div></div>` : ""}
+      <div><label class="label" for="cContent">관찰 내용</label>
+        <textarea id="cContent" rows="3" placeholder="학생의 말과 행동을 있는 그대로 적습니다.">${esc(draft.content)}</textarea></div>
+      ${draft.showFb ? `<div><label class="label" for="cFb">피드백·후속 지도</label><textarea id="cFb" rows="2">${esc(draft.feedback)}</textarea></div>`
+        : `<button class="more-toggle" data-c="fb">${icon("plus")}피드백·후속 지도 추가</button>`}
+      <div class="save-row">
+        <button class="btn btn-red" data-c="save" ${draft.area && draft.content.trim() ? "" : "disabled"}>${selected.size > 1 ? `${selected.size}명 ` : ""}기록 저장</button>
+        <button class="btn btn-line" data-c="reset">비우기</button>
+      </div>`;
+  }
+  $("composer").addEventListener("input", (e) => {
+    if (e.target.id === "cContent") { draft.content = e.target.value; syncSave(); }
+    if (e.target.id === "cFb") draft.feedback = e.target.value;
+  });
+  function syncSave() { const b = $("composer").querySelector('[data-c="save"]'); if (b) b.disabled = !(draft.area && draft.content.trim()); }
+  $("composer").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-c]"); if (!b) return;
+    const c = b.dataset.c;
+    if (c === "close") closeSheet();
+    if (c === "unpick") { selected.delete(b.dataset.sid); renderRoster(); renderComposer(); if (!selected.size) closeSheet(); renderActionBar(); }
+    if (c === "area") { draft.area = draft.area === b.dataset.v ? "" : b.dataset.v; renderComposer(); focusSel(`[data-c="area"][data-v="${b.dataset.v}"]`); }
+    if (c === "tone") { draft.tone = b.dataset.tone; if (draft.tone === "care") draft.showFb = true; renderComposer(); focusSel(`[data-tone="${draft.tone}"]`); }
+    if (c === "phrase") { draft.content = draft.content.trim() ? draft.content.trim() + " " + b.dataset.v : b.dataset.v; renderComposer(); const t = $("cContent"); t.focus(); t.setSelectionRange(t.value.length, t.value.length); }
+    if (c === "fb") { draft.showFb = true; renderComposer(); $("cFb").focus(); }
+    if (c === "reset") { draft = { area: "", tone: "normal", content: "", feedback: "", showFb: false }; renderComposer(); }
+    if (c === "save") save();
+  });
+  function focusSel(sel) { const el = $("composer").querySelector(sel); el && el.focus(); }
+
+  let lastSaved = [];
+  function save() {
+    const now = new Date();
+    const time = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+    lastSaved = [...selected].map((sid) => ({ id: idSeq++, sid, classId, date: TODAY, time, area: draft.area, tone: draft.tone, content: draft.content.trim(), feedback: draft.feedback.trim() }));
+    obs.push(...lastSaved);
+    const names = lastSaved.map((o) => stuOf(o.sid).name);
+    selected.clear();
+    draft = { area: draft.area, tone: "normal", content: "", feedback: "", showFb: false };
+    closeSheet();
+    renderAll();
+    toast(`${names.length > 2 ? names.slice(0, 2).join(", ") + ` 외 ${names.length - 2}명` : names.join(", ")} 기록 저장`, true);
+  }
+
+  function renderFeed() {
+    const ids = new Set(inClass().map((s) => s.id));
+    const list = obs.filter((o) => ids.has(o.sid) && o.date === TODAY).sort((a, b) => b.id - a.id);
+    $("feed").innerHTML = list.length ? list.map((o) => `
+      <div class="card feed-item"><time>${o.time}</time>
+        <div class="tags"><span class="who">${esc(stuOf(o.sid).name)}</span><span class="badge b-area">${esc(o.area)}</span>${toneBadge(o.tone)}</div>
+        <p class="txt">${esc(o.content)}</p></div>`).join("")
+      : `<p class="muted">오늘 이 학급 기록이 아직 없습니다. 학생 카드를 눌러 시작하세요.</p>`;
+  }
+  const toneBadge = (t) => t === "normal" ? "" : `<span class="badge ${t === "good" ? "b-good" : "b-care"}">${icon(t === "good" ? "plus" : "alert")}${TONES[t]}</span>`;
+
+  // ---------- 알림 + 되돌리기 ----------
+  let tTimer;
+  function toast(msg, undo) {
+    $("toastMsg").textContent = msg; $("toastUndo").hidden = !undo;
+    $("toast").classList.add("show"); clearTimeout(tTimer);
+    tTimer = setTimeout(() => $("toast").classList.remove("show"), undo ? 5000 : 2500);
+  }
+  $("toastUndo").addEventListener("click", () => {
+    const ids = new Set(lastSaved.map((o) => o.id));
+    obs = obs.filter((o) => !ids.has(o.id));
+    lastSaved.forEach((o) => selected.add(o.sid));
+    lastSaved = [];
+    $("toast").classList.remove("show");
+    renderAll();
+    toast("저장을 취소했습니다. 선택은 그대로 둡니다.");
+  });
+
+  // ---------- ② 일지 ----------
+  function renderLog() {
+    const ids = new Set(inClass().map((s) => s.id));
+    const mine = obs.filter((o) => ids.has(o.sid));
+    const counts = { all: mine.length, care: mine.filter((o) => o.tone === "care").length, good: mine.filter((o) => o.tone === "good").length };
+    $("logFilters").innerHTML = [["all", "전체"], ["good", "긍정"], ["care", "지도 필요"]].map(([k, l]) => `<button class="chip" data-f="${k}" aria-pressed="${logFilter === k}">${l}<span class="n">${counts[k]}</span></button>`).join("");
+    const list = mine.filter((o) => logFilter === "all" || o.tone === logFilter).sort((a, b) => b.date.localeCompare(a.date) || b.time.localeCompare(a.time));
+    const groups = new Map();
+    list.forEach((o) => { if (!groups.has(o.date)) groups.set(o.date, []); groups.get(o.date).push(o); });
+    let html = "";
+    [...groups].slice(0, 8).forEach(([d, items]) => {
+      html += `<div class="day"><div class="day-h"><h3>${fmt(d)}</h3><span class="muted">${items.length}건</span></div>` +
+        items.map((o) => `<article class="card entry">
+          <div class="entry-top"><span class="who">${esc(stuOf(o.sid).name)}</span><span class="badge b-area">${esc(o.area)}</span>${toneBadge(o.tone)}
+            <span class="acts"><button class="btn btn-line btn-sm">수정</button><button class="btn btn-line btn-sm" style="color:var(--red)">삭제</button></span></div>
+          <p>${esc(o.content)}</p>${o.feedback ? `<p class="fb">${esc(o.feedback)}</p>` : ""}</article>`).join("") + `</div>`;
+    });
+    $("logList").innerHTML = html || `<p class="muted">기록이 없습니다.</p>`;
+  }
+  $("logFilters").addEventListener("click", (e) => { const b = e.target.closest("[data-f]"); if (!b) return; logFilter = b.dataset.f; renderLog(); });
+
+  // ---------- ③ 학생 ----------
+  function renderStudents() {
+    const q = $("sSearch").value.trim();
+    const sort = $("sSort").value;
+    let list = inClass().filter((s) => !q || s.name.includes(q) || String(s.no) === q);
+    const cnt = (s) => obsOf(s.id).length;
+    const care = (s) => obsOf(s.id).filter((o) => o.tone === "care").length;
+    if (sort === "few") list.sort((a, b) => cnt(a) - cnt(b) || a.no - b.no);
+    if (sort === "care") list.sort((a, b) => care(b) - care(a) || a.no - b.no);
+    const max = Math.max(1, ...inClass().map(cnt));
+    if (!currentSid || stuOf(currentSid).classId !== classId) currentSid = list[0] && list[0].id;
+    $("sList").innerHTML = list.map((s) => {
+      const g = gapDays(s.id);
+      return `<button class="srow" data-sid="${s.id}" aria-current="${s.id === currentSid}">
+        <span class="no">${s.no}</span>
+        <span><span class="nm">${esc(s.name)}</span><br><span class="sub${g >= 14 ? " red" : ""}">${g >= 99 ? "기록 없음" : g === 0 ? "오늘 기록" : g + "일 전 기록"}${care(s) ? ` · 지도 ${care(s)}` : ""}</span></span>
+        <span><span class="cnt tnum">${cnt(s)}건</span><span class="bar"><i style="width:${(cnt(s) / max) * 100}%"></i></span></span></button>`;
+    }).join("") || `<p class="muted" style="padding:16px">검색 결과가 없습니다.</p>`;
+    renderDetail();
+  }
+  $("sSearch").addEventListener("input", renderStudents);
+  $("sSort").addEventListener("change", renderStudents);
+  $("sList").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-sid]"); if (!b) return;
+    currentSid = b.dataset.sid; renderStudents();
+    if (!isDesktop()) $("sDetail").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  function renderDetail() {
+    const box = $("sDetail");
+    if (!currentSid) { box.innerHTML = `<p class="muted">학생을 고르세요.</p>`; return; }
+    const s = stuOf(currentSid);
+    const list = obsOf(s.id).sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
+    const by = (t) => list.filter((o) => o.tone === t).length;
+    const g = gapDays(s.id);
+    const dist = AREAS.map((a) => { const os = list.filter((o) => o.area === a); return { a, g: os.filter((o) => o.tone === "good").length, n: os.filter((o) => o.tone === "normal").length, c: os.filter((o) => o.tone === "care").length, t: os.length }; }).filter((d) => d.t);
+    const maxT = Math.max(1, ...dist.map((d) => d.t));
+    box.innerHTML = `
+      <div class="detail-head">
+        <div><p class="sub">${esc(classOf(s.classId).name)} ${s.no}번</p><h3>${esc(s.name)}</h3></div>
+        <button class="btn btn-navy btn-sm" id="dlBtn">${icon("download")}텍스트로 내려받기</button>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><div class="v tnum">${list.length}</div><div class="l">전체 기록</div></div>
+        <div class="kpi"><div class="v tnum" style="color:var(--ok)">${by("good")}</div><div class="l">긍정</div></div>
+        <div class="kpi"><div class="v tnum" style="color:var(--red)">${by("care")}</div><div class="l">지도 필요</div></div>
+        <div class="kpi"><div class="v tnum">${g >= 99 ? "-" : g + "일"}</div><div class="l">마지막 기록 후</div></div>
+      </div>
+      ${dist.length ? `<h4 class="sec-title">영역별 기록</h4>
+      <div class="dist">${dist.map((d) => `<div class="dist-row"><span class="lab">${d.a}</span>
+        <span class="track" style="width:${(d.t / maxT) * 100}%" role="img" aria-label="${d.a}: 긍정 ${d.g}, 보통 ${d.n}, 지도 필요 ${d.c}">
+          <i class="g" style="flex:${d.g}"></i><i class="n" style="flex:${d.n}"></i><i class="c" style="flex:${d.c}"></i></span>
+        <span class="num tnum">${d.t}</span></div>`).join("")}</div>
+      <div class="legend" style="margin-top:10px"><span><i class="lg-dot" style="background:var(--ok)"></i>긍정</span><span><i class="lg-dot"></i>보통</span><span><i class="lg-care"></i>지도 필요</span></div>
+      <h4 class="sec-title">시간순 기록</h4>
+      <div class="timeline">${list.map((o) => `<div class="tl ${o.tone}"><div class="when">${fmt(o.date)} <span class="badge b-area">${esc(o.area)}</span>${toneBadge(o.tone)}</div>
+        <p>${esc(o.content)}</p>${o.feedback ? `<p class="fb">${esc(o.feedback)}</p>` : ""}</div>`).join("")}</div>`
+      : `<div class="composer-empty"><strong>아직 기록이 없습니다</strong>수업 화면에서 이 학생 카드를 눌러 첫 기록을 남겨 보세요.</div>`}`;
+    const dl = $("dlBtn"); dl && dl.addEventListener("click", () => toast("본 제작에서는 텍스트 파일로 내려받습니다."));
+  }
+
+  // ---------- ④ 성찰 ----------
+  function renderReflect() {
+    const c = classOf(classId);
+    const ids = new Set(inClass().map((s) => s.id));
+    const todays = obs.filter((o) => ids.has(o.sid) && o.date === TODAY);
+    const careNames = [...new Set(todays.filter((o) => o.tone === "care").map((o) => stuOf(o.sid).name))];
+    $("reflSub").textContent = `${fmt(TODAY)} · ${c.name} ${c.subject}`;
+    const areaCount = {}; todays.forEach((o) => (areaCount[o.area] = (areaCount[o.area] || 0) + 1));
+    $("reflSummary").innerHTML = `<h3>오늘 이 수업 관찰 요약</h3>
+      <div class="row"><span>기록</span><b class="tnum">${todays.length}건</b></div>
+      <div class="row"><span>관찰한 학생</span><b class="tnum">${new Set(todays.map((o) => o.sid)).size}명 / ${ids.size}명</b></div>
+      <div class="row"><span>긍정</span><b class="tnum" style="color:var(--ok)">${todays.filter((o) => o.tone === "good").length}건</b></div>
+      <div class="row"><span>지도 필요</span><b class="tnum" style="color:var(--red)">${careNames.length}명</b></div>
+      ${Object.keys(areaCount).length ? `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px">${Object.entries(areaCount).map(([a, n]) => `<span class="badge b-area">${esc(a)} ${n}</span>`).join("")}</div>` : `<p class="muted" style="margin-top:12px">오늘 기록이 없으면 요약이 비어 있습니다.</p>`}`;
+    if (!$("q4").dataset.touched) $("q4").value = careNames.join(", ");
+  }
+  $("q4").addEventListener("input", () => ($("q4").dataset.touched = "1"));
+  $("reflSave").addEventListener("click", () => toast("성찰을 저장했습니다. (시안)"));
+
+  // ---------- 전체 ----------
+  function renderAll() {
+    renderClassBtn();
+    if (view === "lesson") { renderStats(); renderRoster(); renderComposer(); renderFeed(); renderActionBar(); }
+    if (view === "log") renderLog();
+    if (view === "students") renderStudents();
+    if (view === "reflect") renderReflect();
+  }
+  matchMedia("(min-width: 1024px)").addEventListener("change", () => { closeSheet(); renderComposer(); });
+  renderAll();
+})();
+</script>
+</body>
+</html>
