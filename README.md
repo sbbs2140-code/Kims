@@ -33,7 +33,9 @@ npm run dev
 - 랜딩 페이지에서는 `/observation/index.html` 주소로 열림.
 - 파일만 따로 내려받아 브라우저로 열어도 그대로 동작함.
 - 기록은 그 브라우저의 저장소(localStorage)에만 남으므로, 기기를 바꿀 때는 데이터 화면에서 JSON으로 내려받아 옮겨야 함.
-- 여러 기기에서 같은 기록을 쓰려면 구글 시트에 저장하는 Apps Script 판(`gas/observation/`)을 사용함. 설치 방법은 `gas/observation/README.md` 참고.
+- 여러 기기에서 같은 기록을 쓰려면 구글 시트에 저장하는 Apps Script 판을 사용함.
+  - **v2(권장)**: `gas/observation-v2/`: 학급 명단 기반 기록, 수행평가 채점, 대시보드. 설치는 `gas/observation-v2/README.md`
+  - v1: `gas/observation/`: 기존 기능을 그대로 옮긴 판
 
 ## 사용 기술
 

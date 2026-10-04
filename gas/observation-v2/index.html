@@ -1,0 +1,2375 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<base target="_top">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F6F2FA">
+<title>수업 관찰 기록</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+
+  :root {
+    --bg: #F6F2FA;
+    --surface: #FFFFFF;
+    --surface-2: #F7F3FB;
+    --line: #EEE9F2;
+    --line-strong: #DCD3E8;
+    --text: #2A2340;
+    --text-2: #5E5675;
+    --text-3: #6F6886;
+    --navy: #5A3EC0;
+    --navy-2: #4A30A8;
+    --navy-tint: #F1EBFD;
+    --red: #C2416B;
+    --red-2: #A8325A;
+    --red-tint: #FDEAF1;
+    --ok: #1F7A57;
+    --ok-tint: #E7F5EE;
+    --r-card: 22px;
+    --r-input: 14px;
+    --shadow-1: 0 10px 30px rgb(92 70 140 / .08), 0 2px 6px rgb(92 70 140 / .05);
+    --shadow-2: 0 20px 50px rgb(60 40 110 / .22);
+    --nav-h: 72px;
+    --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text); font-family: var(--font);
+    font-size: 16px; line-height: 1.6; word-break: keep-all; overflow-wrap: anywhere;
+    -webkit-font-smoothing: antialiased;
+  }
+  button, input, textarea, select { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  h1, h2, h3, h4, p { margin: 0; }
+  h1, h2, h3 { line-height: 1.3; letter-spacing: -0.015em; }
+  [hidden] { display: none !important; }
+  :focus-visible { outline: 3px solid var(--red); outline-offset: 2px; border-radius: 8px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .ic { width: 22px; height: 22px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .ic.sm { width: 18px; height: 18px; }
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  /* ---------- 뼈대 ---------- */
+  .app { min-height: 100dvh; padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom)); }
+  .topbar {
+    position: sticky; top: 0; z-index: 30; background: rgb(255 255 255 / .92);
+    backdrop-filter: saturate(1.4) blur(10px); -webkit-backdrop-filter: saturate(1.4) blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar-in { display: flex; align-items: center; gap: 12px; height: 64px; padding: 0 16px; max-width: 1400px; margin: 0 auto; }
+  .class-btn {
+    display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 14px 0 12px;
+    border-radius: 999px; border: 1px solid var(--line); background: var(--surface);
+    font-weight: 700; font-size: 17px; color: var(--navy); white-space: nowrap;
+  }
+  .class-btn .dot { width: 10px; height: 10px; border-radius: 99px; background: var(--red); }
+  .class-btn .sub { font-weight: 600; color: var(--text-3); font-size: 15px; }
+  .topbar .date { margin-left: auto; color: var(--text-2); font-weight: 600; font-size: 15px; white-space: nowrap; }
+  .proto-tag { font-size: 12px; font-weight: 700; color: var(--red); background: var(--red-tint); padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+  .icon-btn {
+    display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 99px;
+    border: 0; background: transparent; color: var(--text-2);
+  }
+  .icon-btn:hover { background: var(--surface-2); color: var(--navy); }
+
+  .class-menu {
+    position: absolute; top: 58px; left: 16px; z-index: 40; width: min(320px, calc(100vw - 32px));
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-card); box-shadow: var(--shadow-2); padding: 8px;
+  }
+  .class-menu button {
+    width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    min-height: 52px; padding: 0 14px; border: 0; border-radius: 12px; background: none; text-align: left; font-weight: 600;
+  }
+  .class-menu button:hover { background: var(--surface-2); }
+  .class-menu button[aria-checked="true"] { background: var(--navy-tint); color: var(--navy); }
+  .class-menu small { color: var(--text-3); font-weight: 500; }
+
+  /* 아래 메뉴(휴대폰) / 왼쪽 사이드바(PC) */
+  .nav {
+    position: fixed; z-index: 35; left: 0; right: 0; bottom: 0;
+    height: calc(var(--nav-h) + env(safe-area-inset-bottom)); padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
+    background: linear-gradient(180deg, #C4B1F1, #B096EA); border-radius: 22px 22px 0 0; box-shadow: 0 -8px 24px rgb(92 70 140 / .12);
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: 2px;
+  }
+  .nav button {
+    border: 0; background: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+    font-size: 12px; font-weight: 700; color: #3E2F6B; border-radius: 14px; transition: background-color .15s;
+  }
+  .nav button:hover { background: rgb(255 255 255 / .35); }
+  .nav button[aria-current="page"] { background: #fff; color: var(--navy); box-shadow: 0 6px 14px rgb(80 50 150 / .18); }
+  .nav .ic { width: 22px; height: 22px; }
+  .brand-rail, .side-art { display: none; }
+
+  main { max-width: 1400px; margin: 0 auto; padding: 16px; }
+  .view-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin: 4px 0 16px; flex-wrap: wrap; }
+  .view-head h2 { font-size: 26px; font-weight: 800; color: var(--text); letter-spacing: -0.02em; }
+  .view-head p { color: var(--text-2); font-size: 15px; margin-top: 2px; }
+
+  @media (min-width: 1024px) {
+    .app { padding-bottom: 0; padding-left: 248px; }
+    .nav {
+      top: 16px; bottom: 16px; left: 16px; right: auto; width: 216px; height: auto; padding: 24px 16px; border-radius: 28px;
+      display: flex; flex-direction: column; gap: 6px; background: linear-gradient(180deg, #C9B8F2 0%, #B49CEC 55%, #A88EE8 100%);
+      box-shadow: 0 20px 50px rgb(92 70 140 / .18);
+    }
+    .nav button { flex: 0 0 auto; flex-direction: row; justify-content: flex-start; gap: 12px; min-height: 48px; padding: 0 16px; font-size: 15px; border-radius: 16px; }
+    .nav button[aria-current="page"] { font-weight: 800; }
+    .brand-rail { display: grid; place-items: center; margin-bottom: 18px; }
+    .side-art { display: grid; place-items: center; margin-top: auto; }
+    main { padding: 20px 32px 32px; }
+  }
+  .logo { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 22px;
+    background: radial-gradient(circle at 35% 30%, #FFD3C2, #F7A98F 70%); box-shadow: inset 0 -4px 8px rgb(200 100 80 / .25), 0 8px 18px rgb(120 80 160 / .25); }
+
+  /* ---------- 공통 요소 ---------- */
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-card); }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; padding: 0 22px;
+    border-radius: 999px; border: 1px solid transparent; font-weight: 700; font-size: 16px; white-space: nowrap;
+    transition: background-color .15s, transform .1s, border-color .15s;
+  }
+  .btn:active { transform: scale(.98); }
+  .btn-red { background: var(--red); color: #fff; }
+  .btn-red:hover { background: var(--red-2); }
+  .btn-red:disabled { background: #E4A3AE; cursor: not-allowed; }
+  .btn-navy { background: var(--navy); color: #fff; }
+  .btn-navy:hover { background: var(--navy-2); }
+  .btn-line { background: var(--surface); border-color: var(--line-strong); color: var(--navy); }
+  .btn-line:hover { border-color: var(--navy); }
+  .btn-sm { min-height: 40px; padding: 0 14px; font-size: 14px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border-radius: 999px;
+    border: 1px solid var(--line-strong); background: var(--surface); font-size: 15px; font-weight: 600; color: var(--text-2);
+    transition: background-color .12s, border-color .12s, color .12s;
+  }
+  .chip:hover { border-color: var(--navy); color: var(--navy); }
+  .chip[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .chip .n { font-size: 13px; opacity: .75; }
+  .seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 4px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 14px; }
+  .seg button { min-height: 46px; border: 0; border-radius: 10px; background: none; font-weight: 700; color: var(--text-2); display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+  .seg button[aria-pressed="true"][data-tone="good"] { background: var(--ok); color: #fff; }
+  .seg button[aria-pressed="true"][data-tone="normal"] { background: var(--navy); color: #fff; }
+  .seg button[aria-pressed="true"][data-tone="care"] { background: var(--red); color: #fff; }
+  textarea, input[type="text"], input[type="search"] {
+    width: 100%; min-height: 52px; padding: 12px 14px; border: 1.5px solid var(--line-strong); border-radius: var(--r-input);
+    background: var(--surface); font-size: 16px; line-height: 1.6;
+  }
+  textarea { resize: vertical; min-height: 96px; }
+  textarea:focus, input:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-tint); }
+  .label { display: block; font-size: 14px; font-weight: 700; color: var(--text-2); margin-bottom: 8px; }
+  .badge { display: inline-flex; align-items: center; gap: 4px; height: 26px; padding: 0 9px; border-radius: 99px; font-size: 13px; font-weight: 700; white-space: nowrap; }
+  .b-area { background: var(--navy-tint); color: var(--navy); }
+  .b-good { background: var(--ok-tint); color: var(--ok); }
+  .b-care { background: var(--red-tint); color: var(--red); }
+  .b-normal { background: var(--surface-2); color: var(--text-2); border: 1px solid var(--line); }
+  .muted { color: var(--text-3); }
+
+  /* ---------- ① 수업 ---------- */
+  .lesson { display: grid; gap: 20px; }
+  @media (min-width: 1024px) { .lesson { grid-template-columns: minmax(0, 1fr) 400px; align-items: start; } }
+
+  .stats-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+  .stat { padding: 12px 14px; }
+  .stat .v { font-size: 24px; font-weight: 800; color: var(--navy); line-height: 1.2; }
+  .stat .v.red { color: var(--red); }
+  .stat .l { font-size: 13px; color: var(--text-3); font-weight: 600; }
+
+  .grid-tools { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .grid-tools .spacer { flex: 1; }
+  .legend { display: flex; gap: 12px; font-size: 13px; color: var(--text-3); flex-wrap: wrap; }
+  .legend span { display: inline-flex; align-items: center; gap: 4px; }
+  .lg-dot { width: 8px; height: 8px; border-radius: 99px; background: var(--navy); }
+  .lg-care { width: 8px; height: 8px; border-radius: 99px; background: var(--red); }
+  .lg-gap { width: 14px; height: 10px; border-radius: 3px; border: 1.5px dashed var(--red); }
+
+  .roster { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
+  @media (max-width: 420px) { .roster { grid-template-columns: repeat(3, 1fr); gap: 8px; } }
+  .stu {
+    position: relative; min-height: 88px; padding: 10px 10px 8px; border-radius: 14px; text-align: left;
+    background: var(--surface); border: 1.5px solid var(--line); box-shadow: var(--shadow-1);
+    display: flex; flex-direction: column; justify-content: space-between; gap: 4px;
+    transition: background-color .12s, border-color .12s, transform .1s;
+  }
+  .stu:hover { border-color: var(--navy); }
+  .stu:active { transform: scale(.97); }
+  .stu .no { font-size: 12px; font-weight: 700; color: var(--text-3); }
+  .stu .nm { font-size: 17px; font-weight: 800; letter-spacing: -0.01em; line-height: 1.25; }
+  .stu .meta { display: flex; align-items: center; gap: 3px; min-height: 12px; }
+  .stu .pip { width: 7px; height: 7px; border-radius: 99px; background: var(--navy); opacity: .85; }
+  .stu .pip.care { background: var(--red); opacity: 1; }
+  .stu .more { font-size: 11px; font-weight: 700; color: var(--text-3); margin-left: 2px; }
+  .stu.gap { border-style: dashed; border-color: #E38A99; background: #FFFAFB; }
+  .stu.gap .gapdays { font-size: 11px; font-weight: 700; color: var(--red); }
+  .stu.today::after { content: ""; position: absolute; top: 10px; right: 10px; width: 8px; height: 8px; border-radius: 99px; background: var(--ok); }
+  .stu[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); border-style: solid; color: #fff; }
+  .stu[aria-pressed="true"] .no, .stu[aria-pressed="true"] .more, .stu[aria-pressed="true"] .gapdays { color: #C9D3E6; }
+  .stu[aria-pressed="true"] .pip { background: #fff; }
+  .stu[aria-pressed="true"] .pip.care { background: #FF8A9C; }
+  .stu .check {
+    position: absolute; top: 8px; right: 8px; width: 22px; height: 22px; border-radius: 99px; background: var(--red); color: #fff;
+    display: none; place-items: center;
+  }
+  .stu[aria-pressed="true"] .check { display: grid; }
+  .stu[aria-pressed="true"].today::after { display: none; }
+
+  .feed { margin-top: 20px; }
+  .feed h3 { font-size: 17px; font-weight: 800; color: var(--navy); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .feed-list { display: grid; gap: 8px; }
+  .feed-item { padding: 12px 14px; display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; }
+  .feed-item time { font-size: 13px; color: var(--text-3); font-weight: 600; padding-top: 2px; }
+  .feed-item .who { font-weight: 800; }
+  .feed-item .txt { grid-column: 2; color: var(--text-2); font-size: 15px; }
+  .feed-item .tags { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+
+  /* 입력 패널: PC 오른쪽 고정 / 휴대폰 아래에서 올라오는 시트 */
+  .composer { padding: 18px; display: grid; gap: 18px; }
+  .composer-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .composer-head h3 { font-size: 18px; font-weight: 800; color: var(--navy); }
+  .picked { display: flex; flex-wrap: wrap; gap: 6px; }
+  .picked .p {
+    display: inline-flex; align-items: center; gap: 4px; height: 34px; padding: 0 6px 0 12px; border-radius: 99px;
+    background: var(--navy-tint); color: var(--navy); font-weight: 700; font-size: 15px; border: 0;
+  }
+  .picked .p .x { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 99px; }
+  .picked .p:hover .x { background: rgb(27 42 74 / .1); }
+  .areas { display: flex; flex-wrap: wrap; gap: 6px; }
+  .phrases { display: flex; flex-direction: column; gap: 6px; }
+  .phrase {
+    text-align: left; min-height: 44px; padding: 8px 12px; border-radius: 12px; border: 1px dashed var(--line-strong);
+    background: var(--surface-2); font-size: 15px; color: var(--text-2); display: flex; gap: 8px; align-items: center;
+  }
+  .phrase:hover { border-color: var(--navy); color: var(--navy); background: var(--navy-tint); }
+  .phrase .ic { color: var(--text-3); }
+  .more-toggle { border: 0; background: none; color: var(--navy); font-weight: 700; font-size: 15px; padding: 6px 0; display: inline-flex; gap: 6px; align-items: center; }
+  .composer-empty { text-align: center; padding: 28px 12px; color: var(--text-3); }
+  .composer-empty .big { width: 56px; height: 56px; border-radius: 16px; background: var(--navy-tint); color: var(--navy); display: grid; place-items: center; margin: 0 auto 12px; }
+  .composer-empty strong { display: block; color: var(--navy); font-size: 17px; margin-bottom: 4px; }
+  .save-row {
+    display: grid; grid-template-columns: 1fr auto; gap: 8px;
+    position: sticky; bottom: 0; margin: 0 -18px -18px; padding: 12px 18px 18px;
+    background: linear-gradient(to bottom, rgb(255 255 255 / 0), var(--surface) 14px);
+  }
+  @media (max-width: 480px) {
+    .topbar .date { font-size: 14px; }
+    .proto-tag { display: none; }
+  }
+
+  @media (min-width: 1024px) {
+    .composer-wrap { position: sticky; top: 88px; max-height: calc(100dvh - 112px); overflow: auto; }
+    .sheet-backdrop, .sheet-handle, .action-bar { display: none !important; }
+  }
+  @media (max-width: 1023px) {
+    .composer-wrap {
+      position: fixed; z-index: 50; left: 0; right: 0; bottom: 0; max-height: 88dvh; overflow: auto;
+      border-radius: 20px 20px 0 0; border: 0; box-shadow: var(--shadow-2);
+      transform: translateY(105%); transition: transform .28s cubic-bezier(.16, 1, .3, 1);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    .composer-wrap.open { transform: none; }
+    .sheet-handle { width: 44px; height: 5px; border-radius: 99px; background: var(--line-strong); margin: 10px auto 0; }
+    .sheet-backdrop { position: fixed; inset: 0; z-index: 45; background: rgb(20 27 45 / .45); }
+  }
+  .action-bar {
+    position: fixed; z-index: 36; left: 12px; right: 12px; bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 10px);
+    display: flex; align-items: center; gap: 10px; padding: 8px 8px 8px 18px; border-radius: 999px;
+    background: var(--navy); color: #fff; box-shadow: var(--shadow-2);
+  }
+  .action-bar .cnt { font-weight: 800; }
+  .action-bar .names { flex: 1; min-width: 0; font-size: 14px; color: #C9D3E6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .action-bar .clear { border: 0; background: none; color: #C9D3E6; font-weight: 700; font-size: 14px; padding: 8px; }
+
+  /* ---------- 평가 ---------- */
+  .assess-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .assess-tabs .chip { min-height: 44px; }
+  .assess-tabs .chip small { font-weight: 600; opacity: .75; }
+  .chip-add { border-style: dashed; color: var(--navy); }
+  .assess-meta { display: flex; gap: 8px 16px; flex-wrap: wrap; color: var(--text-3); font-size: 14px; margin-bottom: 14px; }
+  .assess-meta b { color: var(--text-2); }
+  .assess { display: grid; gap: 20px; }
+  @media (min-width: 1024px) { .assess { grid-template-columns: minmax(0, 1fr) 440px; align-items: start; } }
+  .alist-tools { display: flex; gap: 8px; padding: 12px; border-bottom: 1px solid var(--line); flex-wrap: wrap; align-items: center; }
+  .alist-tools .spacer { flex: 1; }
+  .arow {
+    width: 100%; display: grid; grid-template-columns: 36px 1fr auto auto; align-items: center; gap: 12px;
+    min-height: 58px; padding: 8px 14px; border: 0; border-bottom: 1px solid var(--line); background: none; text-align: left;
+  }
+  .arow:last-child { border-bottom: 0; }
+  .arow:hover { background: var(--surface-2); }
+  .arow[aria-current="true"] { background: var(--navy-tint); box-shadow: inset 4px 0 0 var(--red); }
+  .arow .no { font-size: 13px; font-weight: 700; color: var(--text-3); text-align: center; }
+  .arow .nm { font-weight: 800; }
+  .arow .memo { display: block; font-size: 13px; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+  .arow .score { font-size: 20px; font-weight: 800; color: var(--navy); text-align: right; min-width: 44px; }
+  .arow .score.none { color: var(--line-strong); }
+  .arow-body { min-width: 0; }
+  .b-todo { background: var(--surface-2); color: var(--text-3); border: 1px dashed var(--line-strong); }
+  .b-absent { background: #FFF4E5; color: #8A4B00; }
+
+  .scorer { padding: 18px; display: grid; gap: 16px; }
+  @media (min-width: 1024px) { .lv { min-height: 58px; } }
+  .scorer-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+    position: sticky; top: 0; z-index: 2; margin: -18px -18px 0; padding: 18px 18px 10px; background: var(--surface); border-bottom: 1px solid var(--line); }
+  .scorer-head .who { font-size: 22px; font-weight: 800; line-height: 1.25; }
+  .scorer-head .sub { font-size: 14px; color: var(--text-3); font-weight: 600; }
+  .total { text-align: right; }
+  .total .v { font-size: 34px; font-weight: 800; color: var(--red); line-height: 1.1; }
+  .total .v small { font-size: 16px; color: var(--text-3); font-weight: 700; }
+  .total .l { font-size: 12px; color: var(--text-3); font-weight: 700; }
+  .crit { display: grid; gap: 8px; }
+  .crit-h { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .crit-h b { color: var(--navy); }
+  .crit-h span { font-size: 13px; color: var(--text-3); font-weight: 700; }
+  .levels { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  @media (max-width: 420px) { .levels { gap: 4px; } .lv { padding: 6px 2px; } .lv span { font-size: 11px; } }
+  .lv {
+    min-height: 64px; padding: 6px 4px; border-radius: 12px; border: 1.5px solid var(--line-strong); background: var(--surface);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; line-height: 1.25;
+  }
+  .lv b { font-size: 20px; font-weight: 800; color: var(--navy); }
+  .lv span { font-size: 12px; color: var(--text-3); font-weight: 600; text-align: center; }
+  .lv:hover { border-color: var(--navy); }
+  .lv[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); }
+  .lv[aria-pressed="true"] b, .lv[aria-pressed="true"] span { color: #fff; }
+  .scorer .seg button[aria-pressed="true"] { background: var(--navy); color: #fff; }
+  .scorer .seg button[aria-pressed="true"][data-st="absent"], .scorer .seg button[aria-pressed="true"][data-st="missing"] { background: #8A4B00; }
+  .base-note { padding: 12px 14px; border-radius: 12px; background: #FFF4E5; color: #6B3A00; font-size: 14px; }
+  .nav-row { display: flex; gap: 8px; }
+  .score-save { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; position: sticky; bottom: 0; margin: 0 -18px -18px; padding: 12px 18px 18px;
+    background: linear-gradient(to bottom, rgb(255 255 255 / 0), var(--surface) 14px); }
+  .score-save .btn-line { padding: 0 16px; }
+  .a-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
+  @media (max-width: 640px) { .a-summary { grid-template-columns: repeat(2, 1fr); } }
+  .a-table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  .a-table th, .a-table td { padding: 10px 8px; border-bottom: 1px solid var(--line); text-align: left; }
+  .a-table th { font-size: 13px; color: var(--text-3); font-weight: 700; }
+  .a-table td.r { text-align: right; font-weight: 800; color: var(--navy); }
+
+  /* ---------- ② 일지 ---------- */
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .day { margin-bottom: 22px; }
+  .day-h { display: flex; align-items: baseline; gap: 8px; margin-bottom: 10px; }
+  .day-h h3 { font-size: 18px; font-weight: 800; color: var(--navy); }
+  .entry { padding: 14px 16px; display: grid; gap: 8px; }
+  .entry + .entry { margin-top: 8px; }
+  .entry-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .entry-top .who { font-weight: 800; font-size: 17px; }
+  .entry-top .acts { margin-left: auto; display: flex; gap: 4px; }
+  .entry .fb { padding-left: 10px; border-left: 3px solid var(--red); color: var(--text-2); font-size: 15px; }
+
+  /* ---------- ③ 학생 ---------- */
+  .students { display: grid; gap: 20px; }
+  @media (min-width: 1024px) { .students { grid-template-columns: 380px minmax(0, 1fr); align-items: start; } }
+  .slist { overflow: hidden; }
+  .slist-tools { padding: 12px; display: flex; gap: 8px; border-bottom: 1px solid var(--line); }
+  .slist-tools input { min-height: 44px; }
+  .slist-tools select {
+    min-height: 44px; border: 1.5px solid var(--line-strong); border-radius: 12px; padding: 0 10px; background: var(--surface); font-weight: 600; font-size: 14px;
+  }
+  .srow {
+    width: 100%; display: grid; grid-template-columns: 36px 1fr auto; align-items: center; gap: 10px;
+    padding: 10px 14px; min-height: 60px; border: 0; border-bottom: 1px solid var(--line); background: none; text-align: left;
+  }
+  .srow:last-child { border-bottom: 0; }
+  .srow:hover { background: var(--surface-2); }
+  .srow[aria-current="true"] { background: var(--navy-tint); box-shadow: inset 4px 0 0 var(--red); }
+  .srow .no { font-size: 13px; font-weight: 700; color: var(--text-3); text-align: center; }
+  .srow .nm { font-weight: 800; }
+  .srow .sub { font-size: 13px; color: var(--text-3); }
+  .srow .sub.red { color: var(--red); font-weight: 700; }
+  .srow .bar { width: 64px; height: 6px; border-radius: 99px; background: var(--surface-2); overflow: hidden; margin-top: 4px; }
+  .srow .bar i { display: block; height: 100%; background: var(--navy); }
+  .srow .cnt { font-weight: 800; color: var(--navy); text-align: right; }
+  .slist-body { max-height: 70dvh; overflow: auto; }
+
+  .detail { padding: 20px; }
+  .detail-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .detail-head h3 { font-size: 26px; font-weight: 800; }
+  .detail-head .sub { color: var(--text-3); font-weight: 600; }
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 18px 0; }
+  @media (max-width: 520px) { .kpis { grid-template-columns: repeat(2, 1fr); } }
+  .kpi { padding: 12px; border-radius: 12px; background: var(--surface-2); }
+  .kpi .v { font-size: 22px; font-weight: 800; line-height: 1.2; }
+  .kpi .l { font-size: 13px; color: var(--text-3); font-weight: 600; }
+  .sec-title { font-size: 15px; font-weight: 800; color: var(--navy); margin: 22px 0 10px; }
+  .dist { display: grid; gap: 8px; }
+  .dist-row { display: grid; grid-template-columns: 76px 1fr 28px; gap: 10px; align-items: center; font-size: 14px; }
+  .dist-row .lab { font-weight: 600; color: var(--text-2); }
+  .dist-row .track { height: 12px; border-radius: 99px; background: var(--surface-2); overflow: hidden; display: flex; }
+  .dist-row .track i { display: block; height: 100%; }
+  .dist-row .track .g { background: var(--ok); }
+  .dist-row .track .n { background: var(--navy); }
+  .dist-row .track .c { background: var(--red); }
+  .dist-row .num { font-weight: 800; text-align: right; }
+  .timeline { position: relative; display: grid; gap: 14px; padding-left: 28px; }
+  .timeline::before { content: ""; position: absolute; left: 7px; top: 6px; bottom: 6px; width: 2px; background: var(--line); }
+  .tl { position: relative; }
+  .tl::before { content: ""; position: absolute; left: -28px; top: 6px; width: 16px; height: 16px; border-radius: 99px; background: var(--surface); border: 3px solid var(--navy); }
+  .tl.care::before { border-color: var(--red); }
+  .tl.good::before { border-color: var(--ok); }
+  .tl.assess::before { border-radius: 4px; background: var(--navy); border-color: var(--navy); }
+  .tl.assess .score-line { font-weight: 800; color: var(--navy); }
+  .tl.assess .crit-line { font-size: 13px; color: var(--text-3); margin-top: 2px; }
+  .b-assess { background: var(--navy); color: #fff; }
+  .tl .when { font-size: 13px; font-weight: 700; color: var(--text-3); display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  .tl p { margin-top: 2px; }
+  .tl .fb { font-size: 14px; color: var(--text-2); margin-top: 4px; padding-left: 10px; border-left: 3px solid var(--red); }
+
+  /* ---------- ④ 성찰 ---------- */
+  .reflect { display: grid; gap: 20px; }
+  @media (min-width: 1024px) { .reflect { grid-template-columns: 360px minmax(0, 1fr); align-items: start; } }
+  .summary { padding: 18px; }
+  .summary h3 { font-size: 17px; font-weight: 800; color: var(--navy); margin-bottom: 12px; }
+  .summary .row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 15px; }
+  .summary .row:last-of-type { border-bottom: 0; }
+  .q { padding: 18px; display: grid; gap: 16px; }
+  .q-item label { display: flex; align-items: center; gap: 8px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
+  .q-item .no { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 99px; background: var(--red); color: #fff; font-size: 13px; }
+  .q-item .hintline { font-size: 13px; color: var(--text-3); margin-top: 6px; }
+
+  /* ---------- 알림 ---------- */
+  .toast {
+    position: fixed; z-index: 60; left: 50%; bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 16px);
+    transform: translate(-50%, 16px); opacity: 0; pointer-events: none;
+    display: flex; align-items: center; gap: 14px; padding: 10px 10px 10px 18px; border-radius: 999px;
+    background: var(--text); color: #fff; font-weight: 700; box-shadow: var(--shadow-2); transition: opacity .2s, transform .2s;
+    max-width: calc(100vw - 24px);
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+  .toast button { white-space: nowrap; flex-shrink: 0; border: 0; background: rgb(255 255 255 / .14); color: #fff; font-weight: 800; height: 36px; padding: 0 14px; border-radius: 99px; }
+  @media (min-width: 1024px) { .toast { bottom: 24px; left: calc(50% + 48px); } }
+
+  .note {
+    margin-top: 28px; padding: 14px 16px; border-radius: var(--r-card); background: var(--surface); border: 1px dashed var(--line-strong);
+    font-size: 14px; color: var(--text-2);
+  }
+  .note b { color: var(--navy); }
+
+  /* ---------- 파스텔 공통 ---------- */
+  .topbar { background: rgb(246 242 250 / .85); border-bottom: 0; }
+  .class-btn { border: 0; box-shadow: var(--shadow-1); }
+  .class-btn .dot { background: linear-gradient(160deg, #B79BF5, #8B6BE0); }
+  .round {
+    display: grid; place-items: center; width: 44px; height: 44px; border-radius: 999px; border: 0;
+    background: var(--surface); box-shadow: var(--shadow-1); color: var(--text-2);
+  }
+  .round:hover { color: var(--navy); }
+  .avatar { width: 46px; height: 46px; border-radius: 999px; border: 3px solid #fff; box-shadow: var(--shadow-1); background: #FFE6DC; display: grid; place-items: center; overflow: hidden; flex-shrink: 0; }
+  .card { border: 0; box-shadow: var(--shadow-1); }
+  .btn-red { background: linear-gradient(160deg, #7B5BDD, #6142CC); color: #fff; box-shadow: 0 8px 18px rgb(97 66 204 / .28); }
+  .btn-red:hover { background: linear-gradient(160deg, #7051D6, #5538C0); }
+  .btn-red:disabled { background: #D8CEF3; color: #6F6886; box-shadow: none; }
+  .btn-navy { background: var(--navy); }
+  .btn-line { border-color: var(--line-strong); }
+  .stu { border-color: transparent; box-shadow: var(--shadow-1); border-radius: 16px; }
+  .stu:hover { border-color: #C9B8F2; }
+  .stu.gap { border-color: #EBA7BE; background: #FFF7FA; }
+  .stu[aria-pressed="true"] { background: linear-gradient(160deg, #7B5BDD, #5A3EC0); }
+  .stu[aria-pressed="true"] .no, .stu[aria-pressed="true"] .more, .stu[aria-pressed="true"] .gapdays { color: #E4DAFF; }
+  .stu[aria-pressed="true"] .pip.care { background: #FFB3C9; }
+  .stu .check { background: #fff; color: var(--navy); }
+  .action-bar { background: linear-gradient(160deg, #6E50D6, #5A3EC0); }
+  .action-bar .names, .action-bar .clear { color: #E4DAFF; }
+  .action-bar .btn-red { background: #fff; color: var(--navy); box-shadow: none; }
+  .stat { background: var(--surface); }
+  .b-area { background: var(--navy-tint); color: var(--navy); }
+  .b-care { color: #A8325A; }
+  .b-absent { background: #FFF0DC; color: #8A5200; }
+  .scorer .seg button[aria-pressed="true"][data-st="absent"], .scorer .seg button[aria-pressed="true"][data-st="missing"] { background: #A0610B; }
+  .base-note { background: #FFF5E6; color: #6B4300; }
+  .lv { border-color: var(--line-strong); }
+  .lv[aria-pressed="true"] { background: linear-gradient(160deg, #7B5BDD, #5A3EC0); border-color: #5A3EC0; }
+  .srow[aria-current="true"], .arow[aria-current="true"] { box-shadow: inset 4px 0 0 #8B6BE0; }
+  .tl.assess::before { background: #8B6BE0; border-color: #8B6BE0; }
+  .b-assess { background: linear-gradient(160deg, #7B5BDD, #5A3EC0); }
+  .phrase:hover { background: var(--navy-tint); }
+  .toast { background: #2A2340; }
+  .note { border-color: var(--line-strong); }
+  @media (min-width: 1024px) { .toast { left: calc(50% + 124px); } .composer-wrap { top: 84px; } }
+
+  /* ---------- 홈(대시보드) ---------- */
+  .home-head { margin: 4px 0 18px; }
+  .home-head h2 { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; }
+  .home-head p { color: var(--text-2); margin-top: 2px; }
+  .card-h { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  .card-h h3 { font-size: 16px; font-weight: 800; }
+  .pill-btn { display: inline-flex; align-items: center; height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); font-size: 13px; font-weight: 700; color: var(--text-2); }
+  .pill-btn:hover { border-color: #A58BE6; color: var(--navy); }
+  [data-panel="home"] .card { padding: 20px; position: relative; overflow: hidden; }
+  .row1 { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 18px; }
+  .row2 { display: grid; grid-template-columns: 1.6fr 1fr; gap: 18px; margin-top: 18px; }
+  .row3 { display: grid; grid-template-columns: 1.1fr .8fr 1fr; gap: 18px; margin-top: 18px; }
+  [data-panel="home"] .hero { display: grid; grid-template-columns: 180px 1fr; align-items: center; min-height: 196px; padding: 0 22px 0 0; background: linear-gradient(135deg, #FFDCCD 0%, #FBD1DC 55%, #EBD8F7 100%); }
+  .hero-art { align-self: end; display: grid; place-items: end center; }
+  .hero h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; white-space: nowrap; }
+  .hero p { margin-top: 8px; color: var(--text-2); }
+  .dstat { display: grid; align-content: start; gap: 6px; min-height: 196px; }
+  .dstat.lav { background: linear-gradient(160deg, #F6F1FF, #EEE6FD); }
+  .dstat.peach { background: linear-gradient(160deg, #FFF4EF, #FDE6DC); }
+  .dstat.mint { background: linear-gradient(160deg, #F1FAF5, #E1F3EA); }
+  .dstat .label { font-weight: 700; font-size: 14px; }
+  .tile { width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; color: #fff; margin: 6px 0 4px;
+    box-shadow: inset 0 -4px 8px rgb(0 0 0 / .12), inset 0 3px 6px rgb(255 255 255 / .45), 0 8px 16px rgb(0 0 0 / .08); }
+  .tile .ic { width: 24px; height: 24px; }
+  .t-lav { background: linear-gradient(160deg, #B79BF5, #8B6BE0); }
+  .t-peach { background: linear-gradient(160deg, #FFA98A, #F07A57); }
+  .t-mint { background: linear-gradient(160deg, #7FD8B1, #3FAE86); }
+  .t-pink { background: linear-gradient(160deg, #F7A9C4, #E07A9E); }
+  .t-amber { background: linear-gradient(160deg, #FFD27E, #E7A93A); }
+  .dstat .num { font-size: 38px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .dstat .num small { font-size: 18px; color: var(--text-3); font-weight: 700; }
+  .trend { display: flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 800; color: #23905F; }
+  .trend.down { color: var(--red); }
+  .trend .ic { width: 15px; height: 15px; stroke-width: 2.6; }
+  .trend span { color: var(--text-3); font-weight: 600; }
+  .dsub { font-size: 13px; color: var(--text-3); font-weight: 600; }
+  .chart-wrap { position: relative; }
+  .chart-wrap svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .tip { position: absolute; pointer-events: none; transform: translate(-50%, -100%); margin-top: -14px; background: #fff; border-radius: 12px; padding: 6px 12px;
+    box-shadow: 0 8px 20px rgb(92 70 140 / .18); text-align: center; white-space: nowrap; font-size: 12px; color: var(--text-3); transition: left .12s, top .12s; }
+  .tip b { display: block; font-size: 18px; color: var(--text); line-height: 1.2; }
+  .seg-tabs { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--navy-tint); }
+  .seg-tabs button { height: 30px; padding: 0 12px; border: 0; border-radius: 999px; background: none; font-size: 13px; font-weight: 700; color: var(--text-2); }
+  .seg-tabs button[aria-pressed="true"] { background: #fff; color: var(--navy); box-shadow: 0 2px 6px rgb(92 70 140 / .15); }
+  .tasks { display: grid; gap: 4px; }
+  .task { display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; align-items: center; padding: 8px 6px; border-radius: 14px; border: 0; background: none; text-align: left; width: 100%; }
+  .task:hover { background: #FAF7FD; }
+  .task .tile { width: 40px; height: 40px; border-radius: 12px; margin: 0; }
+  .task .tile .ic { width: 20px; height: 20px; }
+  .task b { display: block; font-size: 14px; }
+  .task .when { font-size: 12px; color: var(--text-3); }
+  .status { height: 26px; padding: 0 10px; border-radius: 999px; font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; white-space: nowrap; }
+  .s-doing { background: #FFF0DC; color: #8A5200; }
+  .s-todo { background: var(--navy-tint); color: var(--navy); }
+  .s-soon { background: #E3F1FC; color: #245F91; }
+  .s-done { background: var(--ok-tint); color: var(--ok); }
+  .progress { display: grid; grid-template-columns: 150px 1fr; gap: 18px; align-items: center; }
+  .ring { position: relative; width: 150px; height: 150px; }
+  .ring svg { width: 150px; height: 150px; transform: rotate(-90deg); }
+  .ring .center { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; }
+  .ring .center b { font-size: 30px; font-weight: 800; line-height: 1; display: block; }
+  .ring .center span { font-size: 12px; color: var(--text-3); font-weight: 600; }
+  .plegend { display: grid; gap: 10px; }
+  .plg { display: grid; grid-template-columns: 10px 1fr auto; gap: 8px; align-items: center; font-size: 13px; }
+  .plg i { width: 10px; height: 10px; border-radius: 99px; }
+  .plg .bar { grid-column: 2 / 4; height: 6px; border-radius: 99px; background: #F2EEF7; overflow: hidden; margin-top: -4px; }
+  .plg .bar span { display: block; height: 100%; border-radius: 99px; }
+  .plg b { font-variant-numeric: tabular-nums; }
+  .remind { background: linear-gradient(160deg, #F4EEFF, #E9E0FB); display: grid; grid-template-columns: 96px 1fr; gap: 6px; align-items: center; }
+  .remind h3 { font-size: 16px; font-weight: 800; }
+  .remind p { font-size: 13px; color: var(--text-2); margin: 6px 0 12px; }
+  .btn-lav { display: inline-flex; align-items: center; justify-content: center; height: 40px; padding: 0 16px; border: 0; border-radius: 12px;
+    background: linear-gradient(160deg, #7B5BDD, #6142CC); color: #fff; font-weight: 800; font-size: 14px; box-shadow: 0 8px 16px rgb(97 66 204 / .28); }
+  .cheer { background: linear-gradient(160deg, #FFF8E3, #FFEFC2); display: grid; grid-template-columns: 1fr 1.1fr; align-items: center; gap: 8px; }
+  .cheer h3 { font-size: 20px; font-weight: 800; line-height: 1.35; }
+  .cheer p { margin-top: 8px; color: var(--text-2); font-size: 14px; }
+  @media (max-width: 1279px) {
+    .row1 { grid-template-columns: 1fr 1fr 1fr; }
+    [data-panel="home"] .hero { grid-column: 1 / -1; }
+    .row3 { grid-template-columns: 1fr 1fr; }
+    .cheer { grid-column: 1 / -1; }
+  }
+  @media (max-width: 860px) { .row2, .row3 { grid-template-columns: 1fr; } }
+  @media (max-width: 640px) {
+    .row1 { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .dstat { min-height: 0; padding: 16px !important; }
+    .dstat:last-child { grid-column: 1 / -1; }
+    .dstat .num { font-size: 30px; }
+    [data-panel="home"] .hero { grid-template-columns: 120px 1fr; min-height: 150px; padding: 0 16px 0 0; }
+    .hero-art svg { width: 130px; height: auto; }
+    .hero h3 { font-size: 20px; }
+    .home-head h2 { font-size: 24px; }
+    .progress { grid-template-columns: 1fr; justify-items: center; }
+    .plegend { width: 100%; }
+    .cheer { grid-template-columns: 1fr 120px; }
+    .cheer-art svg { width: 120px; height: auto; }
+    .avatar { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+  /* ================= 본 제작 추가 ================= */
+  .sync { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border-radius: 99px; font-size: 13px; font-weight: 700; white-space: nowrap; border: 0; }
+  .sync.ok { background: var(--ok-tint); color: var(--ok); }
+  .sync.busy { background: var(--navy-tint); color: var(--navy); }
+  .sync.wait { background: #FFF0DC; color: #8A5200; cursor: pointer; }
+  .sync.demo { background: #FFF5D9; color: #6B4E00; }
+  @media (max-width: 520px) { .sync .t { display: none; } .topbar .date { display: none; } }
+  .boot { position: fixed; inset: 0; z-index: 200; background: var(--bg); display: grid; place-items: center; align-content: center; gap: 14px; text-align: center; padding: 24px; }
+  .boot p { color: var(--text-2); font-weight: 600; }
+  .demo-bar { margin-bottom: 14px; padding: 10px 14px; border-radius: 14px; background: #FFF5D9; color: #6B4E00; font-size: 14px; }
+  .modal { width: min(640px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); padding: 0; border: 0; border-radius: 24px; background: var(--surface); color: var(--text); box-shadow: var(--shadow-2); }
+  .modal.wide { width: min(880px, calc(100vw - 24px)); }
+  .modal::backdrop { background: rgb(42 35 64 / .45); }
+  .modal > form { display: flex; flex-direction: column; max-height: calc(100dvh - 24px); }
+  .m-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 16px 20px; border-bottom: 1px solid var(--line); }
+  .m-head h2 { font-size: 19px; font-weight: 800; }
+  .m-body { padding: 20px; overflow: auto; display: grid; gap: 16px; }
+  .m-foot { padding: 14px 20px; border-top: 1px solid var(--line); display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+  .m-foot .left { margin-right: auto; }
+  .field { display: grid; gap: 6px; min-width: 0; }
+  .field > label, .field > .label { font-size: 14px; font-weight: 700; color: var(--text-2); }
+  .grid2 { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; }
+  @media (max-width: 560px) { .grid2 { grid-template-columns: 1fr; } }
+  select, input[type="date"], input[type="number"] {
+    min-height: 48px; padding: 0 12px; border: 1.5px solid var(--line-strong); border-radius: var(--r-input); background: var(--surface); font-size: 16px; color: var(--text); width: 100%;
+  }
+  select:focus, input[type="date"]:focus, input[type="number"]:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px var(--navy-tint); }
+  .warn { padding: 12px 14px; border-radius: 12px; background: var(--red-tint); color: #A8325A; font-weight: 700; font-size: 14px; }
+  .hint { font-size: 13px; color: var(--text-3); }
+  .err { font-size: 14px; color: #A8325A; font-weight: 700; }
+  .crit-edit { border-radius: 16px; padding: 14px; display: grid; gap: 10px; background: var(--surface-2); border: 1px solid var(--line); }
+  .crit-top { display: grid; grid-template-columns: 1fr 110px auto; gap: 8px; align-items: center; }
+  .lv-edit { display: grid; grid-template-columns: 80px 1fr; gap: 6px 8px; align-items: center; }
+  .lv-edit input { min-height: 42px; }
+  .lv-edit .lvno { font-size: 12px; font-weight: 700; color: var(--text-3); }
+  .checks { display: flex; flex-wrap: wrap; gap: 8px; }
+  .checks label { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 12px; border-radius: 99px; border: 1px solid var(--line-strong); font-weight: 600; font-size: 14px; cursor: pointer; }
+  .checks input { width: 18px; height: 18px; accent-color: var(--navy); }
+  .set-grid { display: grid; gap: 18px; }
+  @media (min-width: 1100px) { .set-grid { grid-template-columns: 1fr 1fr; align-items: start; } }
+  .set-card { padding: 20px; }
+  .set-card h3 { font-size: 17px; font-weight: 800; margin-bottom: 4px; }
+  .set-card > .hint { margin-bottom: 14px; }
+  .class-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .class-row:last-of-type { border-bottom: 0; }
+  .class-row b { font-size: 16px; }
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .add-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; margin-top: 14px; }
+  @media (max-width: 560px) { .add-row { grid-template-columns: 1fr 1fr; } .add-row .btn { grid-column: 1 / -1; } }
+  .filter-card { padding: 14px; display: grid; gap: 12px; margin-bottom: 14px; }
+  .filter-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: end; }
+  .filter-row .field { flex: 1 1 150px; }
+  .summary-line { margin: 4px 0 12px; color: var(--text-2); font-size: 14px; }
+  .empty-box { text-align: center; padding: 36px 16px; border-radius: var(--r-card); background: var(--surface); box-shadow: var(--shadow-1); color: var(--text-3); }
+  .empty-box strong { display: block; color: var(--text); font-size: 17px; margin-bottom: 4px; }
+  .empty-box .btn { margin-top: 14px; }
+  .onboard { padding: 20px; margin-bottom: 18px; background: linear-gradient(160deg, #F4EEFF, #E9E0FB) !important; }
+  .onboard h3 { font-size: 18px; font-weight: 800; }
+  .steps { display: grid; gap: 10px; margin-top: 12px; }
+  @media (min-width: 900px) { .steps { grid-template-columns: repeat(3, 1fr); } }
+  .step { background: #fff; border-radius: 16px; padding: 14px; display: grid; gap: 6px; align-content: start; }
+  .step .n { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 99px; background: var(--navy); color: #fff; font-size: 13px; font-weight: 800; }
+  .step b { font-size: 15px; }
+  .step .btn { justify-self: start; }
+  .count-boxes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+  .count-box { padding: 12px; border-radius: 14px; background: var(--surface-2); }
+  .count-box .n { font-size: 22px; font-weight: 800; color: var(--navy); line-height: 1.2; }
+  .count-box .l { font-size: 12px; color: var(--text-3); font-weight: 600; }
+  .composer-date { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: center; }
+  .composer-date label { font-size: 14px; font-weight: 700; color: var(--text-2); }
+  .composer-date input { min-height: 42px; }
+  .feed-item .acts, .entry .acts { display: flex; gap: 4px; }
+  .feed-item { grid-template-columns: auto 1fr auto; }
+  .feed-item .txt { grid-column: 2 / 4; }
+  .refl-list { display: grid; gap: 12px; }
+  @media (min-width: 900px) { .refl-list { grid-template-columns: 1fr 1fr; } }
+  .refl-card { padding: 16px 18px; display: grid; gap: 8px; }
+  .refl-card h4 { margin: 0; font-size: 13px; color: var(--text-3); }
+  .refl-card p { white-space: pre-wrap; font-size: 15px; }
+  .refl-card .top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .sec-h { font-size: 18px; font-weight: 800; margin: 28px 0 12px; }
+  .q-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .textview { width: 100%; min-height: 50vh; font-size: 14px; line-height: 1.7; }
+  .entry .acts .btn-sm, .feed-item .acts .btn-sm { min-height: 36px; padding: 0 12px; }
+  .badge.cls { background: var(--surface-2); color: var(--text-2); border: 1px solid var(--line); }
+  .stu.inactive { opacity: .5; }
+  .note { display: none; }
+  .modal .seg button[aria-pressed="true"][data-tone="good"] { background: var(--ok); color: #fff; }
+  .modal .seg button[aria-pressed="true"][data-tone="normal"] { background: var(--navy); color: #fff; }
+  .modal .seg button[aria-pressed="true"][data-tone="care"] { background: var(--red); color: #fff; }
+  .nav .nav-set { display: none; }
+  @media (min-width: 1024px) { .nav .nav-set { display: flex; } }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="gFur" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#FFE3D3"/><stop offset=".7" stop-color="#F6B59A"/><stop offset="1" stop-color="#E9967A"/></radialGradient>
+    <radialGradient id="gMuzzle" cx="45%" cy="35%" r="70%"><stop offset="0" stop-color="#FFF8F3"/><stop offset="1" stop-color="#FBE0D2"/></radialGradient>
+    <linearGradient id="gHoodie" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C6AEF7"/><stop offset="1" stop-color="#9B7DE6"/></linearGradient>
+    <radialGradient id="gLeaf" cx="40%" cy="30%" r="80%"><stop offset="0" stop-color="#B9E6A5"/><stop offset=".6" stop-color="#7CC47A"/><stop offset="1" stop-color="#4E9B5A"/></radialGradient>
+    <linearGradient id="gPot" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F5EEE6"/><stop offset="1" stop-color="#DCCFC2"/></linearGradient>
+    <linearGradient id="gTerra" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6B9A4"/><stop offset="1" stop-color="#E08C72"/></linearGradient>
+    <radialGradient id="gCloud" cx="45%" cy="30%" r="75%"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".75" stop-color="#F6F3FA"/><stop offset="1" stop-color="#E6E0EF"/></radialGradient>
+    <linearGradient id="gArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8B6BE0" stop-opacity=".28"/><stop offset="1" stop-color="#8B6BE0" stop-opacity="0"/></linearGradient>
+    <linearGradient id="gRing" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#B79BF5"/><stop offset="1" stop-color="#8B6BE0"/></linearGradient>
+  </defs>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+  <symbol id="i-note" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M9 11h7M9 15h7"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 9a6 6 0 1 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9z"/><path d="M10 20a2 2 0 0 0 4 0"/></symbol>
+  <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+  <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.3-5.5 6.5-5.5s5.7 2 6.5 5.5"/><path d="M15.5 4.8a3.5 3.5 0 0 1 0 6.4M18 14.8c1.8.7 3 2.5 3.5 5.2"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6.5 8-6.5s7 2.5 8 6.5"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3l9.5 17h-19L12 3z"/><path d="M12 10v4M12 17.5v.1"/></symbol>
+  <symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-clip" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M8.5 11l2 2 4-4M8.5 17h7"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18h10.5a4 4 0 0 0 .4-8A6 6 0 0 0 6.3 9.2 4.5 4.5 0 0 0 7 18z"/><path d="M9.5 13.5l2 2 3.5-3.5"/></symbol>
+</svg>
+
+<div class="boot" id="boot">
+  <div class="logo" aria-hidden="true"><svg width="44" height="40" viewBox="0 0 44 40"><circle cx="9" cy="9" r="7" fill="#fff"/><circle cx="35" cy="9" r="7" fill="#fff"/><circle cx="9" cy="9" r="3.5" fill="#FFC9B6"/><circle cx="35" cy="9" r="3.5" fill="#FFC9B6"/><ellipse cx="22" cy="22" rx="17" ry="15" fill="#fff"/><circle cx="15.5" cy="20" r="2.2" fill="#3A2C2A"/><circle cx="28.5" cy="20" r="2.2" fill="#3A2C2A"/><ellipse cx="22" cy="27" rx="6" ry="4.5" fill="#FFE6DB"/><ellipse cx="22" cy="25.5" rx="2.4" ry="1.7" fill="#3A2C2A"/></svg></div>
+  <p id="bootMsg">기록을 불러오는 중입니다…</p>
+  <button class="btn btn-red btn-sm" id="bootRetry" hidden>다시 시도</button>
+</div>
+
+<div class="app">
+  <header class="topbar">
+    <div class="topbar-in">
+      <button class="class-btn" id="classBtn" aria-haspopup="menu" aria-expanded="false">
+        <span class="dot" aria-hidden="true"></span><span id="className">학급</span><span class="sub" id="classSubject"></span>
+        <svg class="ic sm"><use href="#i-down"/></svg>
+      </button>
+      <span class="date" id="todayLabel"></span>
+      <button class="sync ok" id="sync" type="button"><svg class="ic sm"><use href="#i-cloud"/></svg><span class="t">저장됨</span></button>
+      <button class="round" aria-label="설정" data-go="settings"><svg class="ic"><use href="#i-gear"/></svg></button>
+      <div class="avatar" role="img" aria-label="내 정보"><svg viewBox="0 0 50 50" width="40" height="40"><circle cx="13" cy="15" r="7" fill="#F6B59A"/><circle cx="37" cy="15" r="7" fill="#F6B59A"/><circle cx="25" cy="30" r="17" fill="url(#gFur)"/><ellipse cx="25" cy="35" rx="7" ry="5" fill="url(#gMuzzle)"/><circle cx="19" cy="28" r="2" fill="#3A2C2A"/><circle cx="31" cy="28" r="2" fill="#3A2C2A"/><ellipse cx="25" cy="33" rx="2.4" ry="1.6" fill="#3A2C2A"/></svg></div>
+    </div>
+    <div class="class-menu" id="classMenu" role="menu" hidden></div>
+  </header>
+
+  <nav class="nav" aria-label="화면">
+    <div class="brand-rail" aria-hidden="true"><div class="logo">
+      <svg width="44" height="40" viewBox="0 0 44 40"><circle cx="9" cy="9" r="7" fill="#fff"/><circle cx="35" cy="9" r="7" fill="#fff"/><circle cx="9" cy="9" r="3.5" fill="#FFC9B6"/><circle cx="35" cy="9" r="3.5" fill="#FFC9B6"/><ellipse cx="22" cy="22" rx="17" ry="15" fill="#fff"/><circle cx="15.5" cy="20" r="2.2" fill="#3A2C2A"/><circle cx="28.5" cy="20" r="2.2" fill="#3A2C2A"/><ellipse cx="22" cy="27" rx="6" ry="4.5" fill="#FFE6DB"/><ellipse cx="22" cy="25.5" rx="2.4" ry="1.7" fill="#3A2C2A"/></svg>
+    </div></div>
+    <button data-view="home" aria-current="page"><svg class="ic"><use href="#i-home"/></svg>홈</button>
+    <button data-view="lesson"><svg class="ic"><use href="#i-users"/></svg>수업</button>
+    <button data-view="assess"><svg class="ic"><use href="#i-clip"/></svg>평가</button>
+    <button data-view="log"><svg class="ic"><use href="#i-list"/></svg>일지</button>
+    <button data-view="students"><svg class="ic"><use href="#i-user"/></svg>학생</button>
+    <button data-view="reflect"><svg class="ic"><use href="#i-pen"/></svg>성찰</button>
+    <button data-view="settings" class="nav-set"><svg class="ic"><use href="#i-gear"/></svg>설정</button>
+    <div class="side-art" aria-hidden="true">
+      <svg width="150" height="170" viewBox="0 0 150 170">
+        <ellipse cx="75" cy="152" rx="62" ry="14" fill="#9C80E3"/><rect x="13" y="134" width="124" height="18" fill="#A98FE8"/><ellipse cx="75" cy="134" rx="62" ry="14" fill="#C4B0F3"/>
+        <path d="M44 92h62l-7 40H51z" fill="url(#gPot)"/><ellipse cx="75" cy="92" rx="31" ry="7" fill="#EFE5DA"/><ellipse cx="75" cy="92" rx="25" ry="4.5" fill="#B49680"/>
+        <ellipse cx="75" cy="56" rx="9" ry="22" fill="url(#gLeaf)"/><ellipse cx="59" cy="66" rx="8" ry="20" transform="rotate(-30 59 66)" fill="url(#gLeaf)"/><ellipse cx="91" cy="66" rx="8" ry="20" transform="rotate(30 91 66)" fill="url(#gLeaf)"/>
+        <ellipse cx="50" cy="80" rx="7" ry="17" transform="rotate(-60 50 80)" fill="url(#gLeaf)"/><ellipse cx="100" cy="80" rx="7" ry="17" transform="rotate(60 100 80)" fill="url(#gLeaf)"/>
+        <ellipse cx="66" cy="78" rx="7" ry="15" transform="rotate(-15 66 78)" fill="url(#gLeaf)"/><ellipse cx="84" cy="78" rx="7" ry="15" transform="rotate(15 84 78)" fill="url(#gLeaf)"/>
+      </svg>
+    </div>
+  </nav>
+
+  <main>
+    <div class="demo-bar" id="demoBar" hidden><b>체험 모드</b> · 구글 시트에 연결되지 않아 예시 데이터로 보여 줍니다. 새로고침하면 처음 상태로 돌아갑니다.</div>
+
+    <!-- 홈 -->
+    <section data-panel="home">
+      <div class="home-head">
+        <h2>대시보드 <span aria-hidden="true">👋</span></h2>
+        <p>다시 오신 것을 환영해요, 선생님! <span aria-hidden="true">💜</span></p>
+      </div>
+      <div id="homeOnboard"></div>
+      <div class="row1">
+        <article class="card hero">
+          <div class="hero-art" aria-hidden="true">
+            <svg width="180" height="176" viewBox="0 0 190 186">
+              <path d="M30 186c4-38 30-58 65-58s61 20 65 58z" fill="url(#gHoodie)"/>
+              <path d="M70 132c8 10 17 14 25 14s17-4 25-14" fill="none" stroke="#B59BEF" stroke-width="5" stroke-linecap="round"/>
+              <circle cx="48" cy="40" r="20" fill="url(#gFur)"/><circle cx="142" cy="40" r="20" fill="url(#gFur)"/>
+              <circle cx="48" cy="40" r="10" fill="#FFD0BE"/><circle cx="142" cy="40" r="10" fill="#FFD0BE"/>
+              <ellipse cx="95" cy="82" rx="58" ry="52" fill="url(#gFur)"/><ellipse cx="95" cy="100" rx="24" ry="17" fill="url(#gMuzzle)"/>
+              <ellipse cx="72" cy="80" rx="6" ry="7.5" fill="#2E2220"/><circle cx="74" cy="77" r="2.2" fill="#fff"/>
+              <path d="M110 81q8-8 16 0" fill="none" stroke="#2E2220" stroke-width="4" stroke-linecap="round"/>
+              <ellipse cx="95" cy="94" rx="6.5" ry="4.5" fill="#2E2220"/><path d="M88 104q7 7 14 0" fill="none" stroke="#2E2220" stroke-width="3" stroke-linecap="round"/>
+              <ellipse cx="60" cy="98" rx="9" ry="6" fill="#FF9DA8" opacity=".55"/><ellipse cx="130" cy="98" rx="9" ry="6" fill="#FF9DA8" opacity=".55"/>
+              <ellipse cx="140" cy="118" rx="17" ry="14" fill="url(#gFur)"/><path d="M128 112q6-4 12 0M131 118q6-4 12 0" fill="none" stroke="#E9967A" stroke-width="2" stroke-linecap="round"/>
+              <path d="M126 128q10 30 24 58h18q-10-34-30-60z" fill="url(#gHoodie)"/>
+            </svg>
+          </div>
+          <div><h3 id="greet">좋은 아침이에요!</h3><p>오늘도 학생들의 성장을 기록해 볼까요? <span aria-hidden="true">💜</span></p>
+            <button class="btn btn-red btn-sm" style="margin-top:14px" data-go="lesson">수업 기록 시작</button></div>
+        </article>
+        <article class="card dstat lav"><p class="label">이번 주 관찰 기록</p><div class="tile t-lav" aria-hidden="true"><svg class="ic"><use href="#i-note"/></svg></div><p class="num" id="hObs"></p><p class="trend" id="hObsT"></p></article>
+        <article class="card dstat peach"><p class="label">수행평가 채점</p><div class="tile t-peach" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg></div><p class="num" id="hScore"></p><p class="dsub" id="hScoreT"></p></article>
+        <article class="card dstat mint"><p class="label">이번 주 관찰한 학생</p><div class="tile t-mint" aria-hidden="true"><svg class="ic"><use href="#i-users"/></svg></div><p class="num" id="hStu"></p><p class="trend" id="hStuT"></p></article>
+      </div>
+      <div class="row2">
+        <article class="card">
+          <div class="card-h"><h3 id="chartTitle">요일별 관찰 기록 (전체 학급)</h3>
+            <div class="seg-tabs" role="group" aria-label="기간"><button data-range="this" aria-pressed="true">이번 주</button><button data-range="last" aria-pressed="false">지난주</button></div></div>
+          <div class="chart-wrap" id="chart" role="img" aria-labelledby="chartTitle" aria-describedby="chartDesc"><div class="tip" id="tip" hidden></div></div>
+          <p class="sr-only" id="chartDesc"></p>
+        </article>
+        <article class="card">
+          <div class="card-h"><h3>할 일</h3><span class="muted" style="font-size:13px">누르면 해당 화면으로 갑니다</span></div>
+          <div class="tasks" id="hTasks"></div>
+        </article>
+      </div>
+      <div class="row3">
+        <article class="card">
+          <div class="card-h"><h3>학급별 채점 진행</h3><button class="pill-btn" data-go="assess">평가로 가기</button></div>
+          <p class="muted" style="font-size:13px;margin:-8px 0 12px">학급마다 가장 최근 수행평가 기준</p>
+          <div class="progress"><div class="ring" id="ring"></div><div class="plegend" id="plegend"></div></div>
+        </article>
+        <article class="card remind">
+          <div aria-hidden="true"><svg width="96" height="130" viewBox="0 0 96 130">
+            <path d="M22 92h52l-6 34H28z" fill="url(#gTerra)"/><rect x="18" y="86" width="60" height="10" rx="5" fill="#F3A78E"/>
+            <rect x="34" y="22" width="28" height="70" rx="14" fill="url(#gLeaf)"/><path d="M34 60h-8a8 8 0 0 1-8-8V42a6 6 0 0 1 12 0v6h4" fill="url(#gLeaf)"/><path d="M62 50h7a7 7 0 0 0 7-7v-7a5.5 5.5 0 0 0-11 0v4h-3" fill="url(#gLeaf)"/>
+            <path d="M42 34v6M54 46v6M44 62v6M53 72v6" stroke="#E9F7DF" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="48" cy="18" r="6" fill="#F7A9C4"/><circle cx="42" cy="20" r="5" fill="#F7A9C4"/><circle cx="54" cy="20" r="5" fill="#F7A9C4"/><circle cx="48" cy="20" r="3" fill="#FFE07A"/></svg></div>
+          <div><h3>잊지 마세요!</h3><p id="hRemind"></p><button class="btn-lav" data-go="assess">채점하기</button></div>
+        </article>
+        <article class="card cheer">
+          <div class="cheer-art" aria-hidden="true"><svg width="170" height="120" viewBox="0 0 170 120">
+            <ellipse cx="85" cy="108" rx="62" ry="7" fill="#EBD9A6" opacity=".6"/>
+            <circle cx="58" cy="62" r="34" fill="url(#gCloud)"/><circle cx="100" cy="50" r="40" fill="url(#gCloud)"/><circle cx="132" cy="72" r="28" fill="url(#gCloud)"/><circle cx="36" cy="80" r="22" fill="url(#gCloud)"/>
+            <rect x="34" y="66" width="114" height="36" rx="18" fill="url(#gCloud)"/>
+            <ellipse cx="78" cy="70" rx="4" ry="5" fill="#2E2220"/><ellipse cx="104" cy="70" rx="4" ry="5" fill="#2E2220"/>
+            <path d="M84 80q7 6 14 0" fill="none" stroke="#2E2220" stroke-width="3" stroke-linecap="round"/>
+            <ellipse cx="68" cy="80" rx="7" ry="4.5" fill="#FFB3C1" opacity=".7"/><ellipse cx="114" cy="80" rx="7" ry="4.5" fill="#FFB3C1" opacity=".7"/></svg></div>
+          <div><h3>오늘도 잘하고<br>계세요! <span aria-hidden="true">💜</span></h3><p>작은 기록이 모여 학생의 성장이 됩니다.</p></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 수업 -->
+    <section data-panel="lesson" hidden>
+      <div id="lessonEmpty"></div>
+      <div class="lesson" id="lessonBody">
+        <div>
+          <div class="stats-strip">
+            <div class="card stat"><div class="v tnum" id="stToday">0</div><div class="l">오늘 기록</div></div>
+            <div class="card stat"><div class="v tnum" id="stWeek">0</div><div class="l">이번 주 관찰 학생</div></div>
+            <div class="card stat"><div class="v red tnum" id="stGap">0</div><div class="l">2주 이상 미관찰</div></div>
+          </div>
+          <div class="grid-tools">
+            <button class="chip" id="gapFilter" aria-pressed="false"><svg class="ic sm"><use href="#i-alert"/></svg>미관찰 학생만</button>
+            <button class="chip" id="selectAll" aria-pressed="false">전체 선택</button>
+            <span class="spacer"></span>
+            <div class="legend" aria-hidden="true"><span><i class="lg-dot"></i>최근 30일 기록 1건</span><span><i class="lg-care"></i>지도 필요</span><span><i class="lg-gap"></i>2주 미관찰</span></div>
+          </div>
+          <div class="roster" id="roster" role="group" aria-label="학생 명단"></div>
+          <div class="feed"><h3><svg class="ic sm"><use href="#i-clock"/></svg>오늘 이 학급 기록</h3><div class="feed-list" id="feed"></div></div>
+        </div>
+        <aside class="card composer-wrap" id="composerWrap" aria-label="관찰 기록 입력">
+          <div class="sheet-handle" aria-hidden="true"></div>
+          <div class="composer" id="composer"></div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- 평가 -->
+    <section data-panel="assess" hidden>
+      <div class="view-head">
+        <div><h2>수행평가 채점</h2><p>평가를 고르고, 학생마다 기준별 점수와 평가 내용을 기록합니다.</p></div>
+        <div class="btn-row" id="assessTools">
+          <button class="btn btn-line btn-sm" id="aEditBtn">평가 수정</button>
+          <button class="btn btn-line btn-sm" id="csvBtn">점수표 CSV</button>
+        </div>
+      </div>
+      <div class="assess-tabs" id="assessTabs"></div>
+      <div id="assessEmpty"></div>
+      <div id="assessBody">
+        <div class="assess-meta" id="assessMeta"></div>
+        <div class="a-summary" id="aSummary"></div>
+        <div class="assess">
+          <div class="card" style="overflow:hidden"><div class="alist-tools" id="aFilters"></div><div id="aList"></div></div>
+          <aside class="card composer-wrap" id="scoreWrap" aria-label="채점">
+            <div class="sheet-handle" aria-hidden="true"></div>
+            <div class="scorer" id="scorer"></div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- 일지 -->
+    <section data-panel="log" hidden>
+      <div class="view-head"><div><h2>관찰 일지</h2><p>최근 기록부터 날짜별로 봅니다. 수정·삭제도 여기서 합니다.</p></div></div>
+      <div class="card filter-card">
+        <div class="filter-row">
+          <div class="field"><label for="logClass">학급</label><select id="logClass"></select></div>
+          <div class="field"><label for="logDate">날짜</label><input type="date" id="logDate"></div>
+          <div class="field"><label for="logArea">관찰 영역</label><select id="logArea"></select></div>
+          <div class="field" style="flex-basis:200px"><label for="logQ">검색</label><input type="search" id="logQ" placeholder="이름, 내용"></div>
+        </div>
+        <div class="btn-row" id="logTones"></div>
+      </div>
+      <p class="summary-line" id="logSummary" aria-live="polite"></p>
+      <div id="logList"></div>
+      <div style="text-align:center;margin-top:16px"><button class="btn btn-line" id="logMore" hidden>더 보기</button></div>
+    </section>
+
+    <!-- 학생 -->
+    <section data-panel="students" hidden>
+      <div class="view-head">
+        <div><h2>학생별 기록</h2><p>관찰 기록과 수행평가를 시간순으로 모아 봅니다. 세특 작성 근거로 쓸 수 있습니다.</p></div>
+      </div>
+      <div id="studentsEmpty"></div>
+      <div class="students" id="studentsBody">
+        <div class="card slist">
+          <div class="slist-tools">
+            <input type="search" id="sSearch" placeholder="이름·번호 검색" aria-label="학생 검색">
+            <select id="sSort" aria-label="정렬" style="width:auto">
+              <option value="no">번호순</option><option value="few">관찰 적은 순</option><option value="care">지도 필요 많은 순</option>
+            </select>
+          </div>
+          <div class="slist-body" id="sList"></div>
+        </div>
+        <div class="card detail" id="sDetail"></div>
+      </div>
+    </section>
+
+    <!-- 성찰 -->
+    <section data-panel="reflect" hidden>
+      <div class="view-head">
+        <div><h2>수업 성찰</h2><p id="reflSub"></p></div>
+        <div class="btn-row"><input type="date" id="reflDate" aria-label="성찰 날짜" style="width:auto"><button class="btn btn-red" id="reflSave">성찰 저장</button></div>
+      </div>
+      <div class="reflect">
+        <div class="card summary" id="reflSummary"></div>
+        <div class="card q">
+          <div class="q-item"><label for="q1"><span class="no">1</span>오늘 수업에서 잘된 점</label><textarea id="q1" rows="3"></textarea></div>
+          <div class="q-item"><label for="q2"><span class="no">2</span>학생들이 어려워한 내용</label><textarea id="q2" rows="3"></textarea></div>
+          <div class="q-item"><label for="q3"><span class="no">3</span>다음 수업에서 개선할 점</label><textarea id="q3" rows="3"></textarea></div>
+          <div class="q-item"><label for="q4"><span class="no">4</span>추가 지도가 필요한 학생</label><textarea id="q4" rows="2"></textarea>
+            <p class="hintline">이 날짜에 관찰한 학생을 눌러 넣을 수 있습니다. 지도 필요 학생이 앞에 나옵니다.</p><div class="q-chips" id="qChips"></div></div>
+        </div>
+      </div>
+      <h3 class="sec-h">이 학급의 지난 성찰</h3>
+      <div id="reflList"></div>
+    </section>
+
+    <!-- 설정 -->
+    <section data-panel="settings" hidden>
+      <div class="view-head"><div><h2>설정</h2><p>학급과 명단, 빠른 문구, 데이터를 관리합니다.</p></div></div>
+      <div class="set-grid">
+        <div class="card set-card" id="setClasses"></div>
+        <div style="display:grid;gap:18px">
+          <div class="card set-card" id="setData"></div>
+          <div class="card set-card" id="setPhrases"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="sheet-backdrop" id="backdrop" hidden></div>
+<div class="action-bar" id="actionBar" hidden>
+  <span class="cnt" id="abCount"></span><span class="names" id="abNames"></span>
+  <button class="clear" id="abClear">해제</button>
+  <button class="btn btn-red btn-sm" id="abOpen">기록하기</button>
+</div>
+<dialog class="modal" id="modal" aria-labelledby="mTitle">
+  <form method="dialog" onsubmit="return false">
+    <div class="m-head"><h2 id="mTitle"></h2><button type="button" class="icon-btn" data-mv="cancel" aria-label="닫기"><svg class="ic"><use href="#i-x"/></svg></button></div>
+    <div class="m-body" id="mBody"></div>
+    <div class="m-foot" id="mFoot"></div>
+  </form>
+</dialog>
+<input type="file" id="fileInput" accept="application/json,.json" hidden>
+<div class="toast" id="toast" role="status" aria-live="polite"><span id="toastMsg"></span><button id="toastUndo" hidden>되돌리기</button></div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ================= 기본 도구 =================
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const icon = (n, cls = "sm") => `<svg class="ic ${cls}" aria-hidden="true"><use href="#i-${n}"/></svg>`;
+  const pad = (n) => String(n).padStart(2, "0");
+  const ymd = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const WEEK = ["일", "월", "화", "수", "목", "금", "토"];
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const TODAY = ymd(today);
+  const daysAgo = (s) => Math.round((today - new Date(s + "T00:00:00")) / 86400000);
+  const fmt = (s) => { const d = new Date(s + "T00:00:00"); return isNaN(d) ? s : `${d.getMonth() + 1}월 ${d.getDate()}일 (${WEEK[d.getDay()]})`; };
+  const fmtFull = (s) => { const d = new Date(s + "T00:00:00"); return isNaN(d) ? s : `${d.getFullYear()}년 ${fmt(s)}`; };
+  const nowTime = () => { const d = new Date(); return `${pad(d.getHours())}:${pad(d.getMinutes())}`; };
+  const uid = () => (window.crypto && crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2, 10));
+  const clone = (o) => JSON.parse(JSON.stringify(o));
+  const ls = {
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* 저장 불가 환경 */ } },
+  };
+
+  const AREAS = ["수업 태도", "개념 이해", "실습 수행", "문제 해결", "의사소통", "협업", "진로탐색", "과제수행", "기타"];
+  const TONES = { good: "긍정", normal: "보통", care: "지도 필요" };
+  const STATUS = { done: "채점", absent: "결시", missing: "미제출" };
+  const DEFAULT_PHRASES = {
+    "수업 태도": ["수업 시작 전 교과서와 학습지를 미리 준비함", "설명을 들으며 핵심을 스스로 정리함", "활동 중 집중이 자주 흐트러짐"],
+    "개념 이해": ["한자의 부수와 뜻을 연결해 설명함", "훈과 음을 혼동함", "새 어휘를 예문 속에서 바르게 풀이함"],
+    "실습 수행": ["필순에 맞게 바르게 씀", "획의 방향을 반대로 쓰는 경우가 있음", "제시된 시간 안에 쓰기 활동을 마침"],
+    "문제 해결": ["모르는 한자를 부수로 추측해 뜻을 찾아냄", "막히는 문제를 짝에게 질문하며 해결함", "풀이 과정 없이 답만 적음"],
+    "의사소통": ["자신의 풀이를 근거를 들어 발표함", "발표할 때 목소리가 작아 다시 말하도록 도움", "친구 발표에 질문을 덧붙임"],
+    "협업": ["모둠에서 역할을 나누고 진행을 이끎", "모둠원의 의견을 끝까지 듣고 정리함", "모둠 활동에 참여가 적음"],
+    "진로탐색": ["한자 어휘와 관심 직업을 연결해 조사함", "고전 구절에서 자신의 다짐을 찾아 씀"],
+    "과제수행": ["과제를 기한 안에 성실하게 제출함", "과제가 미완성이어서 보충 기회를 줌"],
+    "기타": ["수업 후 따로 질문하러 옴", "건강상 이유로 활동을 쉬었음"],
+  };
+  const DEFAULT_SCORE_PHRASES = ["설명이 정확하고 근거가 분명함", "자형은 바르나 필순 연습이 더 필요함", "발표 자료를 스스로 짜임 있게 구성함", "모르는 부분을 끝까지 찾아 보완함"];
+  const LEVEL_DESCS = ["매우 우수", "우수", "보통", "미흡", "매우 미흡"];
+  const CLASS_COLORS = ["#8B6BE0", "#E07A9E", "#D99A2B", "#3FAE86"]; // 색각 검사를 통과한 순서. 5번째 학급부터는 회색
+  const QKEY = "onbit-obs2-queue";
+  const CKEY = "onbit-obs2-class";
+
+  // ================= 서버 연결 =================
+  const DEMO = !(window.google && google.script && google.script.run);
+  function server(fn, ...args) {
+    if (DEMO) return Demo.call(fn, args);
+    return new Promise((resolve, reject) => {
+      google.script.run.withSuccessHandler(resolve).withFailureHandler(reject)[fn](...args);
+    });
+  }
+  const errMsg = (e) => String((e && (e.message || e)) || "알 수 없는 오류").replace(/^Exception:\s*/, "");
+  const isRetryable = (e) => /network|connection|failed to fetch|timed? ?out|lock|서버|unavailable|http 0/i.test(errMsg(e)) || !errMsg(e);
+
+  // 체험 모드: 구글 시트 대신 브라우저 메모리에 예시 데이터를 둠
+  const Demo = (() => {
+    let T = null;
+    const KINDS = ["classes", "students", "obs", "assessments", "scores", "reflections", "phrases"];
+    function seed() {
+      let s = 20261004;
+      const rnd = () => ((s = (s * 1103515245 + 12345) % 2147483648) / 2147483648);
+      const pick = (a) => a[Math.floor(rnd() * a.length)];
+      const SUR = ["김", "이", "박", "최", "정", "강", "조", "윤", "장", "임", "한", "오", "서", "신", "권"];
+      const GIV = ["서윤", "도현", "하은", "시우", "지안", "예준", "수아", "주원", "하린", "은우", "채원", "지호", "다은", "건우", "유나", "현서", "민재", "서연", "태윤", "가온", "나래", "로운", "다온", "이안", "소율", "윤재", "아린", "준서"];
+      const t = { classes: [], students: [], obs: [], assessments: [], scores: [], reflections: [], phrases: [] };
+      const now = new Date().toISOString();
+      [["2-3", 24], ["2-4", 25], ["3-1", 22]].forEach(([name, size], ci) => {
+        const cid = "demo-c" + ci;
+        t.classes.push({ id: cid, name, subject: "한문", order: ci, createdAt: now, updatedAt: now });
+        for (let i = 1; i <= size; i++) {
+          const sid = `${cid}-s${i}`;
+          t.students.push({ id: sid, classId: cid, no: i, name: SUR[(i * 7 + ci * 3) % SUR.length] + GIV[(i * 5 + ci * 11) % GIV.length], active: "Y", createdAt: now, updatedAt: now });
+          const n = rnd() < 0.15 ? Math.floor(rnd() * 2) : 2 + Math.floor(rnd() * 5);
+          for (let k = 0; k < n; k++) {
+            const d = new Date(today); d.setDate(d.getDate() - (1 + Math.floor(rnd() * rnd() * 34)));
+            const area = pick(AREAS.slice(0, 6)); const r = rnd();
+            const tone = r < 0.45 ? "good" : r < 0.82 ? "normal" : "care";
+            t.obs.push({ id: uid(), date: ymd(d), time: `${pad(9 + Math.floor(rnd() * 6))}:${pad(Math.floor(rnd() * 60))}`, classId: cid, studentId: sid, area, tone,
+              content: pick(DEFAULT_PHRASES[area]), feedback: tone === "care" ? "다음 시간에 먼저 확인하고 짧게 다시 설명함" : "", createdAt: now, updatedAt: now });
+          }
+        }
+        [["한자 어휘 쓰기", -12, [["자형 정확성", 10], ["필순", 5], ["어휘 풀이", 5]]], ["고사성어 이야기 발표", -3, [["내용 이해", 10], ["표현·전달", 10], ["자료 구성", 10]]]].forEach(([title, off, crits], ai) => {
+          const d = new Date(today); d.setDate(d.getDate() + off);
+          const criteria = crits.map(([nm, max]) => ({ name: nm, levels: makeLevels(max) }));
+          const a = { id: `${cid}-a${ai}`, classId: cid, title, date: ymd(d), criteria, baseScore: minOf(criteria), createdAt: now, updatedAt: now };
+          t.assessments.push(a);
+          t.students.filter((x) => x.classId === cid).forEach((st) => {
+            const r = rnd();
+            if (ai === 1 && r < 0.4) return;
+            const rec = { id: `${a.id}|${st.id}`, assessmentId: a.id, studentId: st.id, status: r > 0.96 ? "absent" : "done", picks: [], total: 0,
+              memo: rnd() < 0.5 ? pick(DEFAULT_SCORE_PHRASES) : "", createdAt: now, updatedAt: now };
+            if (rec.status === "done") rec.picks = criteria.map(() => Math.min(4, Math.floor(rnd() * rnd() * 5)));
+            rec.total = totalOf(a, rec);
+            t.scores.push(rec);
+          });
+        });
+      });
+      return t;
+    }
+    const ops = {
+      bootstrap() { return { tables: T, sheetUrl: "" }; },
+      saveMany(kind, recs) {
+        const now = new Date().toISOString();
+        recs.forEach((r) => { r.updatedAt = now; const i = T[kind].findIndex((x) => x.id === r.id); if (i >= 0) T[kind][i] = r; else T[kind].push(r); });
+        return recs.length;
+      },
+      removeMany(map) { Object.keys(map).forEach((k) => { const set = new Set(map[k]); T[k] = T[k].filter((x) => !set.has(x.id)); }); return true; },
+      importAll(tables, mode) {
+        const added = {};
+        KINDS.forEach((k) => {
+          const inc = Array.isArray(tables[k]) ? tables[k] : [];
+          if (mode === "merge") {
+            const m = new Map(T[k].map((x) => [x.id, x])); let n = 0;
+            inc.forEach((x) => { const c = m.get(x.id); if (!c) { m.set(x.id, x); n++; } else if (String(x.updatedAt) > String(c.updatedAt)) m.set(x.id, x); });
+            T[k] = [...m.values()]; added[k] = n;
+          } else { T[k] = inc; added[k] = inc.length; }
+        });
+        return { added };
+      },
+      deleteAll() { KINDS.forEach((k) => (T[k] = [])); return true; },
+    };
+    return {
+      call(fn, args) {
+        return new Promise((resolve, reject) => setTimeout(() => {
+          try { if (!T) T = seed(); resolve(clone(ops[fn](...clone(args)) ?? null)); } catch (e) { reject(e); }
+        }, 150));
+      },
+    };
+  })();
+
+  // ================= 상태 =================
+  let S = { classes: [], students: [], obs: [], assessments: [], scores: [], reflections: [], phrases: [] };
+  let sheetUrl = "";
+  let ver = 0; // 상태가 바뀔 때마다 올림(색인 캐시용)
+  let cid = ls.get(CKEY) || "";
+  let view = "home";
+
+  const classesSorted = () => [...S.classes].sort((a, b) => (a.order - b.order) || a.name.localeCompare(b.name, "ko"));
+  const classOf = (id) => S.classes.find((c) => c.id === id);
+  const stuOf = (id) => S.students.find((s) => s.id === id);
+  const rosterOf = (c, all) => S.students.filter((s) => s.classId === c && (all || s.active !== "N")).sort((a, b) => a.no - b.no);
+  let idxCache = { v: -1 };
+  function obsIdx() {
+    if (idxCache.v !== ver) {
+      const m = new Map();
+      S.obs.forEach((o) => { if (!m.has(o.studentId)) m.set(o.studentId, []); m.get(o.studentId).push(o); });
+      idxCache = { v: ver, m };
+    }
+    return idxCache.m;
+  }
+  const obsOf = (sid) => obsIdx().get(sid) || [];
+  const lastDate = (sid) => obsOf(sid).reduce((m, o) => (o.date > m ? o.date : m), "");
+  const gapDays = (sid) => { const l = lastDate(sid); return l ? daysAgo(l) : 99; };
+  const scoreOf = (aid, sid) => S.scores.find((x) => x.assessmentId === aid && x.studentId === sid);
+  const assessOf = (c) => S.assessments.filter((a) => a.classId === c).sort((a, b) => a.date.localeCompare(b.date) || a.createdAt.localeCompare(b.createdAt));
+  const latestAssess = (c) => { const l = assessOf(c); return l[l.length - 1]; };
+  function makeLevels(max) { return LEVEL_DESCS.map((d, i) => ({ pt: Math.round((max * (5 - i)) / 5 * 10) / 10, d })); }
+  function maxOf(a) { return a.criteria.reduce((n, c) => n + (Number(c.levels[0] && c.levels[0].pt) || 0), 0); }
+  function minOf(criteria) { return criteria.reduce((n, c) => n + (Number(c.levels[c.levels.length - 1] && c.levels[c.levels.length - 1].pt) || 0), 0); }
+  function totalOf(a, x) {
+    if (!x) return null;
+    if (x.status !== "done") return Number(a.baseScore) || 0;
+    return Math.round(a.criteria.reduce((n, c, i) => n + (x.picks[i] == null ? 0 : Number(c.levels[x.picks[i]] && c.levels[x.picks[i]].pt) || 0), 0) * 10) / 10;
+  }
+  const phrasesFor = (area) => { const r = S.phrases.find((p) => p.id === "obs|" + area); return r && r.list.length ? r.list : DEFAULT_PHRASES[area] || []; };
+  const scorePhrases = () => { const r = S.phrases.find((p) => p.id === "score"); return r && r.list.length ? r.list : DEFAULT_SCORE_PHRASES; };
+  const curClass = () => classOf(cid);
+
+  function ensureClass() {
+    if (!classOf(cid)) { const f = classesSorted()[0]; cid = f ? f.id : ""; }
+    if (cid) ls.set(CKEY, cid);
+  }
+
+  // ================= 저장 대기열 (화면 먼저 반영 → 시트에 순서대로 저장) =================
+  let queue = [];
+  if (!DEMO) { try { queue = JSON.parse(ls.get(QKEY) || "[]"); } catch (e) { queue = []; } }
+  let flushing = false, retryTimer = null, fails = 0, needReload = false;
+  const saveQ = () => { if (!DEMO) ls.set(QKEY, JSON.stringify(queue)); };
+
+  function enqueue(fn, args) { queue.push({ fn, args: clone(args) }); saveQ(); updateSync(); flush(); }
+  async function flush() {
+    if (flushing || !queue.length) { updateSync(); return; }
+    flushing = true; updateSync();
+    while (queue.length) {
+      try {
+        await server(queue[0].fn, ...queue[0].args);
+        queue.shift(); saveQ(); fails = 0;
+      } catch (e) {
+        if (isRetryable(e)) {
+          flushing = false; fails++; updateSync();
+          clearTimeout(retryTimer); retryTimer = setTimeout(flush, Math.min(60000, 2000 * 2 ** Math.min(fails, 5)));
+          return;
+        }
+        queue.shift(); saveQ(); needReload = true;
+        toast("저장하지 못한 변경이 있습니다: " + errMsg(e), { error: true });
+      }
+    }
+    flushing = false; updateSync();
+    if (needReload) { needReload = false; await reload(); }
+  }
+  // 대기열이 빌 때까지 기다림(불러오기·전체 삭제 전에 씀)
+  async function drain() {
+    await flush();
+    if (queue.length) throw new Error("아직 시트에 저장하지 못한 변경이 있습니다. 인터넷 연결을 확인해 주세요.");
+  }
+  window.addEventListener("online", flush);
+  window.addEventListener("beforeunload", (e) => { if (queue.length) { e.preventDefault(); e.returnValue = ""; } });
+
+  function updateSync() {
+    const b = $("sync");
+    if (DEMO) { b.className = "sync demo"; b.innerHTML = `${icon("alert")}<span class="t">체험 모드</span>`; b.title = "구글 시트에 연결되지 않은 체험 모드"; return; }
+    if (!queue.length) { b.className = "sync ok"; b.innerHTML = `${icon("cloud")}<span class="t">저장됨</span>`; b.title = "구글 시트에 모두 저장됨"; return; }
+    if (flushing) { b.className = "sync busy"; b.innerHTML = `${icon("clock")}<span class="t">저장 중 ${queue.length}</span>`; b.title = "구글 시트에 저장하는 중"; return; }
+    b.className = "sync wait"; b.innerHTML = `${icon("alert")}<span class="t">대기 ${queue.length}</span>`; b.title = "연결이 끊겨 저장을 기다리는 중. 누르면 다시 시도합니다.";
+  }
+  $("sync").addEventListener("click", () => { if (queue.length) { clearTimeout(retryTimer); flush(); } });
+
+  // 상태 바꾸기: 화면에 바로 반영하고 대기열에 넣음
+  function put(kind, recs) {
+    recs = [].concat(recs);
+    const now = new Date().toISOString();
+    recs.forEach((r) => {
+      r.updatedAt = now; r.createdAt = r.createdAt || now;
+      const i = S[kind].findIndex((x) => x.id === r.id);
+      if (i >= 0) S[kind][i] = r; else S[kind].push(r);
+    });
+    ver++;
+    enqueue("saveMany", [kind, recs]);
+  }
+  function del(map) {
+    Object.keys(map).forEach((k) => { const set = new Set(map[k]); S[k] = S[k].filter((x) => !set.has(x.id)); });
+    ver++;
+    enqueue("removeMany", [map]);
+  }
+  // 지울 때 함께 지워야 하는 기록을 모음
+  function cascade(kind, ids) {
+    const m = { [kind]: [...ids] };
+    const add = (k, list) => { if (list.length) m[k] = [...new Set([...(m[k] || []), ...list])]; };
+    if (kind === "classes") {
+      const set = new Set(ids);
+      const stu = S.students.filter((s) => set.has(s.classId)).map((s) => s.id);
+      const as = S.assessments.filter((a) => set.has(a.classId)).map((a) => a.id);
+      add("students", stu);
+      add("obs", S.obs.filter((o) => set.has(o.classId)).map((o) => o.id));
+      add("assessments", as);
+      add("reflections", S.reflections.filter((r) => set.has(r.classId)).map((r) => r.id));
+      const aset = new Set(as);
+      add("scores", S.scores.filter((x) => aset.has(x.assessmentId)).map((x) => x.id));
+    }
+    if (kind === "students") {
+      const set = new Set(ids);
+      add("obs", S.obs.filter((o) => set.has(o.studentId)).map((o) => o.id));
+      add("scores", S.scores.filter((x) => set.has(x.studentId)).map((x) => x.id));
+    }
+    if (kind === "assessments") {
+      const set = new Set(ids);
+      add("scores", S.scores.filter((x) => set.has(x.assessmentId)).map((x) => x.id));
+    }
+    return m;
+  }
+
+  // ================= 시작 =================
+  async function boot() {
+    $("boot").hidden = false; $("bootRetry").hidden = true; $("bootMsg").textContent = "기록을 불러오는 중입니다…";
+    try {
+      if (queue.length) { $("bootMsg").textContent = "지난번에 저장하지 못한 기록을 먼저 저장하는 중입니다…"; await drain(); }
+      await reload(true);
+      $("boot").hidden = true;
+    } catch (e) {
+      $("bootMsg").textContent = "기록을 불러오지 못했습니다. " + errMsg(e);
+      $("bootRetry").hidden = false;
+    }
+  }
+  $("bootRetry").addEventListener("click", boot);
+
+  async function reload(first) {
+    const d = await server("bootstrap");
+    const t = d.tables || {};
+    S = { classes: t.classes || [], students: t.students || [], obs: t.obs || [], assessments: t.assessments || [], scores: t.scores || [], reflections: t.reflections || [], phrases: t.phrases || [] };
+    sheetUrl = d.sheetUrl || "";
+    ver++;
+    ensureClass();
+    if (first) { const s = ls.get("onbit-obs2-view"); if (s && document.querySelector(`[data-panel="${s}"]`)) view = s; }
+    go(view, true);
+  }
+
+  // ================= 공통 화면 요소 =================
+  $("todayLabel").textContent = fmt(TODAY);
+  $("demoBar").hidden = !DEMO;
+
+  function renderClassBtn() {
+    const c = curClass();
+    $("className").textContent = c ? c.name : "학급 없음";
+    $("classSubject").textContent = c ? c.subject : "";
+    $("classMenu").innerHTML = classesSorted().map((x) => `<button role="menuitemradio" aria-checked="${x.id === cid}" data-cid="${esc(x.id)}"><span>${esc(x.name)} ${esc(x.subject)}</span><small>${rosterOf(x.id).length}명</small></button>`).join("")
+      + `<button role="menuitem" data-go="settings"><span>${icon("gear")} 학급·명단 관리</span></button>`;
+  }
+  $("classBtn").addEventListener("click", (e) => { e.stopPropagation(); const m = $("classMenu"); m.hidden = !m.hidden; $("classBtn").setAttribute("aria-expanded", String(!m.hidden)); });
+  $("classMenu").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-cid]"); if (!b) return;
+    setClass(b.dataset.cid);
+    $("classMenu").hidden = true; $("classBtn").setAttribute("aria-expanded", "false");
+  });
+  document.addEventListener("click", (e) => { if (!e.target.closest("#classMenu, #classBtn")) { $("classMenu").hidden = true; $("classBtn").setAttribute("aria-expanded", "false"); } });
+  function setClass(id) {
+    cid = id; ls.set(CKEY, id);
+    selected.clear(); currentSid = null; aSid = null; aDraft = null; assessId = null; reflDirty = false;
+    closeSheet(); renderAll();
+  }
+
+  document.querySelectorAll(".nav button[data-view]").forEach((b) => b.addEventListener("click", () => go(b.dataset.view)));
+  document.addEventListener("click", (e) => {
+    const g = e.target.closest("[data-go]");
+    if (g) { e.preventDefault(); $("classMenu").hidden = true; go(g.dataset.go); }
+  });
+  function go(v, keepScroll) {
+    view = v; ls.set("onbit-obs2-view", v);
+    document.querySelectorAll(".nav button[data-view]").forEach((b) => { if (b.dataset.view === v) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); });
+    document.querySelectorAll("[data-panel]").forEach((p) => (p.hidden = p.dataset.panel !== v));
+    closeSheet();
+    renderAll();
+    if (!keepScroll) window.scrollTo({ top: 0 });
+  }
+  function renderAll() {
+    renderClassBtn();
+    ({ home: renderHome, lesson: renderLesson, assess: renderAssess, log: renderLog, students: renderStudents, reflect: renderReflect, settings: renderSettings }[view] || renderHome)();
+  }
+  const isDesktop = () => matchMedia("(min-width: 1024px)").matches;
+  function emptyBox(title, body, btn) {
+    return `<div class="empty-box"><strong>${esc(title)}</strong>${esc(body)}${btn ? `<br><button class="btn btn-red btn-sm" data-go="${btn[0]}">${esc(btn[1])}</button>` : ""}</div>`;
+  }
+  const toneBadge = (t) => t === "normal" ? "" : `<span class="badge ${t === "good" ? "b-good" : "b-care"}">${icon(t === "good" ? "plus" : "alert")}${TONES[t]}</span>`;
+
+  // 알림
+  let tTimer, undoFn = null;
+  function toast(msg, opt = {}) {
+    $("toastMsg").textContent = msg; undoFn = opt.undo || null; $("toastUndo").hidden = !undoFn;
+    $("toast").classList.add("show"); clearTimeout(tTimer);
+    tTimer = setTimeout(() => { $("toast").classList.remove("show"); undoFn = null; }, opt.undo ? 6000 : opt.error ? 5000 : 2600);
+  }
+  $("toastUndo").addEventListener("click", () => { const f = undoFn; undoFn = null; $("toast").classList.remove("show"); f && f(); });
+
+  // 대화상자
+  let mh = null;
+  function openModal(o) {
+    if (mh && mh !== o) { const old = mh; mh = null; old.onClose && old.onClose(); }
+    mh = o;
+    $("mTitle").textContent = o.title;
+    $("mBody").innerHTML = o.body;
+    $("mFoot").innerHTML = (o.buttons || []).map((b) => `<button type="button" class="btn ${b.cls || "btn-line"}${b.left ? " left" : ""}" data-mv="${b.v}">${esc(b.label)}</button>`).join("");
+    $("modal").classList.toggle("wide", !!o.wide);
+    if (!$("modal").open) $("modal").showModal();
+    o.onOpen && o.onOpen($("mBody"));
+  }
+  function closeModal() { if ($("modal").open) $("modal").close(); }
+  $("modal").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-mv]");
+    if (b) {
+      if (b.dataset.mv === "cancel") { closeModal(); return; }
+      const h = mh; const r = h && h.onAction ? h.onAction(b.dataset.mv, $("mBody")) : true;
+      if (r !== false && mh === h) closeModal();
+      return;
+    }
+    mh && mh.onClick && mh.onClick(e, $("mBody"));
+  });
+  $("modal").addEventListener("input", (e) => mh && mh.onInput && mh.onInput(e, $("mBody")));
+  $("modal").addEventListener("change", (e) => mh && mh.onChange && mh.onChange(e, $("mBody")));
+  $("modal").addEventListener("close", () => { if ($("modal").open) return; const h = mh; mh = null; h && h.onClose && h.onClose(); });
+
+  function confirmBox({ title, message, warn, yes = "확인", danger = true, requireText }) {
+    return new Promise((resolve) => {
+      let done = false;
+      const fin = (v) => { if (!done) { done = true; resolve(v); } };
+      openModal({
+        title,
+        body: `<p style="white-space:pre-wrap">${esc(message)}</p>${warn ? `<p class="warn">${esc(warn)}</p>` : ""}
+          ${requireText ? `<div class="field"><label for="cfText">확인을 위해 <b>${esc(requireText)}</b>를 입력하세요</label><input type="text" id="cfText" autocomplete="off"></div>` : ""}`,
+        buttons: [{ v: "cancel", label: "취소" }, { v: "yes", label: yes, cls: danger ? "btn-red danger" : "btn-red" }],
+        onOpen: (body) => { const t = body.querySelector("#cfText"); if (t) t.focus(); },
+        onAction: (v, body) => {
+          if (v !== "yes") return true;
+          if (requireText && body.querySelector("#cfText").value.trim() !== requireText) { body.querySelector("#cfText").focus(); return false; }
+          fin(true); return true;
+        },
+        onClose: () => fin(false),
+      });
+    });
+  }
+
+  function download(name, text, type) {
+    const blob = new Blob([text], { type });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url; a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  }
+  // 내려받기가 막힌 환경을 위한 복사용 창
+  function showText(title, text, fileName) {
+    openModal({
+      title, wide: true,
+      body: `<textarea class="textview" id="tvText" readonly>${esc(text)}</textarea><p class="hint">내려받기가 되지 않으면 내용을 모두 선택해 복사하세요.</p>`,
+      buttons: [{ v: "copy", label: "모두 복사", left: true }, { v: "cancel", label: "닫기" }, { v: "dl", label: "파일로 내려받기", cls: "btn-red" }],
+      onAction: (v, body) => {
+        const t = body.querySelector("#tvText");
+        if (v === "copy") { t.select(); let ok = false; try { ok = document.execCommand("copy"); } catch (e) { ok = false; } toast(ok ? "복사했습니다." : "선택된 내용을 Ctrl+C로 복사하세요."); return false; }
+        if (v === "dl") { download(fileName, "﻿" + text, "text/plain;charset=utf-8"); toast("내려받았습니다."); return false; }
+        return true;
+      },
+    });
+  }
+
+  // 휴대폰 아래 시트
+  function openSheet(wrapId) { $(wrapId).classList.add("open"); $("backdrop").hidden = false; renderActionBar(); }
+  function closeSheet() { document.querySelectorAll(".composer-wrap").forEach((w) => w.classList.remove("open")); $("backdrop").hidden = true; renderActionBar(); }
+  $("backdrop").addEventListener("click", closeSheet);
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("modal").open) closeSheet(); });
+  matchMedia("(min-width: 1024px)").addEventListener("change", () => { closeSheet(); renderAll(); });
+
+  // ================= 홈 =================
+  const DOW = ["월", "화", "수", "목", "금"];
+  const monday = (() => { const d = new Date(today); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return d; })();
+  const weekDays = (off) => DOW.map((_, i) => { const d = new Date(monday); d.setDate(d.getDate() + i - off * 7); return ymd(d); });
+  const inWeek = (off) => { const days = new Set(weekDays(off)); return S.obs.filter((o) => days.has(o.date)); };
+  let range = "this";
+
+  function trendHtml(cur, prev, unit) {
+    const diff = cur - prev;
+    if (!diff) return `<span>지난주와 같음</span>`;
+    return `<svg class="ic" aria-hidden="true"><use href="#i-arrow-${diff > 0 ? "up" : "down"}"/></svg>${Math.abs(diff)}${unit}<span>&nbsp;지난주보다 ${diff > 0 ? "늘어남" : "줄어듦"}</span>`;
+  }
+
+  function renderHome() {
+    const h = new Date().getHours();
+    $("greet").textContent = h < 11 ? "좋은 아침이에요!" : h < 17 ? "좋은 오후예요!" : "오늘 하루 수고하셨어요!";
+    const hasRoster = S.students.length > 0;
+    $("homeOnboard").innerHTML = hasRoster ? "" : `<div class="card onboard"><h3>처음 오셨네요. 세 단계면 준비가 끝납니다.</h3>
+      <div class="steps">
+        <div class="step"><span class="n">1</span><b>학급과 명단 등록</b><span class="hint">학급을 만들고 명단을 붙여넣습니다.</span><button class="btn btn-red btn-sm" data-go="settings">설정으로 가기</button></div>
+        <div class="step"><span class="n">2</span><b>수행평가 만들기</b><span class="hint">평가 화면에서 채점 기준(5단계)을 만듭니다.</span></div>
+        <div class="step"><span class="n">3</span><b>수업 중 기록</b><span class="hint">수업 화면에서 학생 카드를 눌러 기록합니다.</span></div>
+      </div></div>`;
+
+    const tw = inWeek(0), lw = inWeek(1);
+    $("hObs").innerHTML = `${tw.length}<small>건</small>`;
+    $("hObsT").className = "trend" + (tw.length < lw.length ? " down" : "");
+    $("hObsT").innerHTML = trendHtml(tw.length, lw.length, "건");
+    const total = S.students.filter((s) => s.active !== "N").length;
+    const sw = new Set(tw.map((o) => o.studentId)).size, sl = new Set(lw.map((o) => o.studentId)).size;
+    $("hStu").innerHTML = `${sw}<small>/${total}</small>`;
+    $("hStuT").className = "trend" + (sw < sl ? " down" : "");
+    $("hStuT").innerHTML = trendHtml(sw, sl, "명");
+
+    const per = classesSorted().map((c) => {
+      const a = latestAssess(c.id); if (!a) return null;
+      const roster = rosterOf(c.id);
+      return { c, a, done: roster.filter((s) => scoreOf(a.id, s.id)).length, total: roster.length };
+    }).filter(Boolean);
+    const done = per.reduce((n, x) => n + x.done, 0), all = per.reduce((n, x) => n + x.total, 0);
+    const pct = all ? Math.round((done / all) * 100) : 0;
+    $("hScore").innerHTML = per.length ? `${pct}<small>%</small>` : `-`;
+    $("hScoreT").textContent = per.length ? `미채점 ${all - done}명 · 최근 평가 기준` : "아직 수행평가가 없습니다";
+    $("hRemind").innerHTML = !per.length ? "평가 화면에서 첫 수행평가를 만들어 보세요." : all - done ? `채점하지 않은 학생이 <b>${all - done}명</b> 남았어요.` : "모든 학생을 채점했어요.";
+
+    const R = 60, C = 2 * Math.PI * R;
+    $("ring").innerHTML = `<svg viewBox="0 0 150 150" aria-hidden="true"><circle cx="75" cy="75" r="${R}" fill="none" stroke="#F1ECF8" stroke-width="18"/>
+      ${pct ? `<circle cx="75" cy="75" r="${R}" fill="none" stroke="url(#gRing)" stroke-width="18" stroke-linecap="round" stroke-dasharray="${(C * pct) / 100} ${C}"/>` : ""}</svg>
+      <div class="center" role="img" aria-label="전체 채점 진행률 ${pct}%, ${all}명 중 ${done}명 완료"><div><b>${pct}%</b><span>전체 완료</span></div></div>`;
+    $("plegend").innerHTML = per.length ? per.map((x, i) => {
+      const p = x.total ? Math.round((x.done / x.total) * 100) : 0; const col = CLASS_COLORS[i] || "#9C94B0";
+      return `<div class="plg"><i style="background:${col}"></i><span>${esc(x.c.name)} <span class="muted">${esc(x.a.title)} · ${x.done}/${x.total}명</span></span><b>${p}%</b>
+        <div class="bar" role="img" aria-label="${esc(x.c.name)} ${p}%"><span style="width:${p}%;background:${col}"></span></div></div>`;
+    }).join("") : `<p class="muted">수행평가를 만들면 학급별 진행률이 여기에 나옵니다.</p>`;
+
+    const tasks = [];
+    per.filter((x) => x.total - x.done).sort((a, b) => (b.total - b.done) - (a.total - a.done)).slice(0, 1).forEach((x) =>
+      tasks.push({ tile: "t-pink", ic: "clip", t: `${x.c.name} ${x.a.title} 채점`, w: `미채점 ${x.total - x.done}명`, st: ["s-doing", "진행 중"], go: "assess", cid: x.c.id, aid: x.a.id }));
+    const careRecent = new Set(S.obs.filter((o) => o.tone === "care" && daysAgo(o.date) < 7).map((o) => o.studentId));
+    if (careRecent.size) tasks.push({ tile: "t-mint", ic: "alert", t: "지도 필요 학생 확인", w: `최근 7일 · ${careRecent.size}명`, st: ["s-soon", "확인"], go: "students", sort: "care" });
+    const gaps = classesSorted().map((c) => ({ c, n: rosterOf(c.id).filter((s) => gapDays(s.id) >= 14).length })).sort((a, b) => b.n - a.n)[0];
+    if (gaps && gaps.n) tasks.push({ tile: "t-lav", ic: "users", t: "2주 미관찰 학생 관찰", w: `${gaps.c.name} · ${gaps.n}명`, st: ["s-todo", "할 일"], go: "lesson", cid: gaps.c.id, gap: true });
+    if (curClass()) {
+      const hasRefl = S.reflections.some((r) => r.classId === cid && r.date === TODAY);
+      tasks.push({ tile: "t-amber", ic: "pen", t: "오늘 수업 성찰 쓰기", w: `${curClass().name} · ${hasRefl ? "작성함" : "수업 후"}`, st: hasRefl ? ["s-done", "완료"] : ["s-todo", "할 일"], go: "reflect" });
+    }
+    if (!S.classes.length) tasks.push({ tile: "t-lav", ic: "gear", t: "학급과 명단 등록", w: "설정에서 시작", st: ["s-todo", "할 일"], go: "settings" });
+    $("hTasks").innerHTML = tasks.slice(0, 4).map((t, i) => `<button class="task" data-task="${i}"><span class="tile ${t.tile}" aria-hidden="true"><svg class="ic"><use href="#i-${t.ic}"/></svg></span>
+      <span><b>${esc(t.t)}</b><span class="when">${esc(t.w)}</span></span><span class="status ${t.st[0]}">${t.st[1]}</span></button>`).join("") || `<p class="muted">지금은 할 일이 없습니다.</p>`;
+    $("hTasks").onclick = (e) => {
+      const b = e.target.closest("[data-task]"); if (!b) return;
+      const t = tasks[+b.dataset.task];
+      if (t.cid && t.cid !== cid) setClass(t.cid);
+      if (t.aid) assessId = t.aid;
+      if (t.gap) gapOnly = true;
+      if (t.go === "assess") aFilter = "todo";
+      if (t.sort) $("sSort").value = t.sort;
+      go(t.go);
+    };
+    drawChart();
+  }
+
+  const CW = 560, CH = 250, CP = { l: 34, r: 16, t: 52, b: 30 };
+  function drawChart() {
+    const days = weekDays(range === "this" ? 0 : 1);
+    const vals = days.map((d) => S.obs.filter((o) => o.date === d).length);
+    const yMax = Math.max(5, Math.ceil(Math.max(...vals) / 5) * 5);
+    const stepT = yMax <= 30 ? 5 : Math.ceil(yMax / 6 / 5) * 5;
+    const ticks = []; for (let t = 0; t <= yMax; t += stepT) ticks.push(t);
+    const x = (i) => CP.l + (i * (CW - CP.l - CP.r)) / (DOW.length - 1);
+    const y = (v) => CP.t + (1 - v / yMax) * (CH - CP.t - CP.b);
+    const pts = vals.map((v, i) => [x(i), y(v)]);
+    let line = `M${pts[0][0]},${pts[0][1]}`;
+    for (let i = 0; i < pts.length - 1; i++) { const [x0, y0] = pts[i], [x1, y1] = pts[i + 1], cx = (x0 + x1) / 2; line += ` C${cx},${y0} ${cx},${y1} ${x1},${y1}`; }
+    const step = (CW - CP.l - CP.r) / (DOW.length - 1);
+    const wrap = $("chart");
+    wrap.querySelectorAll("svg").forEach((n) => n.remove());
+    wrap.insertAdjacentHTML("afterbegin", `<svg viewBox="0 0 ${CW} ${CH}" aria-hidden="true">
+      ${ticks.map((t) => `<line x1="${CP.l}" x2="${CW - CP.r}" y1="${y(t)}" y2="${y(t)}" stroke="#EFEAF5"/><text x="${CP.l - 10}" y="${y(t) + 4}" text-anchor="end" font-size="11" fill="#6F6886">${t}</text>`).join("")}
+      ${days.map((d, i) => `<text x="${x(i)}" y="${CH - 8}" text-anchor="middle" font-size="12" fill="#6F6886" font-weight="600">${DOW[i]}</text>`).join("")}
+      <path d="${line} L${x(4)},${y(0)} L${x(0)},${y(0)} Z" fill="url(#gArea)"/>
+      <line id="cross" x1="0" x2="0" y1="${CP.t}" y2="${y(0)}" stroke="#C9B8F2" stroke-width="1.5" stroke-dasharray="4 4" opacity="0"/>
+      <path d="${line}" fill="none" stroke="#8B6BE0" stroke-width="3" stroke-linecap="round"/>
+      ${pts.map(([px, py], i) => `<circle class="pt" data-i="${i}" cx="${px}" cy="${py}" r="5" fill="#fff" stroke="#8B6BE0" stroke-width="2.5"/>`).join("")}
+      ${pts.map(([px], i) => `<rect class="hit" data-i="${i}" x="${px - step / 2}" y="${CP.t}" width="${step}" height="${CH - CP.t - CP.b}" fill="transparent"/>`).join("")}</svg>`);
+    $("chartDesc").textContent = `${range === "this" ? "이번 주" : "지난주"} 요일별 관찰 기록 수: ` + DOW.map((d, i) => `${d} ${vals[i]}건`).join(", ");
+    const show = (i) => {
+      const el = wrap.querySelector("svg"); const k = el.getBoundingClientRect().width / CW;
+      const tip = $("tip"); tip.hidden = false;
+      tip.innerHTML = `<b>${vals[i]}건</b>${fmt(days[i])}`;
+      tip.style.left = x(i) * k + "px"; tip.style.top = y(vals[i]) * k + "px";
+      const c = el.querySelector("#cross"); c.setAttribute("x1", x(i)); c.setAttribute("x2", x(i)); c.setAttribute("opacity", "1");
+      el.querySelectorAll(".pt").forEach((p) => p.setAttribute("r", +p.dataset.i === i ? 7 : 5));
+    };
+    show(vals.indexOf(Math.max(...vals)));
+    wrap.querySelectorAll(".hit").forEach((r) => { r.addEventListener("pointerenter", () => show(+r.dataset.i)); r.addEventListener("pointerdown", () => show(+r.dataset.i)); });
+  }
+  document.querySelectorAll("[data-range]").forEach((b) => b.addEventListener("click", () => {
+    range = b.dataset.range;
+    document.querySelectorAll("[data-range]").forEach((o) => o.setAttribute("aria-pressed", String(o === b)));
+    drawChart();
+  }));
+  window.addEventListener("resize", () => { if (view === "home") drawChart(); });
+
+  // ================= 수업 =================
+  let selected = new Set();
+  let gapOnly = false;
+  let draft = { date: TODAY, area: "", tone: "normal", content: "", feedback: "", showFb: false };
+
+  function renderLesson() {
+    const c = curClass();
+    const roster = c ? rosterOf(cid) : [];
+    $("lessonEmpty").innerHTML = !c ? emptyBox("학급이 없습니다", "설정에서 학급과 명단을 먼저 등록하세요.", ["settings", "학급 등록하기"])
+      : !roster.length ? emptyBox("명단이 없습니다", `${c.name} 학급의 명단을 설정에서 붙여넣으세요.`, ["settings", "명단 등록하기"]) : "";
+    $("lessonBody").hidden = !roster.length;
+    if (!roster.length) return;
+    const ids = new Set(roster.map((s) => s.id));
+    [...selected].forEach((id) => { if (!ids.has(id)) selected.delete(id); }); // 다른 학급에서 고른 학생은 풀어 줌
+    const mine = S.obs.filter((o) => ids.has(o.studentId));
+    $("stToday").textContent = mine.filter((o) => o.date === TODAY).length;
+    const wk = new Set(weekDays(0));
+    $("stWeek").textContent = new Set(mine.filter((o) => wk.has(o.date)).map((o) => o.studentId)).size + "/" + roster.length;
+    $("stGap").textContent = roster.filter((s) => gapDays(s.id) >= 14).length;
+    $("gapFilter").setAttribute("aria-pressed", String(gapOnly));
+    renderRoster(); renderComposer(); renderFeed(); renderActionBar();
+  }
+
+  function renderRoster() {
+    const list = rosterOf(cid).filter((s) => !gapOnly || gapDays(s.id) >= 14);
+    $("roster").innerHTML = list.length ? list.map((s) => {
+      const os = obsOf(s.id);
+      const recent = os.filter((o) => daysAgo(o.date) < 30);
+      const care = recent.filter((o) => o.tone === "care").length;
+      const g = gapDays(s.id);
+      const pips = Math.min(recent.length, 5);
+      const pipHtml = Array.from({ length: pips }, (_, i) => `<i class="pip${i < care ? " care" : ""}"></i>`).join("") + (recent.length > 5 ? `<span class="more">+${recent.length - 5}</span>` : "");
+      const todayDone = os.some((o) => o.date === TODAY);
+      const label = `${s.no}번 ${s.name}, 최근 30일 기록 ${recent.length}건${care ? `, 지도 필요 ${care}건` : ""}${g >= 14 ? `, ${g >= 99 ? "기록 없음" : g + "일째 미관찰"}` : ""}${todayDone ? ", 오늘 기록함" : ""}`;
+      return `<button class="stu${g >= 14 ? " gap" : ""}${todayDone ? " today" : ""}" data-sid="${esc(s.id)}" aria-pressed="${selected.has(s.id)}" aria-label="${esc(label)}">
+        <span class="no">${s.no}</span><span class="nm">${esc(s.name)}</span>
+        <span class="meta">${g >= 14 ? `<span class="gapdays">${g >= 99 ? "기록 없음" : g + "일째"}</span>` : pipHtml}</span>
+        <span class="check">${icon("check")}</span></button>`;
+    }).join("") : `<p class="muted">2주 이상 관찰하지 않은 학생이 없습니다.</p>`;
+    const allSel = rosterOf(cid).length && rosterOf(cid).every((s) => selected.has(s.id));
+    $("selectAll").setAttribute("aria-pressed", String(!!allSel));
+  }
+  $("roster").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-sid]"); if (!b) return;
+    const id = b.dataset.sid;
+    selected.has(id) ? selected.delete(id) : selected.add(id);
+    b.setAttribute("aria-pressed", String(selected.has(id)));
+    renderComposer(); renderActionBar();
+  });
+  $("gapFilter").addEventListener("click", () => { gapOnly = !gapOnly; $("gapFilter").setAttribute("aria-pressed", String(gapOnly)); renderRoster(); });
+  $("selectAll").addEventListener("click", () => {
+    const ids = rosterOf(cid).map((s) => s.id);
+    const all = ids.every((id) => selected.has(id));
+    ids.forEach((id) => (all ? selected.delete(id) : selected.add(id)));
+    renderRoster(); renderComposer(); renderActionBar();
+  });
+
+  function renderActionBar() {
+    const bar = $("actionBar");
+    if (isDesktop() || view !== "lesson" || !selected.size || $("composerWrap").classList.contains("open")) { bar.hidden = true; return; }
+    bar.hidden = false;
+    $("abCount").textContent = `${selected.size}명`;
+    $("abNames").textContent = [...selected].map((id) => (stuOf(id) || {}).name).join(", ");
+  }
+  $("abClear").addEventListener("click", () => { selected.clear(); renderRoster(); renderComposer(); renderActionBar(); });
+  $("abOpen").addEventListener("click", () => { openSheet("composerWrap"); setTimeout(() => { const f = $("composer").querySelector(".areas .chip"); f && f.focus(); }, 60); });
+
+  function renderComposer() {
+    const c = $("composer");
+    if (!selected.size) {
+      c.innerHTML = `<div class="composer-empty"><div class="big">${icon("users", "")}</div><strong>학생 카드를 누르세요</strong>여러 명을 함께 골라 같은 내용을 한 번에 기록할 수 있습니다.</div>`;
+      return;
+    }
+    const phrases = draft.area ? phrasesFor(draft.area) : [];
+    c.innerHTML = `
+      <div class="composer-head"><h3>${selected.size}명 기록</h3>
+        <button class="icon-btn" data-c="close" aria-label="입력 닫기" style="${isDesktop() ? "display:none" : ""}">${icon("x", "")}</button></div>
+      <div class="picked">${[...selected].map((id) => { const s = stuOf(id); return s ? `<button class="p" data-c="unpick" data-sid="${esc(id)}" aria-label="${esc(s.name)} 선택 해제">${s.no} ${esc(s.name)}<span class="x">${icon("x")}</span></button>` : ""; }).join("")}</div>
+      <div class="composer-date"><label for="cDate">날짜</label><input type="date" id="cDate" value="${draft.date}" max="${TODAY}"></div>
+      <div><span class="label" id="lblArea">관찰 영역</span>
+        <div class="areas" role="group" aria-labelledby="lblArea">${AREAS.map((a) => `<button class="chip" data-c="area" data-v="${a}" aria-pressed="${draft.area === a}">${a}</button>`).join("")}</div></div>
+      <div><span class="label" id="lblTone">구분</span>
+        <div class="seg" role="group" aria-labelledby="lblTone">
+          <button data-c="tone" data-tone="good" aria-pressed="${draft.tone === "good"}">${icon("plus")}긍정</button>
+          <button data-c="tone" data-tone="normal" aria-pressed="${draft.tone === "normal"}">${icon("dot")}보통</button>
+          <button data-c="tone" data-tone="care" aria-pressed="${draft.tone === "care"}">${icon("alert")}지도 필요</button>
+        </div></div>
+      ${phrases.length ? `<div><span class="label">빠른 문구 <span class="muted" style="font-weight:500">누르면 메모에 들어갑니다</span></span>
+        <div class="phrases">${phrases.map((p) => `<button class="phrase" data-c="phrase" data-v="${esc(p)}">${icon("plus")}${esc(p)}</button>`).join("")}</div></div>` : ""}
+      <div><label class="label" for="cContent">관찰 내용</label>
+        <textarea id="cContent" rows="3" placeholder="학생의 말과 행동을 있는 그대로 적습니다.">${esc(draft.content)}</textarea></div>
+      ${draft.showFb ? `<div><label class="label" for="cFb">피드백·후속 지도</label><textarea id="cFb" rows="2">${esc(draft.feedback)}</textarea></div>`
+        : `<button class="more-toggle" data-c="fb">${icon("plus")}피드백·후속 지도 추가</button>`}
+      <div class="save-row">
+        <button class="btn btn-red" data-c="save" ${draft.area && draft.content.trim() ? "" : "disabled"}>${selected.size > 1 ? `${selected.size}명 ` : ""}기록 저장</button>
+        <button class="btn btn-line" data-c="reset">비우기</button>
+      </div>`;
+  }
+  $("composer").addEventListener("input", (e) => {
+    if (e.target.id === "cContent") { draft.content = e.target.value; const b = $("composer").querySelector('[data-c="save"]'); if (b) b.disabled = !(draft.area && draft.content.trim()); }
+    if (e.target.id === "cFb") draft.feedback = e.target.value;
+    if (e.target.id === "cDate") draft.date = e.target.value || TODAY;
+  });
+  $("composer").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-c]"); if (!b) return;
+    const k = b.dataset.c;
+    const refocus = (sel) => { const el = $("composer").querySelector(sel); el && el.focus(); };
+    if (k === "close") closeSheet();
+    if (k === "unpick") { selected.delete(b.dataset.sid); renderRoster(); renderComposer(); if (!selected.size) closeSheet(); renderActionBar(); }
+    if (k === "area") { draft.area = draft.area === b.dataset.v ? "" : b.dataset.v; renderComposer(); refocus(`[data-c="area"][data-v="${b.dataset.v}"]`); }
+    if (k === "tone") { draft.tone = b.dataset.tone; if (draft.tone === "care") draft.showFb = true; renderComposer(); refocus(`[data-tone="${draft.tone}"]`); }
+    if (k === "phrase") { draft.content = draft.content.trim() ? draft.content.trim() + " " + b.dataset.v : b.dataset.v; renderComposer(); const t = $("cContent"); t.focus(); t.setSelectionRange(t.value.length, t.value.length); }
+    if (k === "fb") { draft.showFb = true; renderComposer(); $("cFb").focus(); }
+    if (k === "reset") { draft = { date: draft.date, area: "", tone: "normal", content: "", feedback: "", showFb: false }; renderComposer(); }
+    if (k === "save") saveObs();
+  });
+
+  function saveObs() {
+    if (!draft.area || !draft.content.trim()) return;
+    const time = nowTime();
+    const recs = [...selected].map((sid) => ({ id: uid(), date: draft.date || TODAY, time, classId: cid, studentId: sid, area: draft.area, tone: draft.tone, content: draft.content.trim(), feedback: draft.feedback.trim() }));
+    put("obs", recs);
+    const names = recs.map((o) => stuOf(o.studentId).name);
+    const sel = [...selected];
+    selected.clear();
+    draft = { date: draft.date, area: draft.area, tone: "normal", content: "", feedback: "", showFb: false };
+    closeSheet(); renderLesson();
+    toast(`${names.length > 2 ? names.slice(0, 2).join(", ") + ` 외 ${names.length - 2}명` : names.join(", ")} 기록 저장`, {
+      undo: () => { del({ obs: recs.map((r) => r.id) }); sel.forEach((id) => selected.add(id)); renderAll(); toast("저장을 취소했습니다. 선택은 그대로 둡니다."); },
+    });
+  }
+
+  function renderFeed() {
+    const ids = new Set(rosterOf(cid, true).map((s) => s.id));
+    const list = S.obs.filter((o) => ids.has(o.studentId) && o.date === TODAY).sort((a, b) => b.time.localeCompare(a.time) || b.createdAt.localeCompare(a.createdAt));
+    $("feed").innerHTML = list.length ? list.map((o) => `
+      <div class="card feed-item"><time>${esc(o.time)}</time>
+        <div class="tags"><span class="who">${esc((stuOf(o.studentId) || {}).name || "?")}</span><span class="badge b-area">${esc(o.area)}</span>${toneBadge(o.tone)}</div>
+        <span class="acts"><button class="btn btn-line btn-sm" data-act="obs-edit" data-id="${esc(o.id)}">수정</button></span>
+        <p class="txt">${esc(o.content)}</p></div>`).join("")
+      : `<p class="muted">오늘 이 학급 기록이 아직 없습니다. 학생 카드를 눌러 시작하세요.</p>`;
+  }
+
+  // ================= 관찰 기록 수정·삭제 (일지·수업·학생 공통) =================
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-act]"); if (!b) return;
+    const id = b.dataset.id;
+    if (b.dataset.act === "obs-edit") editObs(id);
+    if (b.dataset.act === "obs-del") deleteObs(id);
+    if (b.dataset.act === "refl-load") { reflDate = b.dataset.date; reflDirty = false; renderReflect(); window.scrollTo({ top: 0, behavior: "smooth" }); }
+    if (b.dataset.act === "refl-del") deleteRefl(id);
+  });
+
+  function editObs(id) {
+    const o = S.obs.find((x) => x.id === id); if (!o) return;
+    const e = { ...o };
+    const roster = rosterOf(o.classId, true);
+    openModal({
+      title: "관찰 기록 수정",
+      body: `<div class="grid2">
+          <div class="field"><label for="eStu">학생</label><select id="eStu">${roster.map((s) => `<option value="${esc(s.id)}" ${s.id === o.studentId ? "selected" : ""}>${s.no} ${esc(s.name)}${s.active === "N" ? " (재적 해제)" : ""}</option>`).join("")}</select></div>
+          <div class="field"><label for="eDate">날짜</label><input type="date" id="eDate" value="${esc(o.date)}"></div>
+        </div>
+        <div class="field"><label for="eArea">관찰 영역</label><select id="eArea">${AREAS.map((a) => `<option ${a === o.area ? "selected" : ""}>${a}</option>`).join("")}</select></div>
+        <div class="field"><span class="label">구분</span><div class="seg" id="eTone">${Object.keys(TONES).map((t) => `<button type="button" data-tone="${t}" aria-pressed="${t === o.tone}">${TONES[t]}</button>`).join("")}</div></div>
+        <div class="field"><label for="eContent">관찰 내용</label><textarea id="eContent" rows="4">${esc(o.content)}</textarea></div>
+        <div class="field"><label for="eFb">피드백·후속 지도</label><textarea id="eFb" rows="3">${esc(o.feedback)}</textarea></div>
+        <p class="err" id="eErr" hidden>날짜와 관찰 내용은 비울 수 없습니다.</p>`,
+      buttons: [{ v: "del", label: "삭제", left: true }, { v: "cancel", label: "취소" }, { v: "save", label: "수정 저장", cls: "btn-red" }],
+      onClick: (ev, body) => { const t = ev.target.closest("[data-tone]"); if (t) { e.tone = t.dataset.tone; body.querySelectorAll("#eTone button").forEach((x) => x.setAttribute("aria-pressed", String(x === t))); } },
+      onAction: (v, body) => {
+        if (v === "del") { setTimeout(() => deleteObs(id), 0); return true; }
+        const date = body.querySelector("#eDate").value, content = body.querySelector("#eContent").value.trim();
+        if (!date || !content) { body.querySelector("#eErr").hidden = false; return false; }
+        const sid = body.querySelector("#eStu").value;
+        put("obs", { ...e, studentId: sid, classId: (stuOf(sid) || o).classId, date, area: body.querySelector("#eArea").value, content, feedback: body.querySelector("#eFb").value.trim() });
+        renderAll(); toast("기록을 수정했습니다.");
+        return true;
+      },
+    });
+  }
+  async function deleteObs(id) {
+    const o = S.obs.find((x) => x.id === id); if (!o) return;
+    const s = stuOf(o.studentId);
+    const ok = await confirmBox({ title: "기록 삭제", message: `${fmt(o.date)} ${s ? s.name : ""} 학생의 '${o.area}' 기록을 삭제할까요?`, warn: "삭제한 기록은 되돌릴 수 없습니다.", yes: "삭제" });
+    if (!ok) return;
+    del({ obs: [id] }); renderAll(); toast("기록을 삭제했습니다.");
+  }
+
+  // ================= 평가 =================
+  let assessId = null, aFilter = "all", aSid = null, aDraft = null;
+  const curAssess = () => S.assessments.find((a) => a.id === assessId);
+
+  function renderAssess() {
+    const c = curClass();
+    const list = c ? assessOf(cid) : [];
+    if (!curAssess() || curAssess().classId !== cid) { assessId = list.length ? list[list.length - 1].id : null; aSid = null; aDraft = null; }
+    const a = curAssess();
+    $("assessTabs").innerHTML = !c ? "" : list.map((x) => {
+      const n = rosterOf(cid).filter((s) => scoreOf(x.id, s.id)).length;
+      return `<button class="chip" data-aid="${esc(x.id)}" aria-pressed="${x.id === assessId}">${esc(x.title)} <small>${n}/${rosterOf(cid).length}</small></button>`;
+    }).join("") + `<button class="chip chip-add" id="addAssess">${icon("plus")}새 평가</button>`;
+    $("assessTools").hidden = !a;
+    $("assessBody").hidden = !a || !rosterOf(cid).length;
+    $("assessEmpty").innerHTML = !c ? emptyBox("학급이 없습니다", "설정에서 학급과 명단을 먼저 등록하세요.", ["settings", "학급 등록하기"])
+      : !rosterOf(cid).length ? emptyBox("명단이 없습니다", "설정에서 명단을 붙여넣으면 채점할 수 있습니다.", ["settings", "명단 등록하기"])
+      : !a ? `<div class="empty-box"><strong>아직 수행평가가 없습니다</strong>평가 이름과 채점 기준(5단계)을 만들면 바로 채점할 수 있습니다.<br><button class="btn btn-red btn-sm" id="addAssess2">새 평가 만들기</button></div>` : "";
+    if (!a || !rosterOf(cid).length) return;
+
+    const roster = rosterOf(cid);
+    const scs = roster.map((s) => scoreOf(a.id, s.id));
+    const done = scs.filter(Boolean);
+    const totals = done.filter((x) => x.status === "done").map((x) => totalOf(a, x));
+    const avg = totals.length ? (totals.reduce((n, v) => n + v, 0) / totals.length).toFixed(1) : "-";
+    $("assessMeta").innerHTML = `<span>평가일 <b>${fmt(a.date)}</b></span><span>만점 <b>${maxOf(a)}점</b></span><span>기본 점수 <b>${a.baseScore}점</b></span><span>기준 <b>${a.criteria.map((cr) => `${esc(cr.name)} ${cr.levels[0].pt}`).join(" · ")}</b></span>`;
+    $("aSummary").innerHTML = `
+      <div class="card stat"><div class="v tnum">${done.length}/${roster.length}</div><div class="l">채점 완료</div></div>
+      <div class="card stat"><div class="v red tnum">${roster.length - done.length}</div><div class="l">미채점</div></div>
+      <div class="card stat"><div class="v tnum">${avg}</div><div class="l">평균(채점 학생)</div></div>
+      <div class="card stat"><div class="v tnum">${done.filter((x) => x.status !== "done").length}</div><div class="l">결시·미제출</div></div>`;
+    const cnt = { all: roster.length, todo: roster.length - done.length, done: done.length };
+    $("aFilters").innerHTML = [["all", "전체"], ["todo", "미채점"], ["done", "채점 완료"]].map(([k, l]) => `<button class="chip" data-af="${k}" aria-pressed="${aFilter === k}">${l}<span class="n">${cnt[k]}</span></button>`).join("");
+    const shown = roster.filter((s) => { const x = scoreOf(a.id, s.id); return aFilter === "all" || (aFilter === "todo" ? !x : !!x); });
+    $("aList").innerHTML = shown.map((s) => {
+      const x = scoreOf(a.id, s.id); const t = totalOf(a, x);
+      const st = !x ? `<span class="badge b-todo">미채점</span>` : x.status === "done" ? "" : `<span class="badge b-absent">${STATUS[x.status]}</span>`;
+      return `<button class="arow" data-sid="${esc(s.id)}" aria-current="${s.id === aSid}">
+        <span class="no">${s.no}</span><span class="arow-body"><span class="nm">${esc(s.name)}</span>${x && x.memo ? `<span class="memo">${esc(x.memo)}</span>` : ""}</span>
+        ${st || "<span></span>"}<span class="score tnum${t == null ? " none" : ""}">${t == null ? "-" : t}</span></button>`;
+    }).join("") || `<p class="muted" style="padding:16px">해당하는 학생이 없습니다.</p>`;
+    renderScorer();
+  }
+
+  function loadDraft(sid) {
+    const a = curAssess(); const x = scoreOf(a.id, sid);
+    aSid = sid;
+    aDraft = x ? { status: x.status, picks: a.criteria.map((_, i) => (x.picks[i] == null ? null : x.picks[i])), memo: x.memo } : { status: "done", picks: a.criteria.map(() => null), memo: "" };
+  }
+
+  function renderScorer() {
+    const box = $("scorer"); const a = curAssess();
+    if (!aSid || !stuOf(aSid)) {
+      box.innerHTML = `<div class="composer-empty"><div class="big">${icon("clip", "")}</div><strong>학생을 고르세요</strong>목록에서 학생을 누르면 여기에서 채점합니다. 저장하면 다음 미채점 학생으로 넘어갑니다.</div>`;
+      return;
+    }
+    const s = stuOf(aSid), d = aDraft;
+    const filled = d.picks.every((p) => p != null);
+    const total = totalOf(a, { status: d.status, picks: d.picks });
+    box.innerHTML = `
+      <div class="scorer-head">
+        <div><p class="sub">${esc(a.title)}</p><p class="who">${s.no} ${esc(s.name)}</p></div>
+        <div class="total" aria-live="polite"><div class="v tnum">${d.status === "done" && !filled ? "-" : total}<small> / ${maxOf(a)}</small></div><div class="l">합계</div></div>
+      </div>
+      <div class="seg" role="group" aria-label="응시 상태">${Object.keys(STATUS).map((k) => `<button data-s="status" data-st="${k}" aria-pressed="${d.status === k}">${STATUS[k]}</button>`).join("")}</div>
+      ${d.status === "done" ? a.criteria.map((c, ci) => `
+        <div class="crit"><div class="crit-h"><b>${esc(c.name)}</b><span>${c.levels[0].pt}점</span></div>
+          <div class="levels" role="group" aria-label="${esc(c.name)}">${c.levels.map((l, li) => `
+            <button class="lv" data-s="lv" data-ci="${ci}" data-li="${li}" aria-pressed="${d.picks[ci] === li}"><b class="tnum">${l.pt}</b><span>${esc(l.d)}</span></button>`).join("")}</div></div>`).join("")
+        : `<p class="base-note">${STATUS[d.status]} 학생은 <b>기본 점수 ${a.baseScore}점</b>을 줍니다. 기본 점수는 평가 수정에서 바꿀 수 있습니다.</p>`}
+      <div><label class="label" for="aMemo">평가 내용 기록</label>
+        <textarea id="aMemo" rows="2" style="min-height:76px" placeholder="잘한 점, 보완할 점, 특기할 만한 과정을 적습니다.">${esc(d.memo)}</textarea>
+        <div class="areas" style="margin-top:8px">${scorePhrases().map((m) => `<button class="chip" style="font-size:14px;min-height:36px" data-s="memo" data-v="${esc(m)}">${icon("plus")}${esc(m)}</button>`).join("")}</div></div>
+      <div class="score-save">
+        <button class="btn btn-line" data-s="prev" aria-label="이전 학생">${icon("left", "")}</button>
+        <button class="btn btn-red" data-s="saveNext" ${d.status === "done" && !filled ? "disabled" : ""}>저장하고 다음 학생</button>
+        <button class="btn btn-line" data-s="next" aria-label="다음 학생">${icon("right", "")}</button>
+      </div>
+      ${scoreOf(a.id, aSid) ? `<button class="more-toggle" data-s="clear" style="color:#A8325A">이 학생 채점 지우기</button>` : ""}`;
+  }
+
+  document.addEventListener("click", (e) => { if (e.target.closest("#addAssess, #addAssess2")) editAssessment(null); });
+  $("aEditBtn").addEventListener("click", () => curAssess() && editAssessment(curAssess()));
+  $("assessTabs").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-aid]"); if (!b) return;
+    assessId = b.dataset.aid; aSid = null; aDraft = null; closeSheet(); renderAssess();
+  });
+  $("aFilters").addEventListener("click", (e) => { const b = e.target.closest("[data-af]"); if (!b) return; aFilter = b.dataset.af; renderAssess(); });
+  $("aList").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-sid]"); if (!b) return;
+    loadDraft(b.dataset.sid); renderAssess();
+    if (!isDesktop()) openSheet("scoreWrap");
+  });
+  $("scorer").addEventListener("input", (e) => { if (e.target.id === "aMemo") aDraft.memo = e.target.value; });
+  $("scorer").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-s]"); if (!b) return;
+    const k = b.dataset.s;
+    if (k === "status") { aDraft.status = b.dataset.st; renderScorer(); }
+    if (k === "lv") {
+      const ci = +b.dataset.ci; aDraft.picks[ci] = +b.dataset.li; renderScorer();
+      const next = $("scorer").querySelector(`[data-ci="${ci + 1}"]`);
+      (next || $("scorer").querySelector('[data-s="saveNext"]')).focus();
+    }
+    if (k === "memo") { aDraft.memo = aDraft.memo.trim() ? aDraft.memo.trim() + " " + b.dataset.v : b.dataset.v; renderScorer(); $("aMemo").focus(); }
+    if (k === "prev" || k === "next") stepStudent(k === "next" ? 1 : -1, false);
+    if (k === "saveNext") {
+      const a = curAssess(); const s = stuOf(aSid); const old = scoreOf(a.id, aSid);
+      const rec = { id: `${a.id}|${aSid}`, assessmentId: a.id, studentId: aSid, status: aDraft.status, picks: aDraft.status === "done" ? [...aDraft.picks] : [], memo: aDraft.memo.trim(), createdAt: old && old.createdAt };
+      rec.total = totalOf(a, rec);
+      put("scores", rec);
+      toast(`${s.name} ${rec.total}점 저장`);
+      stepStudent(1, true);
+    }
+    if (k === "clear") {
+      const a = curAssess(); const x = scoreOf(a.id, aSid);
+      if (x) { del({ scores: [x.id] }); loadDraft(aSid); renderAssess(); toast("채점을 지웠습니다."); }
+    }
+  });
+  function stepStudent(dir, preferTodo) {
+    const a = curAssess(); const ids = rosterOf(cid).map((s) => s.id);
+    let i = ids.indexOf(aSid);
+    if (preferTodo) {
+      for (let k = 1; k <= ids.length; k++) { const id = ids[(i + k) % ids.length]; if (!scoreOf(a.id, id)) { loadDraft(id); renderAssess(); return; } }
+      aSid = null; aDraft = null; closeSheet(); renderAssess(); toast("모든 학생을 채점했습니다."); return;
+    }
+    i = (i + dir + ids.length) % ids.length; loadDraft(ids[i]); renderAssess();
+  }
+
+  $("csvBtn").addEventListener("click", () => {
+    const a = curAssess(); if (!a) return;
+    const q = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+    const rows = [["번호", "이름", "상태", ...a.criteria.map((c) => `${c.name}(${c.levels[0].pt})`), `합계(${maxOf(a)})`, "평가 내용"]];
+    rosterOf(cid).forEach((s) => {
+      const x = scoreOf(a.id, s.id);
+      rows.push([s.no, s.name, !x ? "미채점" : STATUS[x.status], ...a.criteria.map((c, i) => (x && x.status === "done" && x.picks[i] != null ? c.levels[x.picks[i]].pt : "")), x ? totalOf(a, x) : "", x ? x.memo : ""]);
+    });
+    download(`수행평가_${curClass().name}_${a.title}.csv`.replace(/[\\/:*?"<>|\s]+/g, "_"), "﻿" + rows.map((r) => r.map(q).join(",")).join("\r\n"), "text/csv;charset=utf-8");
+    toast("점수표를 내려받았습니다.");
+  });
+
+  // 평가 만들기·수정
+  function editAssessment(a) {
+    const scored = a ? S.scores.some((x) => x.assessmentId === a.id) : false;
+    const st = a ? { title: a.title, date: a.date, criteria: clone(a.criteria), baseScore: a.baseScore, baseAuto: a.baseScore === minOf(a.criteria), classIds: [a.classId] }
+      : { title: "", date: TODAY, criteria: [{ name: "", levels: makeLevels(10) }], baseScore: 2, baseAuto: true, classIds: [cid] };
+    const critHtml = () => st.criteria.map((c, ci) => `
+      <div class="crit-edit">
+        <div class="crit-top">
+          <input type="text" data-k="name" data-ci="${ci}" value="${esc(c.name)}" placeholder="기준 이름 (예: 자형 정확성)" aria-label="${ci + 1}번 기준 이름">
+          <select data-k="max" data-ci="${ci}" aria-label="배점">${[5, 10, 15, 20, 25, 30].map((m) => `<option value="${m}" ${Number(c.levels[0].pt) === m ? "selected" : ""}>${m}점</option>`).join("")}${[5, 10, 15, 20, 25, 30].includes(Number(c.levels[0].pt)) ? "" : `<option selected>${c.levels[0].pt}</option>`}</select>
+          <button type="button" class="icon-btn" data-k="rm" data-ci="${ci}" aria-label="${ci + 1}번 기준 삭제" ${scored || st.criteria.length < 2 ? "disabled" : ""}>${icon("x", "")}</button>
+        </div>
+        <div class="lv-edit">${c.levels.map((l, li) => `
+          <input type="number" step="0.5" data-k="pt" data-ci="${ci}" data-li="${li}" value="${l.pt}" aria-label="${li + 1}수준 점수">
+          <input type="text" data-k="d" data-ci="${ci}" data-li="${li}" value="${esc(l.d)}" aria-label="${li + 1}수준 설명" placeholder="${li + 1}수준 설명">`).join("")}</div>
+      </div>`).join("");
+    const render = (body) => {
+      body.querySelector("#aeCrits").innerHTML = critHtml();
+      syncBase(body);
+    };
+    const syncBase = (body) => {
+      if (st.baseAuto) { st.baseScore = minOf(st.criteria); body.querySelector("#aeBase").value = st.baseScore; }
+      body.querySelector("#aeBase").disabled = st.baseAuto;
+      body.querySelector("#aeMax").textContent = `만점 ${st.criteria.reduce((n, c) => n + (Number(c.levels[0].pt) || 0), 0)}점`;
+    };
+    openModal({
+      title: a ? "수행평가 수정" : "새 수행평가",
+      wide: true,
+      body: `<div class="grid2">
+          <div class="field"><label for="aeTitle">평가 이름</label><input type="text" id="aeTitle" value="${esc(st.title)}" placeholder="예: 고사성어 이야기 발표"></div>
+          <div class="field"><label for="aeDate">평가일</label><input type="date" id="aeDate" value="${esc(st.date)}"></div>
+        </div>
+        ${a ? "" : `<div class="field"><span class="label">만들 학급 <span class="hint">같은 평가를 여러 학급에 한 번에 만듭니다</span></span>
+          <div class="checks">${classesSorted().map((c) => `<label><input type="checkbox" data-k="cls" value="${esc(c.id)}" ${st.classIds.includes(c.id) ? "checked" : ""}>${esc(c.name)} ${esc(c.subject)}</label>`).join("")}</div></div>`}
+        <div class="field"><span class="label">채점 기준 (기준마다 5단계) <b id="aeMax" style="color:var(--navy)"></b></span>
+          ${scored ? `<p class="hint">이미 채점한 학생이 있어 기준 개수는 바꿀 수 없습니다. 이름·점수·설명은 고칠 수 있고, 합계는 새 점수로 다시 계산됩니다.</p>` : `<p class="hint">배점을 고르면 5단계 점수가 자동으로 채워집니다. 칸에서 직접 고쳐도 됩니다.</p>`}
+          <div id="aeCrits" style="display:grid;gap:10px"></div>
+          ${scored ? "" : `<button type="button" class="more-toggle" data-k="add">${icon("plus")}기준 추가</button>`}</div>
+        <div class="grid2">
+          <div class="field"><label for="aeBase">결시·미제출 기본 점수</label><input type="number" step="0.5" id="aeBase"></div>
+          <div class="field"><span class="label">&nbsp;</span><label class="checks" style="margin:0"><span style="display:inline-flex;align-items:center;gap:6px"><input type="checkbox" id="aeAuto" ${st.baseAuto ? "checked" : ""}>각 기준 최저 점수의 합으로 자동 계산</span></label></div>
+        </div>
+        <p class="err" id="aeErr" hidden></p>`,
+      buttons: [...(a ? [{ v: "del", label: "평가 삭제", left: true }] : []), { v: "cancel", label: "취소" }, { v: "save", label: a ? "수정 저장" : "만들기", cls: "btn-red" }],
+      onOpen: (body) => { render(body); body.querySelector("#aeTitle").focus(); },
+      onInput: (e, body) => {
+        const t = e.target; const k = t.dataset.k; const ci = +t.dataset.ci;
+        if (k === "name") st.criteria[ci].name = t.value;
+        if (k === "pt") { st.criteria[ci].levels[+t.dataset.li].pt = Number(t.value); syncBase(body); }
+        if (k === "d") st.criteria[ci].levels[+t.dataset.li].d = t.value;
+        if (t.id === "aeBase") st.baseScore = Number(t.value);
+      },
+      onChange: (e, body) => {
+        const t = e.target;
+        if (t.dataset.k === "max") { const ci = +t.dataset.ci; const ds = st.criteria[ci].levels.map((l) => l.d); st.criteria[ci].levels = makeLevels(Number(t.value)).map((l, i) => ({ pt: l.pt, d: ds[i] || l.d })); render(body); }
+        if (t.id === "aeAuto") { st.baseAuto = t.checked; syncBase(body); }
+        if (t.dataset.k === "cls") st.classIds = [...body.querySelectorAll('[data-k="cls"]:checked')].map((x) => x.value);
+      },
+      onClick: (e, body) => {
+        const b = e.target.closest("[data-k]"); if (!b || b.tagName === "INPUT" || b.tagName === "SELECT") return;
+        if (b.dataset.k === "add") { st.criteria.push({ name: "", levels: makeLevels(10) }); render(body); body.querySelector(`[data-k="name"][data-ci="${st.criteria.length - 1}"]`).focus(); }
+        if (b.dataset.k === "rm") { st.criteria.splice(+b.dataset.ci, 1); render(body); }
+      },
+      onAction: (v, body) => {
+        if (v === "del") { setTimeout(() => deleteAssessment(a), 0); return true; }
+        const err = (m) => { const el = body.querySelector("#aeErr"); el.textContent = m; el.hidden = false; return false; };
+        st.title = body.querySelector("#aeTitle").value.trim(); st.date = body.querySelector("#aeDate").value;
+        if (!st.title) return err("평가 이름을 입력하세요.");
+        if (!st.date) return err("평가일을 고르세요.");
+        if (!a && !st.classIds.length) return err("만들 학급을 하나 이상 고르세요.");
+        if (st.criteria.some((c) => !c.name.trim())) return err("모든 기준에 이름을 입력하세요.");
+        if (st.criteria.some((c) => c.levels.some((l) => !isFinite(l.pt)))) return err("수준 점수를 모두 숫자로 입력하세요.");
+        const criteria = st.criteria.map((c) => ({ name: c.name.trim(), levels: c.levels.map((l) => ({ pt: Number(l.pt), d: l.d.trim() })) }));
+        const baseScore = st.baseAuto ? minOf(criteria) : Number(st.baseScore) || 0;
+        if (a) {
+          const upd = { ...a, title: st.title, date: st.date, criteria, baseScore };
+          put("assessments", upd);
+          // 점수가 바뀌었을 수 있으므로 합계를 다시 계산
+          const sc = S.scores.filter((x) => x.assessmentId === a.id).map((x) => ({ ...x, total: totalOf(upd, x) }));
+          if (sc.length) put("scores", sc);
+          toast("평가를 수정했습니다.");
+        } else {
+          const recs = st.classIds.map((c) => ({ id: uid(), classId: c, title: st.title, date: st.date, criteria: clone(criteria), baseScore }));
+          put("assessments", recs);
+          const mine = recs.find((r) => r.classId === cid);
+          if (mine) assessId = mine.id;
+          aSid = null; aDraft = null; aFilter = "all";
+          toast(`${recs.length}개 학급에 평가를 만들었습니다.`);
+        }
+        if (view === "assess") renderAssess(); else go("assess");
+        return true;
+      },
+    });
+  }
+  async function deleteAssessment(a) {
+    const n = S.scores.filter((x) => x.assessmentId === a.id).length;
+    const ok = await confirmBox({ title: "평가 삭제", message: `'${a.title}' 평가를 삭제할까요?${n ? `\n채점 기록 ${n}건도 함께 지워집니다.` : ""}`, warn: "삭제하면 되돌릴 수 없습니다. 필요하면 먼저 점수표 CSV를 내려받으세요.", yes: "삭제" });
+    if (!ok) return;
+    del(cascade("assessments", [a.id])); assessId = null; aSid = null; renderAssess(); toast("평가를 삭제했습니다.");
+  }
+
+  // ================= 일지 =================
+  let logState = { cls: null, date: "", area: "", tone: "all", q: "", limit: 60 };
+  $("logArea").innerHTML = `<option value="">전체 영역</option>` + AREAS.map((a) => `<option>${a}</option>`).join("");
+  function renderLog() {
+    if (logState.cls === null || (logState.cls && !classOf(logState.cls))) logState.cls = cid;
+    $("logClass").innerHTML = `<option value="">전체 학급</option>` + classesSorted().map((c) => `<option value="${esc(c.id)}" ${c.id === logState.cls ? "selected" : ""}>${esc(c.name)} ${esc(c.subject)}</option>`).join("");
+    $("logClass").value = logState.cls || "";
+    const base = S.obs.filter((o) => (!logState.cls || o.classId === logState.cls) && (!logState.date || o.date === logState.date) && (!logState.area || o.area === logState.area));
+    const q = logState.q.trim().toLowerCase();
+    const searched = base.filter((o) => !q || [(stuOf(o.studentId) || {}).name, o.content, o.feedback, o.area].join(" ").toLowerCase().includes(q));
+    const cnt = { all: searched.length, good: searched.filter((o) => o.tone === "good").length, normal: searched.filter((o) => o.tone === "normal").length, care: searched.filter((o) => o.tone === "care").length };
+    $("logTones").innerHTML = [["all", "전체"], ["good", "긍정"], ["normal", "보통"], ["care", "지도 필요"]].map(([k, l]) => `<button class="chip" data-tone="${k}" aria-pressed="${logState.tone === k}">${l}<span class="n">${cnt[k]}</span></button>`).join("");
+    const list = searched.filter((o) => logState.tone === "all" || o.tone === logState.tone).sort((a, b) => b.date.localeCompare(a.date) || b.time.localeCompare(a.time) || b.createdAt.localeCompare(a.createdAt));
+    $("logSummary").innerHTML = `기록 <b>${list.length}</b>건${list.length > logState.limit ? ` 중 ${logState.limit}건 표시` : ""}`;
+    const groups = new Map();
+    list.slice(0, logState.limit).forEach((o) => { if (!groups.has(o.date)) groups.set(o.date, []); groups.get(o.date).push(o); });
+    let html = "";
+    groups.forEach((items, d) => {
+      html += `<div class="day"><div class="day-h"><h3>${fmt(d)}</h3><span class="muted">${items.length}건</span></div>` + items.map((o) => {
+        const s = stuOf(o.studentId); const c = classOf(o.classId);
+        return `<article class="card entry"><div class="entry-top"><span class="who">${esc(s ? s.name : "삭제된 학생")}</span>${!logState.cls && c ? `<span class="badge cls">${esc(c.name)}</span>` : ""}<span class="badge b-area">${esc(o.area)}</span>${toneBadge(o.tone)}<span class="muted" style="font-size:13px">${esc(o.time)}</span>
+          <span class="acts"><button class="btn btn-line btn-sm" data-act="obs-edit" data-id="${esc(o.id)}">수정</button><button class="btn btn-line btn-sm" style="color:#A8325A" data-act="obs-del" data-id="${esc(o.id)}">삭제</button></span></div>
+          <p style="white-space:pre-wrap">${esc(o.content)}</p>${o.feedback ? `<p class="fb">${esc(o.feedback)}</p>` : ""}</article>`;
+      }).join("") + `</div>`;
+    });
+    $("logList").innerHTML = html || (S.obs.length ? emptyBox("조건에 맞는 기록이 없습니다", "학급, 날짜, 영역을 바꿔 보세요.") : emptyBox("아직 기록이 없습니다", "수업 화면에서 학생 카드를 눌러 첫 기록을 남겨 보세요.", ["lesson", "수업 화면으로"]));
+    $("logMore").hidden = list.length <= logState.limit;
+  }
+  $("logClass").addEventListener("change", (e) => { logState.cls = e.target.value; logState.limit = 60; renderLog(); });
+  $("logDate").addEventListener("change", (e) => { logState.date = e.target.value; logState.limit = 60; renderLog(); });
+  $("logArea").addEventListener("change", (e) => { logState.area = e.target.value; logState.limit = 60; renderLog(); });
+  $("logQ").addEventListener("input", (e) => { logState.q = e.target.value; logState.limit = 60; renderLog(); });
+  $("logTones").addEventListener("click", (e) => { const b = e.target.closest("[data-tone]"); if (!b) return; logState.tone = b.dataset.tone; renderLog(); });
+  $("logMore").addEventListener("click", () => { logState.limit += 60; renderLog(); });
+
+  // ================= 학생 =================
+  let currentSid = null;
+  function renderStudents() {
+    const c = curClass(); const roster = c ? rosterOf(cid) : [];
+    $("studentsEmpty").innerHTML = !c ? emptyBox("학급이 없습니다", "설정에서 학급과 명단을 먼저 등록하세요.", ["settings", "학급 등록하기"]) : !roster.length ? emptyBox("명단이 없습니다", "설정에서 명단을 붙여넣으세요.", ["settings", "명단 등록하기"]) : "";
+    $("studentsBody").hidden = !roster.length;
+    if (!roster.length) return;
+    const q = $("sSearch").value.trim(); const sort = $("sSort").value;
+    let list = roster.filter((s) => !q || s.name.includes(q) || String(s.no) === q);
+    const cnt = (s) => obsOf(s.id).length;
+    const care = (s) => obsOf(s.id).filter((o) => o.tone === "care").length;
+    if (sort === "few") list.sort((a, b) => cnt(a) - cnt(b) || a.no - b.no);
+    if (sort === "care") list.sort((a, b) => care(b) - care(a) || a.no - b.no);
+    const max = Math.max(1, ...roster.map(cnt));
+    if (!currentSid || !stuOf(currentSid) || stuOf(currentSid).classId !== cid) currentSid = list[0] && list[0].id;
+    $("sList").innerHTML = list.map((s) => {
+      const g = gapDays(s.id);
+      return `<button class="srow" data-sid="${esc(s.id)}" aria-current="${s.id === currentSid}">
+        <span class="no">${s.no}</span>
+        <span><span class="nm">${esc(s.name)}</span><br><span class="sub${g >= 14 ? " red" : ""}">${g >= 99 ? "기록 없음" : g === 0 ? "오늘 기록" : g + "일 전 기록"}${care(s) ? ` · 지도 ${care(s)}` : ""}</span></span>
+        <span><span class="cnt tnum">${cnt(s)}건</span><span class="bar"><i style="width:${(cnt(s) / max) * 100}%"></i></span></span></button>`;
+    }).join("") || `<p class="muted" style="padding:16px">검색 결과가 없습니다.</p>`;
+    renderDetail();
+  }
+  $("sSearch").addEventListener("input", renderStudents);
+  $("sSort").addEventListener("change", renderStudents);
+  $("sList").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-sid]"); if (!b) return;
+    currentSid = b.dataset.sid; renderStudents();
+    if (!isDesktop()) $("sDetail").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  function timelineOf(s) {
+    const obsItems = obsOf(s.id).map((o) => ({ kind: "obs", date: o.date, t: o.time, o }));
+    const aItems = S.assessments.filter((a) => a.classId === s.classId && scoreOf(a.id, s.id)).map((a) => ({ kind: "assess", date: a.date, t: "", a, x: scoreOf(a.id, s.id) }));
+    return obsItems.concat(aItems).sort((p, q) => p.date.localeCompare(q.date) || String(p.t).localeCompare(String(q.t)));
+  }
+
+  function renderDetail() {
+    const box = $("sDetail");
+    const s = stuOf(currentSid);
+    if (!s) { box.innerHTML = `<p class="muted">학생을 고르세요.</p>`; return; }
+    const list = obsOf(s.id);
+    const by = (t) => list.filter((o) => o.tone === t).length;
+    const g = gapDays(s.id);
+    const dist = AREAS.map((a) => { const os = list.filter((o) => o.area === a); return { a, g: os.filter((o) => o.tone === "good").length, n: os.filter((o) => o.tone === "normal").length, c: os.filter((o) => o.tone === "care").length, t: os.length }; }).filter((d) => d.t);
+    const maxT = Math.max(1, ...dist.map((d) => d.t));
+    const tl = timelineOf(s);
+    const aCount = tl.filter((x) => x.kind === "assess").length;
+    box.innerHTML = `
+      <div class="detail-head">
+        <div><p class="sub">${esc((classOf(s.classId) || {}).name || "")} ${s.no}번</p><h3>${esc(s.name)}</h3></div>
+        <div class="btn-row"><button class="btn btn-line btn-sm" id="viewTxt">내용 보기·복사</button><button class="btn btn-navy btn-sm" id="dlTxt">${icon("download")}텍스트로 내려받기</button></div>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><div class="v tnum">${list.length}</div><div class="l">관찰 기록</div></div>
+        <div class="kpi"><div class="v tnum" style="color:var(--ok)">${by("good")}</div><div class="l">긍정</div></div>
+        <div class="kpi"><div class="v tnum" style="color:var(--red)">${by("care")}</div><div class="l">지도 필요</div></div>
+        <div class="kpi"><div class="v tnum">${g >= 99 ? "-" : g + "일"}</div><div class="l">마지막 관찰 후</div></div>
+      </div>
+      <h4 class="sec-title">수행평가</h4>
+      ${assessOf(s.classId).length ? `<table class="a-table"><thead><tr><th>평가</th><th>평가 내용</th><th style="text-align:right">점수</th></tr></thead><tbody>
+      ${assessOf(s.classId).map((a) => { const x = scoreOf(a.id, s.id); const t = totalOf(a, x);
+        return `<tr><td>${esc(a.title)}</td><td class="muted">${x ? (x.status === "done" ? esc(x.memo || "-") : `${STATUS[x.status]}(기본 점수)`) : "미채점"}</td><td class="r tnum">${t == null ? "-" : `${t}/${maxOf(a)}`}</td></tr>`; }).join("")}
+      </tbody></table>` : `<p class="muted">이 학급에는 아직 수행평가가 없습니다.</p>`}
+      ${dist.length ? `<h4 class="sec-title">영역별 관찰</h4>
+      <div class="dist">${dist.map((d) => `<div class="dist-row"><span class="lab">${d.a}</span>
+        <span class="track" style="width:${(d.t / maxT) * 100}%" role="img" aria-label="${d.a}: 긍정 ${d.g}, 보통 ${d.n}, 지도 필요 ${d.c}">
+          <i class="g" style="flex:${d.g}"></i><i class="n" style="flex:${d.n}"></i><i class="c" style="flex:${d.c}"></i></span>
+        <span class="num tnum">${d.t}</span></div>`).join("")}</div>
+      <div class="legend" style="margin-top:10px"><span><i class="lg-dot" style="background:var(--ok)"></i>긍정</span><span><i class="lg-dot"></i>보통</span><span><i class="lg-care"></i>지도 필요</span></div>` : ""}
+      <h4 class="sec-title">시간순 기록 <span class="muted" style="font-weight:600">관찰 ${list.length}건 · 수행평가 ${aCount}건</span></h4>
+      ${tl.length ? `<div class="timeline">${tl.map((it) => it.kind === "obs" ? `<div class="tl ${it.o.tone}"><div class="when">${fmt(it.o.date)} <span class="badge b-area">${esc(it.o.area)}</span>${toneBadge(it.o.tone)}
+            <button class="more-toggle" style="padding:0 4px;font-size:13px" data-act="obs-edit" data-id="${esc(it.o.id)}">수정</button></div>
+          <p style="white-space:pre-wrap">${esc(it.o.content)}</p>${it.o.feedback ? `<p class="fb">${esc(it.o.feedback)}</p>` : ""}</div>`
+        : `<div class="tl assess"><div class="when">${fmt(it.a.date)} <span class="badge b-assess">수행평가</span><span>${esc(it.a.title)}</span></div>
+          <p class="score-line tnum">${totalOf(it.a, it.x)} / ${maxOf(it.a)}점${it.x.status !== "done" ? ` <span class="badge b-absent">${STATUS[it.x.status]} · 기본 점수</span>` : ""}</p>
+          ${it.x.status === "done" ? `<p class="crit-line">${it.a.criteria.map((c, i) => `${esc(c.name)} ${it.x.picks[i] == null ? "-" : c.levels[it.x.picks[i]].pt}/${c.levels[0].pt}`).join(" · ")}</p>` : ""}
+          ${it.x.memo ? `<p class="fb">${esc(it.x.memo)}</p>` : ""}</div>`).join("")}</div>`
+        : `<div class="composer-empty"><strong>아직 기록이 없습니다</strong>수업 화면에서 이 학생 카드를 눌러 첫 기록을 남겨 보세요.</div>`}`;
+    const fname = `학생기록_${(classOf(s.classId) || {}).name || ""}_${s.no}_${s.name}_${TODAY}.txt`.replace(/[\\/:*?"<>|\s]+/g, "_");
+    $("dlTxt").onclick = () => { download(fname, "﻿" + studentText(s), "text/plain;charset=utf-8"); toast("내려받았습니다. 안 되면 '내용 보기·복사'를 쓰세요."); };
+    $("viewTxt").onclick = () => showText(`${s.name} 학생 기록`, studentText(s), fname);
+  }
+
+  function studentText(s) {
+    const c = classOf(s.classId) || {};
+    const tl = timelineOf(s);
+    const line = "=".repeat(40);
+    const out = ["[학생별 누적 기록]", `학급: ${c.name || ""} ${c.subject || ""}`, `학생: ${s.no}번 ${s.name}`, `관찰 기록 ${tl.filter((x) => x.kind === "obs").length}건 · 수행평가 ${tl.filter((x) => x.kind === "assess").length}건`];
+    if (tl.length) out.push(`기간: ${tl[0].date} ~ ${tl[tl.length - 1].date}`);
+    out.push(`내려받은 날: ${TODAY}`, line);
+    tl.forEach((it, i) => {
+      out.push("");
+      if (it.kind === "obs") {
+        out.push(`${i + 1}. ${fmtFull(it.o.date)} | 관찰 | ${it.o.area} | ${TONES[it.o.tone]}`);
+        out.push(`- 관찰 내용: ${it.o.content}`);
+        if (it.o.feedback) out.push(`- 피드백·후속 지도: ${it.o.feedback}`);
+      } else {
+        out.push(`${i + 1}. ${fmtFull(it.a.date)} | 수행평가 | ${it.a.title} | ${totalOf(it.a, it.x)}/${maxOf(it.a)}점${it.x.status !== "done" ? ` (${STATUS[it.x.status]}, 기본 점수)` : ""}`);
+        if (it.x.status === "done") out.push(`- 기준별: ${it.a.criteria.map((cr, k) => `${cr.name} ${it.x.picks[k] == null ? "-" : cr.levels[it.x.picks[k]].pt}/${cr.levels[0].pt}`).join(", ")}`);
+        if (it.x.memo) out.push(`- 평가 내용: ${it.x.memo}`);
+      }
+    });
+    out.push("", line, "※ 학생 개인정보가 담긴 파일이므로 보관과 공유에 주의하십시오.");
+    return out.join("\r\n");
+  }
+
+  // ================= 성찰 =================
+  let reflDate = TODAY, reflDirty = false, reflShownKey = "";
+  const reflId = (c, d) => `refl|${c}|${d}`;
+  function renderReflect() {
+    const c = curClass();
+    $("reflDate").value = reflDate;
+    if (!c) { $("reflSub").textContent = "학급을 먼저 등록하세요."; $("reflSummary").innerHTML = emptyBox("학급이 없습니다", "설정에서 학급을 등록하세요.", ["settings", "학급 등록하기"]); $("reflList").innerHTML = ""; return; }
+    $("reflSub").textContent = `${fmtFull(reflDate)} · ${c.name} ${c.subject}`;
+    const ids = new Set(rosterOf(cid, true).map((s) => s.id));
+    const day = S.obs.filter((o) => ids.has(o.studentId) && o.date === reflDate);
+    const care = [...new Set(day.filter((o) => o.tone === "care").map((o) => o.studentId))];
+    const others = [...new Set(day.map((o) => o.studentId))].filter((id) => !care.includes(id));
+    const areaCount = {}; day.forEach((o) => (areaCount[o.area] = (areaCount[o.area] || 0) + 1));
+    $("reflSummary").innerHTML = `<h3>이 날 관찰 요약</h3>
+      <div class="row"><span>기록</span><b class="tnum">${day.length}건</b></div>
+      <div class="row"><span>관찰한 학생</span><b class="tnum">${care.length + others.length}명 / ${rosterOf(cid).length}명</b></div>
+      <div class="row"><span>긍정</span><b class="tnum" style="color:var(--ok)">${day.filter((o) => o.tone === "good").length}건</b></div>
+      <div class="row"><span>지도 필요</span><b class="tnum" style="color:var(--red)">${care.length}명</b></div>
+      ${Object.keys(areaCount).length ? `<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px">${Object.entries(areaCount).map(([a, n]) => `<span class="badge b-area">${esc(a)} ${n}</span>`).join("")}</div>` : `<p class="muted" style="margin-top:12px">이 날짜에 이 학급 관찰 기록이 없습니다.</p>`}`;
+    const key = reflId(cid, reflDate);
+    if (!reflDirty || reflShownKey !== key) {
+      const r = S.reflections.find((x) => x.id === key);
+      $("q1").value = r ? r.good : ""; $("q2").value = r ? r.difficult : ""; $("q3").value = r ? r.improve : "";
+      $("q4").value = r ? r.students : care.map((id) => (stuOf(id) || {}).name).filter(Boolean).join(", ");
+      $("reflSave").textContent = r ? "성찰 수정 저장" : "성찰 저장";
+      reflShownKey = key; reflDirty = false;
+    }
+    $("qChips").innerHTML = care.concat(others).map((id) => { const s = stuOf(id); return s ? `<button class="chip${care.includes(id) ? " care" : ""}" style="min-height:34px;font-size:14px" data-name="${esc(s.name)}">${care.includes(id) ? icon("alert") : icon("plus")}${esc(s.name)}</button>` : ""; }).join("");
+    const past = S.reflections.filter((r) => r.classId === cid).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 20);
+    const item = (t, v) => (v ? `<div><h4>${t}</h4><p>${esc(v)}</p></div>` : "");
+    $("reflList").innerHTML = past.length ? `<div class="refl-list">${past.map((r) => `<article class="card refl-card">
+        <div class="top"><b>${fmtFull(r.date)}</b><span class="btn-row"><button class="btn btn-line btn-sm" data-act="refl-load" data-date="${esc(r.date)}">불러오기</button><button class="btn btn-line btn-sm" style="color:#A8325A" data-act="refl-del" data-id="${esc(r.id)}">삭제</button></span></div>
+        ${item("잘된 점", r.good)}${item("학생들이 어려워한 내용", r.difficult)}${item("다음 수업에서 개선할 점", r.improve)}${item("추가 지도가 필요한 학생", r.students)}</article>`).join("")}</div>`
+      : `<p class="muted">아직 저장한 성찰이 없습니다.</p>`;
+  }
+  ["q1", "q2", "q3", "q4"].forEach((id) => $(id).addEventListener("input", () => (reflDirty = true)));
+  $("reflDate").addEventListener("change", (e) => { reflDate = e.target.value || TODAY; reflDirty = false; renderReflect(); });
+  $("qChips").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-name]"); if (!b) return;
+    const t = $("q4"); const names = t.value.split(/[,\n]/).map((x) => x.trim()).filter(Boolean);
+    if (!names.includes(b.dataset.name)) { t.value = names.concat(b.dataset.name).join(", "); reflDirty = true; }
+    t.focus();
+  });
+  $("reflSave").addEventListener("click", () => {
+    if (!curClass()) return;
+    const rec = { id: reflId(cid, reflDate), date: reflDate, classId: cid, good: $("q1").value.trim(), difficult: $("q2").value.trim(), improve: $("q3").value.trim(), students: $("q4").value.trim() };
+    if (!rec.good && !rec.difficult && !rec.improve && !rec.students) { toast("네 항목 중 하나 이상을 입력하세요.", { error: true }); $("q1").focus(); return; }
+    const old = S.reflections.find((x) => x.id === rec.id); rec.createdAt = old && old.createdAt;
+    put("reflections", rec); reflDirty = false; reflShownKey = "";
+    renderReflect(); toast(old ? "성찰을 고쳐 저장했습니다." : "성찰을 저장했습니다.");
+  });
+  async function deleteRefl(id) {
+    const r = S.reflections.find((x) => x.id === id); if (!r) return;
+    const ok = await confirmBox({ title: "성찰 삭제", message: `${fmtFull(r.date)} 성찰을 삭제할까요?`, warn: "삭제하면 되돌릴 수 없습니다.", yes: "삭제" });
+    if (!ok) return;
+    del({ reflections: [id] }); reflDirty = false; reflShownKey = ""; renderReflect(); toast("성찰을 삭제했습니다.");
+  }
+
+  // ================= 설정 =================
+  let phraseArea = AREAS[0];
+  function renderSettings() {
+    const cls = classesSorted();
+    $("setClasses").innerHTML = `<h3>학급과 명단</h3><p class="hint">학급마다 명단을 붙여넣습니다. 명단에서 빠진 학생은 지우지 않고 '재적 해제'로 바꿔 기록을 남깁니다.</p>
+      ${cls.length ? cls.map((c) => {
+        const all = rosterOf(c.id, true); const act = all.filter((s) => s.active !== "N").length;
+        return `<div class="class-row"><div><b>${esc(c.name)}</b> <span class="muted">${esc(c.subject)}</span><br><span class="hint">재적 ${act}명${all.length - act ? ` · 재적 해제 ${all.length - act}명` : ""} · 관찰 ${S.obs.filter((o) => o.classId === c.id).length}건 · 평가 ${assessOf(c.id).length}개</span></div>
+          <div class="btn-row"><button class="btn btn-red btn-sm" data-set="roster" data-id="${esc(c.id)}">명단</button><button class="btn btn-line btn-sm" data-set="edit" data-id="${esc(c.id)}">수정</button><button class="btn btn-line btn-sm" style="color:#A8325A" data-set="del" data-id="${esc(c.id)}">삭제</button></div></div>`;
+      }).join("") : `<p class="muted" style="padding:8px 0">아직 학급이 없습니다. 아래에서 첫 학급을 추가하세요.</p>`}
+      <div class="add-row">
+        <input type="text" id="newClassName" placeholder="학급 (예: 2-3)" aria-label="새 학급 이름">
+        <input type="text" id="newClassSubject" placeholder="교과 (예: 한문)" aria-label="새 학급 교과" value="${esc((cls[cls.length - 1] || {}).subject || "")}">
+        <button class="btn btn-red btn-sm" data-set="add">학급 추가</button>
+      </div>`;
+
+    const counts = [["학급", S.classes.length], ["학생", S.students.filter((s) => s.active !== "N").length], ["관찰 기록", S.obs.length], ["수행평가", S.assessments.length], ["채점", S.scores.length], ["수업 성찰", S.reflections.length]];
+    $("setData").innerHTML = `<h3>데이터</h3><p class="hint">${DEMO ? "체험 모드에서는 데이터가 이 화면에만 있습니다." : "모든 기록은 이 앱과 연결된 구글 시트에 저장됩니다."}</p>
+      <div class="count-boxes">${counts.map(([l, n]) => `<div class="count-box"><div class="n tnum">${n}</div><div class="l">${l}</div></div>`).join("")}</div>
+      <div class="btn-row">
+        ${sheetUrl ? `<a class="btn btn-line btn-sm" href="${esc(sheetUrl)}" target="_blank" rel="noopener">구글 시트 열기</a>` : ""}
+        <button class="btn btn-line btn-sm" data-set="export">JSON 내려받기</button>
+        <button class="btn btn-line btn-sm" data-set="import-merge">JSON 합치기</button>
+        <button class="btn btn-line btn-sm" data-set="import-replace">JSON 바꾸기</button>
+        <button class="btn btn-line btn-sm" style="color:#A8325A" data-set="wipe">전체 삭제</button>
+      </div>
+      <p class="hint" style="margin-top:10px">JSON 합치기는 v1 앱(브라우저 저장판)에서 내려받은 파일도 받아 학급·학생을 이름으로 맞춰 넣습니다.</p>`;
+
+    const opts = AREAS.map((a) => `<option value="obs|${a}" ${phraseArea === a ? "selected" : ""}>관찰 · ${a}</option>`).join("") + `<option value="score" ${phraseArea === "score" ? "selected" : ""}>수행평가 · 평가 내용</option>`;
+    const cur = phraseArea === "score" ? scorePhrases() : phrasesFor(phraseArea);
+    $("setPhrases").innerHTML = `<h3>빠른 문구</h3><p class="hint">기록할 때 눌러 넣는 문구입니다. 한 줄에 하나씩 적습니다.</p>
+      <div class="field"><label for="phSel">종류</label><select id="phSel">${opts}</select></div>
+      <div class="field" style="margin-top:10px"><label for="phText">문구</label><textarea id="phText" rows="6">${esc(cur.join("\n"))}</textarea></div>
+      <div class="btn-row" style="margin-top:10px"><button class="btn btn-red btn-sm" data-set="ph-save">문구 저장</button><button class="btn btn-line btn-sm" data-set="ph-reset">기본 문구로</button></div>`;
+  }
+
+  $("setPhrases").addEventListener("change", (e) => { if (e.target.id === "phSel") { const v = e.target.value; phraseArea = v === "score" ? "score" : v.slice(4); renderSettings(); } });
+  document.querySelector('[data-panel="settings"]').addEventListener("click", async (e) => {
+    const b = e.target.closest("[data-set]"); if (!b) return;
+    const k = b.dataset.set, id = b.dataset.id;
+    if (k === "add") {
+      const name = $("newClassName").value.trim(), subject = $("newClassSubject").value.trim();
+      if (!name) { $("newClassName").focus(); toast("학급 이름을 입력하세요.", { error: true }); return; }
+      if (S.classes.some((c) => c.name === name && c.subject === subject)) { toast("같은 이름의 학급이 이미 있습니다.", { error: true }); return; }
+      const rec = { id: uid(), name, subject, order: S.classes.length };
+      put("classes", rec);
+      if (!cid) setClass(rec.id); else renderAll();
+      toast(`${name} 학급을 추가했습니다. '명단'을 눌러 학생을 넣으세요.`);
+    }
+    if (k === "edit") {
+      const c = classOf(id);
+      openModal({
+        title: "학급 수정",
+        body: `<div class="grid2"><div class="field"><label for="ecName">학급</label><input type="text" id="ecName" value="${esc(c.name)}"></div><div class="field"><label for="ecSub">교과</label><input type="text" id="ecSub" value="${esc(c.subject)}"></div></div>
+          <div class="field"><label for="ecOrder">순서 (작을수록 앞)</label><input type="number" id="ecOrder" value="${c.order}"></div>`,
+        buttons: [{ v: "cancel", label: "취소" }, { v: "save", label: "저장", cls: "btn-red" }],
+        onAction: (v, body) => {
+          const name = body.querySelector("#ecName").value.trim(); if (!name) return false;
+          put("classes", { ...c, name, subject: body.querySelector("#ecSub").value.trim(), order: Number(body.querySelector("#ecOrder").value) || 0 });
+          renderAll(); toast("학급을 수정했습니다."); return true;
+        },
+      });
+    }
+    if (k === "del") {
+      const c = classOf(id); const m = cascade("classes", [id]);
+      const n = (x) => (m[x] || []).length;
+      const ok = await confirmBox({ title: "학급 삭제", message: `${c.name} ${c.subject} 학급을 삭제할까요?\n함께 지워지는 기록: 학생 ${n("students")}명, 관찰 ${n("obs")}건, 수행평가 ${n("assessments")}개, 채점 ${n("scores")}건, 성찰 ${n("reflections")}건`, warn: "되돌릴 수 없습니다. 먼저 JSON으로 내려받아 두세요.", yes: "학급 삭제", requireText: c.name });
+      if (!ok) return;
+      del(m); if (cid === id) { cid = ""; ensureClass(); } renderAll(); toast("학급을 삭제했습니다.");
+    }
+    if (k === "roster") editRoster(id);
+    if (k === "export") exportJson();
+    if (k === "import-merge" || k === "import-replace") { importMode = k === "import-merge" ? "merge" : "replace"; $("fileInput").click(); }
+    if (k === "wipe") wipeAll();
+    if (k === "ph-save" || k === "ph-reset") {
+      const list = k === "ph-reset" ? [] : $("phText").value.split("\n").map((x) => x.trim()).filter(Boolean);
+      const rec = phraseArea === "score" ? { id: "score", kind: "score", area: "", list } : { id: "obs|" + phraseArea, kind: "obs", area: phraseArea, list };
+      put("phrases", rec); renderSettings(); toast(k === "ph-reset" ? "기본 문구로 되돌렸습니다." : "문구를 저장했습니다.");
+    }
+  });
+
+  // 명단 붙여넣기: "번호 이름" 또는 "이름" 한 줄씩. 번호가 같으면 이름을 고치고, 빠진 학생은 재적 해제
+  function parseRoster(text) {
+    const out = []; let auto = 0; const seen = new Set();
+    text.split(/\r?\n/).map((l) => l.trim()).filter(Boolean).forEach((l) => {
+      let m = l.match(/^(\d{1,3})(?:번)?[\s.,)\t]+(.+)$/);
+      let no, name;
+      if (m) { no = +m[1]; name = m[2]; } else { no = null; name = l; }
+      name = name.split(/\t/)[0].replace(/\s+/g, " ").trim();
+      if (!name) return;
+      if (no == null) { no = Math.max(auto, ...out.map((x) => x.no), 0) + 1; }
+      auto = Math.max(auto, no);
+      if (seen.has(no)) return; seen.add(no);
+      out.push({ no, name });
+    });
+    return out;
+  }
+  function editRoster(classId) {
+    const c = classOf(classId);
+    const all = rosterOf(classId, true);
+    const current = all.filter((s) => s.active !== "N").map((s) => `${s.no} ${s.name}`).join("\n");
+    openModal({
+      title: `${c.name} ${c.subject} 명단`,
+      wide: true,
+      body: `<p class="hint">한 줄에 한 명씩 <b>번호 이름</b>으로 적습니다(예: 1 김서윤). 엑셀·나이스에서 번호와 이름 두 칸을 복사해 붙여넣어도 됩니다. 번호를 빼면 차례대로 번호를 붙입니다.</p>
+        <div class="field"><label for="rText">명단</label><textarea id="rText" rows="14" style="min-height:300px">${esc(current)}</textarea></div>
+        <p class="hint" id="rPreview"></p>
+        ${all.some((s) => s.active === "N") ? `<p class="hint">재적 해제된 학생: ${all.filter((s) => s.active === "N").map((s) => `${s.no} ${esc(s.name)}`).join(", ")} (명단에 다시 넣으면 재적으로 돌아옵니다)</p>` : ""}`,
+      buttons: [{ v: "cancel", label: "취소" }, { v: "save", label: "명단 저장", cls: "btn-red" }],
+      onOpen: (body) => { preview(body); body.querySelector("#rText").focus(); },
+      onInput: (e, body) => preview(body),
+      onAction: (v, body) => {
+        const plan = diffRoster(classId, parseRoster(body.querySelector("#rText").value));
+        const recs = [...plan.add, ...plan.rename, ...plan.leave, ...plan.back];
+        if (recs.length) put("students", recs);
+        renderAll();
+        toast(`명단을 저장했습니다. 추가 ${plan.add.length} · 이름 변경 ${plan.rename.length} · 재적 해제 ${plan.leave.length}`);
+        return true;
+      },
+    });
+    function preview(body) {
+      const list = parseRoster(body.querySelector("#rText").value);
+      const p = diffRoster(classId, list);
+      body.querySelector("#rPreview").innerHTML = `<b>${list.length}명</b> 인식 · 추가 ${p.add.length}명 · 이름 변경 ${p.rename.length}명 · 재적 해제 ${p.leave.length}명${p.back.length ? ` · 재적 복귀 ${p.back.length}명` : ""}`;
+    }
+  }
+  function diffRoster(classId, list) {
+    const all = rosterOf(classId, true);
+    const byNo = new Map(all.map((s) => [s.no, s]));
+    const plan = { add: [], rename: [], leave: [], back: [] };
+    const nos = new Set(list.map((x) => x.no));
+    list.forEach(({ no, name }) => {
+      const s = byNo.get(no);
+      if (!s) plan.add.push({ id: uid(), classId, no, name, active: "Y" });
+      else if (s.name !== name) plan.rename.push({ ...s, name, active: "Y" });
+      else if (s.active === "N") plan.back.push({ ...s, active: "Y" });
+    });
+    all.forEach((s) => { if (!nos.has(s.no) && s.active !== "N") plan.leave.push({ ...s, active: "N" }); });
+    return plan;
+  }
+
+  function exportJson() {
+    const payload = { app: "onbit-observation", version: 2, exportedAt: new Date().toISOString(), tables: S };
+    download(`수업관찰기록_v2_전체_${TODAY}.json`, JSON.stringify(payload, null, 2), "application/json");
+    toast("전체 데이터를 내려받았습니다.");
+  }
+
+  let importMode = "merge";
+  $("fileInput").addEventListener("change", async (e) => {
+    const file = e.target.files && e.target.files[0]; e.target.value = "";
+    if (!file) return;
+    let data;
+    try { data = JSON.parse(await file.text()); } catch (err) { toast("JSON 파일을 읽지 못했습니다.", { error: true }); return; }
+    let tables, label;
+    if (data && data.app === "onbit-observation" && data.tables) { tables = data.tables; label = "v2"; }
+    else if (data && Array.isArray(data.observations)) { tables = convertV1(data); label = "v1(브라우저 저장판)"; importMode = "merge"; }
+    else { toast("이 앱에서 내려받은 JSON 파일이 아닙니다.", { error: true }); return; }
+    const n = (k) => (tables[k] || []).length;
+    const ok = await confirmBox({
+      title: importMode === "merge" ? "데이터 합치기" : "데이터 바꾸기",
+      message: `파일: ${file.name} (${label})\n학급 ${n("classes")} · 학생 ${n("students")} · 관찰 ${n("obs")} · 수행평가 ${n("assessments")} · 채점 ${n("scores")} · 성찰 ${n("reflections")}\n\n${importMode === "merge" ? "지금 기록에 더합니다. 같은 기록은 더 최근에 고친 쪽을 남깁니다." : "지금 기록을 모두 지우고 파일 내용으로 바꿉니다."}`,
+      warn: importMode === "replace" ? "지금 기록은 되돌릴 수 없습니다. 먼저 JSON으로 내려받아 두세요." : "",
+      yes: importMode === "merge" ? "합치기" : "바꾸기", danger: importMode === "replace",
+    });
+    if (!ok) return;
+    try {
+      toast("불러오는 중입니다…");
+      await drain();
+      const res = await server("importAll", tables, importMode);
+      await reload();
+      const a = (res && res.added) || {};
+      toast(importMode === "merge" ? `새로 더함: 관찰 ${a.obs || 0}건, 학생 ${a.students || 0}명, 채점 ${a.scores || 0}건` : "파일 내용으로 바꿨습니다.");
+    } catch (err) { toast("불러오지 못했습니다: " + errMsg(err), { error: true }); }
+  });
+
+  // v1 파일(학생 이름·교과 문자열)을 v2 형식으로 바꿈. 교과 영역 = 학급 이름으로 보고, 같은 이름이 있으면 그 학급에 넣음
+  function convertV1(d) {
+    const now = new Date().toISOString();
+    const t = { classes: [], students: [], obs: [], reflections: [] };
+    const clsByName = new Map(S.classes.map((c) => [c.name, c]));
+    const getClass = (name) => {
+      name = (name || "").trim() || "미지정";
+      if (!clsByName.has(name)) { const c = { id: uid(), name, subject: "", order: S.classes.length + t.classes.length, createdAt: now, updatedAt: now }; clsByName.set(name, c); t.classes.push(c); }
+      return clsByName.get(name);
+    };
+    const stuKey = new Map(S.students.map((s) => [s.classId + "|" + s.name, s]));
+    const getStu = (c, name) => {
+      const k = c.id + "|" + name;
+      if (!stuKey.has(k)) {
+        const nos = S.students.filter((s) => s.classId === c.id).map((s) => s.no).concat(t.students.filter((s) => s.classId === c.id).map((s) => s.no));
+        const s = { id: uid(), classId: c.id, no: Math.max(0, ...nos) + 1, name, active: "Y", createdAt: now, updatedAt: now };
+        stuKey.set(k, s); t.students.push(s);
+      }
+      return stuKey.get(k);
+    };
+    d.observations.forEach((o) => {
+      if (!o || !o.student || !/^\d{4}-\d{2}-\d{2}$/.test(o.date)) return;
+      const c = getClass(o.subject); const s = getStu(c, String(o.student).trim());
+      const tm = String(o.createdAt || "").match(/T(\d{2}:\d{2})/);
+      t.obs.push({ id: String(o.id || uid()), date: o.date, time: tm ? tm[1] : "", classId: c.id, studentId: s.id, area: AREAS.includes(o.area) ? o.area : "기타", tone: "normal",
+        content: String(o.content || ""), feedback: String(o.feedback || ""), createdAt: o.createdAt || now, updatedAt: o.updatedAt || now });
+    });
+    (d.reflections || []).forEach((r) => {
+      if (!r || !/^\d{4}-\d{2}-\d{2}$/.test(r.date)) return;
+      const c = getClass(r.subject);
+      t.reflections.push({ id: reflId(c.id, r.date), date: r.date, classId: c.id, good: r.good || "", difficult: r.difficult || "", improve: r.improve || "", students: r.students || "", createdAt: r.createdAt || now, updatedAt: r.updatedAt || now });
+    });
+    return t;
+  }
+
+  async function wipeAll() {
+    const ok = await confirmBox({ title: "전체 삭제", message: "학급, 학생, 관찰 기록, 수행평가, 채점, 성찰, 빠른 문구를 모두 삭제할까요?", warn: "되돌릴 수 없습니다. 먼저 JSON으로 내려받아 두세요.", yes: "모두 삭제", requireText: "전체 삭제" });
+    if (!ok) return;
+    try { await drain(); await server("deleteAll"); cid = ""; await reload(); toast("전체 데이터를 삭제했습니다."); }
+    catch (err) { toast("삭제하지 못했습니다: " + errMsg(err), { error: true }); }
+  }
+
+  // ================= 시작 =================
+  updateSync();
+  boot();
+})();
+
+</script>
+</body>
+</html>
