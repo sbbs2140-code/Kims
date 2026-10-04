@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#EEE8F6">
+<title>수업 관찰 대시보드</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  :root {
+    --page: #EEE8F4;
+    --frame: #FBF8F6;
+    --card: #FFFFFF;
+    --ink: #2A2340;
+    --ink-2: #5E5675;
+    --ink-3: #6F6886;
+    --line: #EEE9F2;
+    --lav: #8B6BE0;
+    --lav-2: #A58BE6;
+    --lav-soft: #F1EBFD;
+    --peach-soft: #FDEDE6;
+    --mint-soft: #E7F5EE;
+    --yellow-soft: #FFF5D9;
+    --pink: #E07A9E;
+    --amber: #D99A2B;
+    --mint: #3FAE86;
+    --up: #23905F;
+    --r-xl: 28px;
+    --r-lg: 22px;
+    --r-md: 14px;
+    --shadow: 0 10px 30px rgb(92 70 140 / .08), 0 2px 6px rgb(92 70 140 / .05);
+    --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100dvh; background: var(--page); color: var(--ink); font-family: var(--font);
+    font-size: 15px; line-height: 1.55; word-break: keep-all; -webkit-font-smoothing: antialiased;
+  }
+  button, input { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  h1, h2, h3, p { margin: 0; }
+  :focus-visible { outline: 3px solid var(--lav); outline-offset: 2px; border-radius: 10px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .ic { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+  /* ---------- 틀 ---------- */
+  .shell { padding: 24px; }
+  .frame {
+    max-width: 1280px; margin: 0 auto; background: var(--frame); border-radius: 32px; overflow: hidden;
+    box-shadow: 0 30px 80px rgb(92 70 140 / .14); display: grid; grid-template-columns: 216px 1fr; min-height: calc(100dvh - 48px);
+  }
+
+  /* 사이드바 */
+  .side {
+    position: relative; padding: 24px 16px; display: flex; flex-direction: column; gap: 28px;
+    background: linear-gradient(180deg, #C9B8F2 0%, #B49CEC 55%, #A88EE8 100%);
+  }
+  .logo { display: grid; place-items: center; width: 64px; height: 64px; margin: 0 auto; border-radius: 22px;
+    background: radial-gradient(circle at 35% 30%, #FFD3C2, #F7A98F 70%); box-shadow: inset 0 -4px 8px rgb(200 100 80 / .25), 0 8px 18px rgb(120 80 160 / .25); }
+  .menu { display: grid; gap: 6px; }
+  .menu button {
+    display: flex; align-items: center; gap: 12px; width: 100%; min-height: 48px; padding: 0 16px; border: 0; border-radius: 16px;
+    background: none; color: #3E2F6B; font-weight: 600; font-size: 15px; text-align: left;
+  }
+  .menu button:hover { background: rgb(255 255 255 / .35); }
+  .menu button[aria-current="page"] { background: #FFFFFF; color: var(--lav); font-weight: 800; box-shadow: 0 8px 18px rgb(80 50 150 / .18); }
+  .menu .ic { width: 22px; height: 22px; }
+  .side-art { margin-top: auto; display: grid; place-items: center; }
+
+  /* 본문 */
+  .main { padding: 28px 32px 32px; display: grid; gap: 20px; align-content: start; min-width: 0; }
+  .top { display: flex; align-items: center; gap: 16px; }
+  .top h1 { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; display: flex; align-items: center; gap: 8px; }
+  .top .hello { color: var(--ink-2); margin-top: 2px; }
+  .search {
+    margin-left: auto; position: relative; width: min(360px, 34vw);
+  }
+  .search input {
+    width: 100%; height: 46px; padding: 0 16px 0 44px; border: 1px solid var(--line); border-radius: 999px; background: var(--card);
+    box-shadow: var(--shadow); font-size: 14px;
+  }
+  .search input:focus { outline: none; border-color: var(--lav-2); box-shadow: 0 0 0 4px var(--lav-soft); }
+  .search .ic { position: absolute; left: 16px; top: 13px; color: var(--ink-3); }
+  .round {
+    position: relative; display: grid; place-items: center; width: 46px; height: 46px; border-radius: 999px; border: 1px solid var(--line);
+    background: var(--card); box-shadow: var(--shadow); color: var(--ink-2);
+  }
+  .round:hover { color: var(--lav); }
+  .round .dot { position: absolute; top: 6px; right: 6px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 99px; background: var(--pink); color: #fff; font-size: 11px; font-weight: 800; display: grid; place-items: center; }
+  .avatar { width: 50px; height: 50px; border-radius: 999px; overflow: hidden; border: 3px solid #fff; box-shadow: var(--shadow); background: #FFE6DC; }
+
+  /* 카드 공통 */
+  .card { background: var(--card); border-radius: var(--r-lg); box-shadow: var(--shadow); padding: 20px; position: relative; overflow: hidden; }
+  .card-h { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+  .card-h h2 { font-size: 16px; font-weight: 800; }
+  .pill-btn {
+    display: inline-flex; align-items: center; gap: 4px; height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line);
+    background: var(--card); font-size: 13px; font-weight: 700; color: var(--ink-2);
+  }
+  .pill-btn:hover { border-color: var(--lav-2); color: var(--lav); }
+
+  /* 1행 */
+  .row1 { display: grid; grid-template-columns: 1.55fr 1fr 1fr 1fr; gap: 18px; }
+  .hero {
+    display: grid; grid-template-columns: 180px 1fr; align-items: center; min-height: 196px; padding: 0 22px 0 0;
+    background: linear-gradient(135deg, #FFDCCD 0%, #FBD1DC 55%, #EBD8F7 100%);
+  }
+  .hero-art { align-self: end; display: grid; place-items: end center; }
+  .hero-art svg { width: 180px; height: auto; }
+  #greet { white-space: nowrap; }
+  .hero h2 { font-size: 24px; font-weight: 800; line-height: 1.3; letter-spacing: -0.02em; }
+  .hero p { margin-top: 10px; color: var(--ink-2); }
+  .stat { display: grid; align-content: start; gap: 6px; min-height: 196px; }
+  .stat.lav { background: linear-gradient(160deg, #F6F1FF, #EEE6FD); }
+  .stat.peach { background: linear-gradient(160deg, #FFF4EF, #FDE6DC); }
+  .stat.mint { background: linear-gradient(160deg, #F1FAF5, #E1F3EA); }
+  .stat .label { font-weight: 700; font-size: 14px; }
+  .tile {
+    width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; color: #fff; margin: 6px 0 4px;
+    box-shadow: inset 0 -4px 8px rgb(0 0 0 / .12), inset 0 3px 6px rgb(255 255 255 / .45), 0 8px 16px rgb(0 0 0 / .08);
+  }
+  .tile .ic { width: 24px; height: 24px; }
+  .t-lav { background: linear-gradient(160deg, #B79BF5, #8B6BE0); }
+  .t-peach { background: linear-gradient(160deg, #FFA98A, #F07A57); }
+  .t-mint { background: linear-gradient(160deg, #7FD8B1, #3FAE86); }
+  .t-pink { background: linear-gradient(160deg, #F7A9C4, #E07A9E); }
+  .t-amber { background: linear-gradient(160deg, #FFD27E, #E7A93A); }
+  .stat .num { font-size: 38px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .stat .num small { font-size: 18px; color: var(--ink-3); font-weight: 700; }
+  .trend { display: flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 800; color: var(--up); }
+  .trend.down { color: #C2416B; }
+  .trend .ic { width: 15px; height: 15px; stroke-width: 2.6; }
+  .stat .sub { font-size: 13px; color: var(--ink-3); }
+
+  /* 2행 */
+  .row2 { display: grid; grid-template-columns: 1.6fr 1fr; gap: 18px; }
+  .chart-wrap { position: relative; }
+  .chart-wrap svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .tip {
+    position: absolute; pointer-events: none; transform: translate(-50%, -100%); margin-top: -14px;
+    background: #fff; border-radius: 12px; padding: 6px 12px; box-shadow: 0 8px 20px rgb(92 70 140 / .18); text-align: center; white-space: nowrap;
+    font-size: 12px; color: var(--ink-3); transition: left .12s, top .12s;
+  }
+  .tip b { display: block; font-size: 18px; color: var(--ink); line-height: 1.2; }
+  .seg-tabs { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--lav-soft); }
+  .seg-tabs button { height: 28px; padding: 0 12px; border: 0; border-radius: 999px; background: none; font-size: 13px; font-weight: 700; color: var(--ink-2); }
+  .seg-tabs button[aria-pressed="true"] { background: #fff; color: var(--lav); box-shadow: 0 2px 6px rgb(92 70 140 / .15); }
+
+  .tasks { display: grid; gap: 4px; }
+  .task { display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; align-items: center; padding: 8px 6px; border-radius: 14px; }
+  .task:hover { background: #FAF7FD; }
+  .task .tile { width: 40px; height: 40px; border-radius: 12px; margin: 0; }
+  .task .tile .ic { width: 20px; height: 20px; }
+  .task b { display: block; font-size: 14px; }
+  .task span.when { font-size: 12px; color: var(--ink-3); }
+  .status { height: 26px; padding: 0 10px; border-radius: 999px; font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; white-space: nowrap; }
+  .s-doing { background: #FFF0DC; color: #A0610B; }
+  .s-todo { background: var(--lav-soft); color: #6A4CC4; }
+  .s-soon { background: #E3F1FC; color: #2B6CA3; }
+  .s-done { background: var(--mint-soft); color: #1F7A57; }
+
+  /* 3행 */
+  .row3 { display: grid; grid-template-columns: 1.05fr .75fr 1fr; gap: 18px; }
+  .progress { display: grid; grid-template-columns: 150px 1fr; gap: 18px; align-items: center; }
+  .ring { position: relative; width: 150px; height: 150px; }
+  .ring svg { width: 150px; height: 150px; transform: rotate(-90deg); }
+  .ring .center { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; }
+  .ring .center b { font-size: 30px; font-weight: 800; line-height: 1; display: block; }
+  .ring .center span { font-size: 12px; color: var(--ink-3); font-weight: 600; }
+  .legend { display: grid; gap: 10px; }
+  .lg { display: grid; grid-template-columns: 10px 1fr auto; gap: 8px; align-items: center; font-size: 13px; }
+  .lg i { width: 10px; height: 10px; border-radius: 99px; }
+  .lg .bar { grid-column: 2 / 4; height: 6px; border-radius: 99px; background: #F2EEF7; overflow: hidden; margin-top: -4px; }
+  .lg .bar span { display: block; height: 100%; border-radius: 99px; }
+  .lg b { font-variant-numeric: tabular-nums; }
+
+  .remind { background: linear-gradient(160deg, #F4EEFF, #E9E0FB); display: grid; grid-template-columns: 96px 1fr; gap: 6px; align-items: center; }
+  .remind h3 { font-size: 16px; font-weight: 800; }
+  .remind p { font-size: 13px; color: var(--ink-2); margin: 6px 0 12px; }
+  .btn-lav {
+    display: inline-flex; align-items: center; justify-content: center; height: 38px; padding: 0 16px; border: 0; border-radius: 12px;
+    background: linear-gradient(160deg, #A88BF0, #8B6BE0); color: #fff; font-weight: 800; font-size: 13px;
+    box-shadow: 0 8px 16px rgb(139 107 224 / .3);
+  }
+  .btn-lav:hover { filter: brightness(1.05); }
+  .cheer { background: linear-gradient(160deg, #FFF8E3, #FFEFC2); display: grid; grid-template-columns: 1fr 1.1fr; align-items: center; gap: 8px; }
+  .cheer h3 { font-size: 20px; font-weight: 800; line-height: 1.35; }
+  .cheer p { margin-top: 8px; color: var(--ink-2); font-size: 14px; }
+
+  .note { max-width: 1280px; margin: 14px auto 0; font-size: 13px; color: var(--ink-3); text-align: center; }
+
+  /* ---------- 반응형 ---------- */
+  @media (max-width: 1180px) {
+    .row1 { grid-template-columns: 1fr 1fr 1fr; }
+    .hero { grid-column: 1 / -1; }
+    .row3 { grid-template-columns: 1fr 1fr; }
+    .cheer { grid-column: 1 / -1; }
+  }
+  @media (max-width: 900px) {
+    .shell { padding: 0; }
+    .frame { grid-template-columns: 1fr; border-radius: 0; min-height: 100dvh; padding-bottom: 76px; }
+    .side {
+      position: fixed; z-index: 20; left: 0; right: 0; bottom: 0; padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+      flex-direction: row; gap: 0; background: linear-gradient(180deg, #C2AFF0, #B096EA); border-radius: 22px 22px 0 0;
+    }
+    .logo, .side-art { display: none; }
+    .menu { grid-template-columns: repeat(5, 1fr); width: 100%; gap: 4px; }
+    .menu button { flex-direction: column; justify-content: center; gap: 2px; min-height: 56px; padding: 0; font-size: 12px; text-align: center; }
+    .menu button.extra { display: none; }
+    .main { padding: 20px 16px 24px; }
+    .row2, .row3 { grid-template-columns: 1fr; }
+    .search { display: none; }
+    .top .round.msg { display: none; }
+    .top .actions { margin-left: auto; }
+  }
+  @media (max-width: 640px) {
+    .row1 { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .stat { min-height: 0; padding: 16px; }
+    .stat:last-child { grid-column: 1 / -1; }
+    .stat .num { font-size: 30px; }
+    .hero { grid-template-columns: 120px 1fr; min-height: 150px; padding: 0 16px 0 0; }
+    .hero-art svg { width: 130px; height: auto; }
+    .hero h2 { font-size: 20px; }
+    .top h1 { font-size: 24px; }
+    .progress { grid-template-columns: 1fr; justify-items: center; }
+    .legend { width: 100%; }
+    .cheer { grid-template-columns: 1fr 120px; }
+    .cheer-art svg { width: 120px; height: auto; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="gFur" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#FFE3D3"/><stop offset=".7" stop-color="#F6B59A"/><stop offset="1" stop-color="#E9967A"/></radialGradient>
+    <radialGradient id="gMuzzle" cx="45%" cy="35%" r="70%"><stop offset="0" stop-color="#FFF8F3"/><stop offset="1" stop-color="#FBE0D2"/></radialGradient>
+    <linearGradient id="gHoodie" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C6AEF7"/><stop offset="1" stop-color="#9B7DE6"/></linearGradient>
+    <radialGradient id="gLeaf" cx="40%" cy="30%" r="80%"><stop offset="0" stop-color="#B9E6A5"/><stop offset=".6" stop-color="#7CC47A"/><stop offset="1" stop-color="#4E9B5A"/></radialGradient>
+    <linearGradient id="gPot" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F5EEE6"/><stop offset="1" stop-color="#DCCFC2"/></linearGradient>
+    <linearGradient id="gTerra" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6B9A4"/><stop offset="1" stop-color="#E08C72"/></linearGradient>
+    <radialGradient id="gCloud" cx="45%" cy="30%" r="75%"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".75" stop-color="#F6F3FA"/><stop offset="1" stop-color="#E6E0EF"/></radialGradient>
+    <linearGradient id="gArea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8B6BE0" stop-opacity=".28"/><stop offset="1" stop-color="#8B6BE0" stop-opacity="0"/></linearGradient>
+  </defs>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.3-5.5 6.5-5.5s5.7 2 6.5 5.5"/><path d="M15.5 4.8a3.5 3.5 0 0 1 0 6.4M18 14.8c1.8.7 3 2.5 3.5 5.2"/></symbol>
+  <symbol id="i-clip" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M8.5 11l2 2 4-4M8.5 17h7"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6.5 8-6.5s7 2.5 8 6.5"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 9a6 6 0 1 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9z"/><path d="M10 20a2 2 0 0 0 4 0"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
+  <symbol id="i-note" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M9 11h7M9 15h7"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3l9.5 17h-19L12 3z"/><path d="M12 10v4M12 17.5v.1"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+</svg>
+
+<div class="shell">
+  <div class="frame">
+    <!-- 사이드바 -->
+    <aside class="side">
+      <div class="logo" aria-hidden="true">
+        <svg width="44" height="40" viewBox="0 0 44 40">
+          <circle cx="9" cy="9" r="7" fill="#fff"/><circle cx="35" cy="9" r="7" fill="#fff"/>
+          <circle cx="9" cy="9" r="3.5" fill="#FFC9B6"/><circle cx="35" cy="9" r="3.5" fill="#FFC9B6"/>
+          <ellipse cx="22" cy="22" rx="17" ry="15" fill="#fff"/>
+          <circle cx="15.5" cy="20" r="2.2" fill="#3A2C2A"/><circle cx="28.5" cy="20" r="2.2" fill="#3A2C2A"/>
+          <ellipse cx="22" cy="27" rx="6" ry="4.5" fill="#FFE6DB"/><ellipse cx="22" cy="25.5" rx="2.4" ry="1.7" fill="#3A2C2A"/>
+        </svg>
+      </div>
+      <nav class="menu" aria-label="메뉴">
+        <button aria-current="page"><svg class="ic"><use href="#i-home"/></svg>대시보드</button>
+        <button><svg class="ic"><use href="#i-users"/></svg>수업</button>
+        <button><svg class="ic"><use href="#i-clip"/></svg>평가</button>
+        <button><svg class="ic"><use href="#i-list"/></svg>일지</button>
+        <button><svg class="ic"><use href="#i-user"/></svg>학생</button>
+        <button class="extra"><svg class="ic"><use href="#i-pen"/></svg>성찰</button>
+        <button class="extra"><svg class="ic"><use href="#i-gear"/></svg>설정</button>
+      </nav>
+      <div class="side-art" aria-hidden="true">
+        <svg width="150" height="170" viewBox="0 0 150 170">
+          <ellipse cx="75" cy="152" rx="62" ry="14" fill="#9C80E3"/>
+          <rect x="13" y="134" width="124" height="18" fill="#A98FE8"/>
+          <ellipse cx="75" cy="134" rx="62" ry="14" fill="#C4B0F3"/>
+          <path d="M44 92h62l-7 40H51z" fill="url(#gPot)"/>
+          <ellipse cx="75" cy="92" rx="31" ry="7" fill="#EFE5DA"/>
+          <ellipse cx="75" cy="92" rx="25" ry="4.5" fill="#B49680"/>
+          <circle cx="58" cy="112" r="1.5" fill="#C8B8A8"/><circle cx="90" cy="118" r="1.5" fill="#C8B8A8"/><circle cx="72" cy="122" r="1.2" fill="#C8B8A8"/>
+          <g>
+            <ellipse cx="75" cy="56" rx="9" ry="22" fill="url(#gLeaf)"/>
+            <ellipse cx="59" cy="66" rx="8" ry="20" transform="rotate(-30 59 66)" fill="url(#gLeaf)"/>
+            <ellipse cx="91" cy="66" rx="8" ry="20" transform="rotate(30 91 66)" fill="url(#gLeaf)"/>
+            <ellipse cx="50" cy="80" rx="7" ry="17" transform="rotate(-60 50 80)" fill="url(#gLeaf)"/>
+            <ellipse cx="100" cy="80" rx="7" ry="17" transform="rotate(60 100 80)" fill="url(#gLeaf)"/>
+            <ellipse cx="66" cy="78" rx="7" ry="15" transform="rotate(-15 66 78)" fill="url(#gLeaf)"/>
+            <ellipse cx="84" cy="78" rx="7" ry="15" transform="rotate(15 84 78)" fill="url(#gLeaf)"/>
+          </g>
+        </svg>
+      </div>
+    </aside>
+
+    <!-- 본문 -->
+    <main class="main">
+      <header class="top">
+        <div>
+          <h1>대시보드 <span aria-hidden="true">👋</span></h1>
+          <p class="hello">다시 오신 것을 환영해요, 선생님! <span aria-hidden="true">💜</span></p>
+        </div>
+        <label class="search"><span class="sr-only">검색</span><svg class="ic"><use href="#i-search"/></svg><input type="search" placeholder="학생, 기록, 평가 검색"></label>
+        <div class="actions" style="display:flex;gap:10px;align-items:center">
+          <button class="round" aria-label="알림 3개"><svg class="ic"><use href="#i-bell"/></svg><span class="dot">3</span></button>
+          <button class="round msg" aria-label="메모"><svg class="ic"><use href="#i-chat"/></svg></button>
+          <div class="avatar" aria-label="내 정보" role="img">
+            <svg viewBox="0 0 50 50" width="44" height="44"><circle cx="13" cy="15" r="7" fill="#F6B59A"/><circle cx="37" cy="15" r="7" fill="#F6B59A"/><circle cx="25" cy="30" r="17" fill="url(#gFur)"/><ellipse cx="25" cy="35" rx="7" ry="5" fill="url(#gMuzzle)"/><circle cx="19" cy="28" r="2" fill="#3A2C2A"/><circle cx="31" cy="28" r="2" fill="#3A2C2A"/><ellipse cx="25" cy="33" rx="2.4" ry="1.6" fill="#3A2C2A"/></svg>
+          </div>
+        </div>
+      </header>
+
+      <!-- 1행 -->
+      <section class="row1" aria-label="요약">
+        <article class="card hero">
+          <div class="hero-art" aria-hidden="true">
+            <svg width="190" height="186" viewBox="0 0 190 186">
+              <!-- 몸통(후드티) -->
+              <path d="M30 186c4-38 30-58 65-58s61 20 65 58z" fill="url(#gHoodie)"/>
+              <path d="M70 132c8 10 17 14 25 14s17-4 25-14" fill="none" stroke="#B59BEF" stroke-width="5" stroke-linecap="round"/>
+              <!-- 귀 -->
+              <circle cx="48" cy="40" r="20" fill="url(#gFur)"/><circle cx="142" cy="40" r="20" fill="url(#gFur)"/>
+              <circle cx="48" cy="40" r="10" fill="#FFD0BE"/><circle cx="142" cy="40" r="10" fill="#FFD0BE"/>
+              <!-- 머리 -->
+              <ellipse cx="95" cy="82" rx="58" ry="52" fill="url(#gFur)"/>
+              <ellipse cx="95" cy="100" rx="24" ry="17" fill="url(#gMuzzle)"/>
+              <!-- 왼눈(뜬 눈) / 오른눈(윙크) -->
+              <ellipse cx="72" cy="80" rx="6" ry="7.5" fill="#2E2220"/><circle cx="74" cy="77" r="2.2" fill="#fff"/>
+              <path d="M110 81q8-8 16 0" fill="none" stroke="#2E2220" stroke-width="4" stroke-linecap="round"/>
+              <ellipse cx="95" cy="94" rx="6.5" ry="4.5" fill="#2E2220"/>
+              <path d="M88 104q7 7 14 0" fill="none" stroke="#2E2220" stroke-width="3" stroke-linecap="round"/>
+              <ellipse cx="60" cy="98" rx="9" ry="6" fill="#FF9DA8" opacity=".55"/><ellipse cx="130" cy="98" rx="9" ry="6" fill="#FF9DA8" opacity=".55"/>
+              <!-- 볼에 댄 손 -->
+              <ellipse cx="140" cy="118" rx="17" ry="14" fill="url(#gFur)"/>
+              <path d="M128 112q6-4 12 0M131 118q6-4 12 0" fill="none" stroke="#E9967A" stroke-width="2" stroke-linecap="round"/>
+              <path d="M126 128q10 30 24 58h18q-10-34-30-60z" fill="url(#gHoodie)"/>
+            </svg>
+          </div>
+          <div>
+            <h2 id="greet">좋은 아침이에요!</h2>
+            <p>오늘도 학생들의 성장을 기록해 볼까요? <span aria-hidden="true">💜</span></p>
+          </div>
+        </article>
+
+        <article class="card stat lav">
+          <p class="label">이번 주 관찰 기록</p>
+          <div class="tile t-lav" aria-hidden="true"><svg class="ic"><use href="#i-note"/></svg></div>
+          <p class="num">68</p>
+          <p class="trend"><svg class="ic"><use href="#i-up"/></svg>12%</p>
+          <p class="sub">지난주보다</p>
+        </article>
+        <article class="card stat peach">
+          <p class="label">수행평가 채점</p>
+          <div class="tile t-peach" aria-hidden="true"><svg class="ic"><use href="#i-check"/></svg></div>
+          <p class="num">86<small>%</small></p>
+          <p class="trend"><svg class="ic"><use href="#i-up"/></svg>18%p</p>
+          <p class="sub">지난주보다</p>
+        </article>
+        <article class="card stat mint">
+          <p class="label">관찰한 학생</p>
+          <div class="tile t-mint" aria-hidden="true"><svg class="ic"><use href="#i-users"/></svg></div>
+          <p class="num">83<small>/95</small></p>
+          <p class="trend"><svg class="ic"><use href="#i-up"/></svg>8명</p>
+          <p class="sub">지난주보다</p>
+        </article>
+      </section>
+
+      <!-- 2행 -->
+      <section class="row2">
+        <article class="card">
+          <div class="card-h">
+            <h2 id="chartTitle">관찰 기록 추이</h2>
+            <div class="seg-tabs" role="group" aria-label="기간">
+              <button data-range="this" aria-pressed="true">이번 주</button>
+              <button data-range="last" aria-pressed="false">지난주</button>
+            </div>
+          </div>
+          <div class="chart-wrap" id="chart" role="img" aria-labelledby="chartTitle" aria-describedby="chartDesc">
+            <div class="tip" id="tip" hidden></div>
+          </div>
+          <p class="sr-only" id="chartDesc"></p>
+        </article>
+
+        <article class="card">
+          <div class="card-h"><h2>오늘 할 일</h2><button class="pill-btn">모두 보기<svg class="ic" style="width:14px;height:14px"><use href="#i-chev"/></svg></button></div>
+          <div class="tasks">
+            <div class="task"><span class="tile t-pink" aria-hidden="true"><svg class="ic"><use href="#i-clip"/></svg></span>
+              <div><b>고사성어 발표 채점</b><span class="when">2-3 · 미채점 10명</span></div><span class="status s-doing">진행 중</span></div>
+            <div class="task"><span class="tile t-amber" aria-hidden="true"><svg class="ic"><use href="#i-pen"/></svg></span>
+              <div><b>2-4 수업 성찰 쓰기</b><span class="when">오늘 · 4교시 후</span></div><span class="status s-todo">할 일</span></div>
+            <div class="task"><span class="tile t-mint" aria-hidden="true"><svg class="ic"><use href="#i-alert"/></svg></span>
+              <div><b>지도 필요 학생 확인</b><span class="when">이번 주 · 5명</span></div><span class="status s-soon">예정</span></div>
+            <div class="task"><span class="tile t-lav" aria-hidden="true"><svg class="ic"><use href="#i-users"/></svg></span>
+              <div><b>2주 미관찰 학생 관찰</b><span class="when">3-1 · 4명</span></div><span class="status s-todo">할 일</span></div>
+          </div>
+        </article>
+      </section>
+
+      <!-- 3행 -->
+      <section class="row3">
+        <article class="card">
+          <div class="card-h"><h2>학급별 채점 진행</h2><button class="pill-btn">평가로 가기<svg class="ic" style="width:14px;height:14px"><use href="#i-chev"/></svg></button></div>
+          <div class="progress">
+            <div class="ring" id="ring"></div>
+            <div class="legend" id="legend"></div>
+          </div>
+        </article>
+
+        <article class="card remind">
+          <div aria-hidden="true">
+            <svg width="96" height="130" viewBox="0 0 96 130">
+              <path d="M22 92h52l-6 34H28z" fill="url(#gTerra)"/>
+              <rect x="18" y="86" width="60" height="10" rx="5" fill="#F3A78E"/>
+              <rect x="34" y="22" width="28" height="70" rx="14" fill="url(#gLeaf)"/>
+              <path d="M34 60h-8a8 8 0 0 1-8-8V42a6 6 0 0 1 12 0v6h4" fill="url(#gLeaf)"/>
+              <path d="M62 50h7a7 7 0 0 0 7-7v-7a5.5 5.5 0 0 0-11 0v4h-3" fill="url(#gLeaf)"/>
+              <path d="M42 34v6M54 46v6M44 62v6M53 72v6" stroke="#E9F7DF" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="48" cy="18" r="6" fill="#F7A9C4"/><circle cx="42" cy="20" r="5" fill="#F7A9C4"/><circle cx="54" cy="20" r="5" fill="#F7A9C4"/><circle cx="48" cy="20" r="3" fill="#FFE07A"/>
+            </svg>
+          </div>
+          <div>
+            <h3>잊지 마세요!</h3>
+            <p>채점하지 않은 학생이 <b>10명</b> 남았어요.</p>
+            <button class="btn-lav">채점하기</button>
+          </div>
+        </article>
+
+        <article class="card cheer">
+          <div class="cheer-art" aria-hidden="true">
+            <svg width="170" height="120" viewBox="0 0 170 120">
+              <ellipse cx="85" cy="108" rx="62" ry="7" fill="#EBD9A6" opacity=".6"/>
+              <circle cx="58" cy="62" r="34" fill="url(#gCloud)"/><circle cx="100" cy="50" r="40" fill="url(#gCloud)"/>
+              <circle cx="132" cy="72" r="28" fill="url(#gCloud)"/><circle cx="36" cy="80" r="22" fill="url(#gCloud)"/>
+              <rect x="34" y="66" width="114" height="36" rx="18" fill="url(#gCloud)"/>
+              <ellipse cx="78" cy="70" rx="4" ry="5" fill="#2E2220"/><ellipse cx="104" cy="70" rx="4" ry="5" fill="#2E2220"/>
+              <path d="M84 80q7 6 14 0" fill="none" stroke="#2E2220" stroke-width="3" stroke-linecap="round"/>
+              <ellipse cx="68" cy="80" rx="7" ry="4.5" fill="#FFB3C1" opacity=".7"/><ellipse cx="114" cy="80" rx="7" ry="4.5" fill="#FFB3C1" opacity=".7"/>
+            </svg>
+          </div>
+          <div>
+            <h3>오늘도 잘하고<br>계세요! <span aria-hidden="true">💜</span></h3>
+            <p>작은 기록이 모여 학생의 성장이 됩니다.</p>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+  <p class="note">시안 · 숫자와 학급은 예시이며, 본 제작에서 실제 관찰·평가 데이터로 계산합니다.</p>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  const $ = (id) => document.getElementById(id);
+
+  // 인사말: 시간대에 맞춤
+  const h = new Date().getHours();
+  $("greet").textContent = h < 11 ? "좋은 아침이에요!" : h < 17 ? "좋은 오후예요!" : "오늘 하루 수고하셨어요!";
+
+  // ---------- 관찰 기록 추이 (단일 계열 꺾은선 + 영역, 마우스·터치 시 툴팁) ----------
+  const DAYS = ["월", "화", "수", "목", "금"];
+  const DATA = { this: [14, 19, 12, 23, 17], last: [10, 15, 18, 13, 11] };
+  let range = "this";
+  const W = 560, H = 250, P = { l: 34, r: 16, t: 52, b: 30 };
+  const yMax = 25, ticks = [0, 5, 10, 15, 20, 25];
+  const x = (i) => P.l + (i * (W - P.l - P.r)) / (DAYS.length - 1);
+  const y = (v) => P.t + (1 - v / yMax) * (H - P.t - P.b);
+
+  // 곡선(모노톤에 가까운 부드러운 곡선)
+  function smooth(pts) {
+    let d = `M${pts[0][0]},${pts[0][1]}`;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const [x0, y0] = pts[i], [x1, y1] = pts[i + 1], cx = (x0 + x1) / 2;
+      d += ` C${cx},${y0} ${cx},${y1} ${x1},${y1}`;
+    }
+    return d;
+  }
+
+  function drawChart() {
+    const vals = DATA[range];
+    const pts = vals.map((v, i) => [x(i), y(v)]);
+    const line = smooth(pts);
+    const area = `${line} L${x(vals.length - 1)},${y(0)} L${x(0)},${y(0)} Z`;
+    const grid = ticks.map((t) => `<line x1="${P.l}" x2="${W - P.r}" y1="${y(t)}" y2="${y(t)}" stroke="#EFEAF5" stroke-width="1"/>
+      <text x="${P.l - 10}" y="${y(t) + 4}" text-anchor="end" font-size="11" fill="#6F6886">${t}</text>`).join("");
+    const xs = DAYS.map((d, i) => `<text x="${x(i)}" y="${H - 8}" text-anchor="middle" font-size="12" fill="#6F6886" font-weight="600">${d}</text>`).join("");
+    const dots = pts.map(([px, py], i) => `<circle class="pt" data-i="${i}" cx="${px}" cy="${py}" r="5" fill="#fff" stroke="#8B6BE0" stroke-width="2.5"/>`).join("");
+    const hits = pts.map(([px], i) => `<rect class="hit" data-i="${i}" x="${px - (W - P.l - P.r) / (DAYS.length - 1) / 2}" y="${P.t}" width="${(W - P.l - P.r) / (DAYS.length - 1)}" height="${H - P.t - P.b}" fill="transparent"/>`).join("");
+    const svg = `<svg viewBox="0 0 ${W} ${H}" aria-hidden="true">${grid}${xs}
+      <path d="${area}" fill="url(#gArea)"/>
+      <line id="cross" x1="0" x2="0" y1="${P.t}" y2="${y(0)}" stroke="#C9B8F2" stroke-width="1.5" stroke-dasharray="4 4" opacity="0"/>
+      <path d="${line}" fill="none" stroke="#8B6BE0" stroke-width="3" stroke-linecap="round"/>${dots}${hits}</svg>`;
+    const wrap = $("chart");
+    wrap.querySelectorAll("svg").forEach((n) => n.remove());
+    wrap.insertAdjacentHTML("afterbegin", svg);
+    $("chartDesc").textContent = `${range === "this" ? "이번 주" : "지난주"} 요일별 관찰 기록 수: ` + DAYS.map((d, i) => `${d} ${vals[i]}건`).join(", ");
+    // 가장 많은 날을 처음부터 표시
+    const peak = vals.indexOf(Math.max(...vals));
+    show(peak);
+    wrap.querySelectorAll(".hit").forEach((r) => {
+      r.addEventListener("pointerenter", () => show(+r.dataset.i));
+      r.addEventListener("pointerdown", () => show(+r.dataset.i));
+    });
+  }
+
+  function show(i) {
+    const vals = DATA[range];
+    const svg = $("chart").querySelector("svg");
+    const scale = svg.getBoundingClientRect().width / W;
+    const tip = $("tip");
+    tip.hidden = false;
+    tip.innerHTML = `<b>${vals[i]}</b>${DAYS[i]}요일 기록`;
+    tip.style.left = x(i) * scale + "px";
+    tip.style.top = y(vals[i]) * scale + "px";
+    const cross = svg.querySelector("#cross");
+    cross.setAttribute("x1", x(i)); cross.setAttribute("x2", x(i)); cross.setAttribute("opacity", "1");
+    svg.querySelectorAll(".pt").forEach((c) => c.setAttribute("r", +c.dataset.i === i ? 7 : 5));
+  }
+
+  document.querySelectorAll("[data-range]").forEach((b) => b.addEventListener("click", () => {
+    range = b.dataset.range;
+    document.querySelectorAll("[data-range]").forEach((o) => o.setAttribute("aria-pressed", String(o === b)));
+    drawChart();
+  }));
+  window.addEventListener("resize", drawChart);
+  drawChart();
+
+  // ---------- 학급별 채점 진행 (전체 진행률 링 + 학급별 막대) ----------
+  const CLS = [
+    { name: "2-3", done: 14, total: 24, color: "#8B6BE0" },
+    { name: "2-4", done: 22, total: 25, color: "#E07A9E" },
+    { name: "3-1", done: 20, total: 22, color: "#D99A2B" },
+    { name: "1-2", done: 16, total: 24, color: "#3FAE86" },
+  ];
+  const done = CLS.reduce((n, c) => n + c.done, 0), total = CLS.reduce((n, c) => n + c.total, 0);
+  const pct = Math.round((done / total) * 100);
+  const R = 60, C = 2 * Math.PI * R;
+  $("ring").innerHTML = `<svg viewBox="0 0 150 150" aria-hidden="true">
+      <circle cx="75" cy="75" r="${R}" fill="none" stroke="#F1ECF8" stroke-width="18"/>
+      <circle cx="75" cy="75" r="${R}" fill="none" stroke="url(#gRing)" stroke-width="18" stroke-linecap="round" stroke-dasharray="${(C * pct) / 100} ${C}"/>
+      <defs><linearGradient id="gRing" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#B79BF5"/><stop offset="1" stop-color="#8B6BE0"/></linearGradient></defs></svg>
+    <div class="center" role="img" aria-label="전체 채점 진행률 ${pct}%, ${done}명 중 ${total}명"><div><b>${pct}%</b><span>전체 완료</span></div></div>`;
+  $("ring").querySelector(".center").setAttribute("aria-label", `전체 채점 진행률 ${pct}%, ${total}명 중 ${done}명 완료`);
+  $("legend").innerHTML = CLS.map((c) => {
+    const p = Math.round((c.done / c.total) * 100);
+    return `<div class="lg"><i style="background:${c.color}"></i><span>${c.name}반 <span style="color:var(--ink-3)">${c.done}/${c.total}명</span></span><b>${p}%</b>
+      <div class="bar" role="img" aria-label="${c.name}반 ${p}%"><span style="width:${p}%;background:${c.color}"></span></div></div>`;
+  }).join("");
+
+  // 사이드바 메뉴 (시안)
+  document.querySelectorAll(".menu button").forEach((b) => b.addEventListener("click", () => {
+    document.querySelectorAll(".menu button").forEach((o) => o.removeAttribute("aria-current"));
+    b.setAttribute("aria-current", "page");
+  }));
+})();
+</script>
+</body>
+</html>
