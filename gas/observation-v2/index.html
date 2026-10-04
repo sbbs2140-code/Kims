@@ -680,6 +680,10 @@
   .modal .seg button[aria-pressed="true"][data-tone="normal"] { background: var(--navy); color: #fff; }
   .modal .seg button[aria-pressed="true"][data-tone="care"] { background: var(--red); color: #fff; }
   .nav .nav-set { display: none; }
+  .logo-btn { border: 0; padding: 0; cursor: pointer; transition: transform .15s; }
+  .logo-btn:hover { transform: scale(1.06); }
+  .logo-btn:active { transform: scale(.96); }
+  button.avatar { border: 3px solid #fff; }
   @media (min-width: 1024px) { .nav .nav-set { display: flex; } }
 </style>
 </head>
@@ -737,15 +741,15 @@
       <span class="date" id="todayLabel"></span>
       <button class="sync ok" id="sync" type="button"><svg class="ic sm"><use href="#i-cloud"/></svg><span class="t">저장됨</span></button>
       <button class="round" aria-label="설정" data-go="settings"><svg class="ic"><use href="#i-gear"/></svg></button>
-      <div class="avatar" role="img" aria-label="내 정보"><svg viewBox="0 0 50 50" width="40" height="40"><circle cx="13" cy="15" r="7" fill="#F6B59A"/><circle cx="37" cy="15" r="7" fill="#F6B59A"/><circle cx="25" cy="30" r="17" fill="url(#gFur)"/><ellipse cx="25" cy="35" rx="7" ry="5" fill="url(#gMuzzle)"/><circle cx="19" cy="28" r="2" fill="#3A2C2A"/><circle cx="31" cy="28" r="2" fill="#3A2C2A"/><ellipse cx="25" cy="33" rx="2.4" ry="1.6" fill="#3A2C2A"/></svg></div>
+      <button type="button" class="avatar logo-btn" data-go="home" aria-label="홈으로 가기" title="홈으로"><svg viewBox="0 0 50 50" width="40" height="40"><circle cx="13" cy="15" r="7" fill="#F6B59A"/><circle cx="37" cy="15" r="7" fill="#F6B59A"/><circle cx="25" cy="30" r="17" fill="url(#gFur)"/><ellipse cx="25" cy="35" rx="7" ry="5" fill="url(#gMuzzle)"/><circle cx="19" cy="28" r="2" fill="#3A2C2A"/><circle cx="31" cy="28" r="2" fill="#3A2C2A"/><ellipse cx="25" cy="33" rx="2.4" ry="1.6" fill="#3A2C2A"/></svg></button>
     </div>
     <div class="class-menu" id="classMenu" role="menu" hidden></div>
   </header>
 
   <nav class="nav" aria-label="화면">
-    <div class="brand-rail" aria-hidden="true"><div class="logo">
+    <div class="brand-rail"><button type="button" class="logo logo-btn" data-go="home" aria-label="홈으로 가기" title="홈으로">
       <svg width="44" height="40" viewBox="0 0 44 40"><circle cx="9" cy="9" r="7" fill="#fff"/><circle cx="35" cy="9" r="7" fill="#fff"/><circle cx="9" cy="9" r="3.5" fill="#FFC9B6"/><circle cx="35" cy="9" r="3.5" fill="#FFC9B6"/><ellipse cx="22" cy="22" rx="17" ry="15" fill="#fff"/><circle cx="15.5" cy="20" r="2.2" fill="#3A2C2A"/><circle cx="28.5" cy="20" r="2.2" fill="#3A2C2A"/><ellipse cx="22" cy="27" rx="6" ry="4.5" fill="#FFE6DB"/><ellipse cx="22" cy="25.5" rx="2.4" ry="1.7" fill="#3A2C2A"/></svg>
-    </div></div>
+    </button></div>
     <button data-view="home" aria-current="page"><svg class="ic"><use href="#i-home"/></svg>홈</button>
     <button data-view="lesson"><svg class="ic"><use href="#i-users"/></svg>수업</button>
     <button data-view="assess"><svg class="ic"><use href="#i-clip"/></svg>평가</button>
