@@ -76,7 +76,7 @@ function checkSetup() {
 // ---------- 웹앱 ----------
 function doGet() {
   return HtmlService.createHtmlOutputFromFile('index')
-    .setTitle('수업 관찰 기록')
+    .setTitle('선호T의 관찰기록 Board')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1, viewport-fit=cover');
 }
 
