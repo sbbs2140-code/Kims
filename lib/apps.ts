@@ -54,6 +54,16 @@ export const apps: SchoolApp[] = [
     pinned: true,
   },
   {
+    id: "class-observation",
+    name: "수업 관찰 기록",
+    description: "수업 중 학생 활동과 특이사항을 바로 기록하고 학생별로 모아 봅니다.",
+    category: "수업",
+    audience: ["교사"],
+    status: "운영 중",
+    href: "/observation/index.html",
+    icon: "checklist",
+  },
+  {
     id: "rubric-grader",
     name: "수행평가 채점 도우미",
     description: "루브릭 기준으로 채점하고 결과를 학급별로 정리합니다.",
