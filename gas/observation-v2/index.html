@@ -502,7 +502,7 @@
   .row3 { display: grid; grid-template-columns: 1.1fr .8fr 1fr; gap: 18px; margin-top: 18px; }
   [data-panel="home"] .hero { display: grid; grid-template-columns: 180px 1fr; align-items: center; min-height: 196px; padding: 0 22px 0 0; background: linear-gradient(135deg, #FFDCCD 0%, #FBD1DC 55%, #EBD8F7 100%); }
   .hero-art { align-self: end; display: grid; place-items: end center; }
-  .hero h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; white-space: nowrap; }
+  .hero h3 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.35; }
   .hero p { margin-top: 8px; color: var(--text-2); }
   .dstat { display: grid; align-content: start; gap: 6px; min-height: 196px; }
   .dstat.lav { background: linear-gradient(160deg, #F6F1FF, #EEE6FD); }
@@ -795,7 +795,7 @@
               <path d="M126 128q10 30 24 58h18q-10-34-30-60z" fill="url(#gHoodie)"/>
             </svg>
           </div>
-          <div><h3 id="greet">좋은 아침이에요!</h3><p>오늘도 학생들의 성장을 기록해 볼까요? <span aria-hidden="true">💜</span></p>
+          <div><h3 id="greet">좋은 아침이에요, 선호T!</h3><p>오늘도 학생들의 성장을 기록해 볼까요? <span aria-hidden="true">💜</span></p>
             <button class="btn btn-red btn-sm" style="margin-top:14px" data-go="lesson">수업 기록 시작</button></div>
         </article>
         <article class="card dstat lav"><p class="label">이번 주 관찰 기록</p><div class="tile t-lav" aria-hidden="true"><svg class="ic"><use href="#i-note"/></svg></div><p class="num" id="hObs"></p><p class="trend" id="hObsT"></p></article>
@@ -1412,7 +1412,7 @@
 
   function renderHome() {
     const h = new Date().getHours();
-    $("greet").textContent = h < 11 ? "좋은 아침이에요!" : h < 17 ? "좋은 오후예요!" : "오늘 하루 수고하셨어요!";
+    $("greet").textContent = h < 11 ? "좋은 아침이에요, 선호T!" : h < 17 ? "좋은 오후예요, 선호T!" : "오늘 하루 수고하셨어요, 선호T!";
     const hasRoster = S.students.length > 0;
     $("homeOnboard").innerHTML = hasRoster ? "" : `<div class="card onboard"><h3>처음 오셨네요. 세 단계면 준비가 끝납니다.</h3>
       <div class="steps">
