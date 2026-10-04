@@ -5,15 +5,15 @@
  * @OnlyCurrentDoc  연결된 시트 하나만 접근하도록 권한을 좁힘
  */
 
-const APP_ID = 'onbit-observation';
-const APP_VERSION = 2;
+const OBS2_APP = 'onbit-observation';
+const OBS2_VERSION = 2;
 
-const AREAS = ['수업 태도', '개념 이해', '실습 수행', '문제 해결', '의사소통', '협업', '진로탐색', '과제수행', '기타'];
-const TONES = ['good', 'normal', 'care'];
-const STATUSES = ['done', 'absent', 'missing'];
+const OBS2_AREAS = ['수업 태도', '개념 이해', '실습 수행', '문제 해결', '의사소통', '협업', '진로탐색', '과제수행', '기타'];
+const OBS2_TONES = ['good', 'normal', 'care'];
+const OBS2_STATUSES = ['done', 'absent', 'missing'];
 
 // 시트 탭 정의. keys 순서가 열 순서이며, json 열은 JSON 문자열로, num 열은 숫자로 다룬다.
-const TABLES = {
+const OBS2_TABLES = {
   classes: {
     sheet: '학급',
     keys: ['id', 'name', 'subject', 'order', 'createdAt', 'updatedAt'],
@@ -57,7 +57,21 @@ const TABLES = {
     json: ['list'],
   },
 };
-const KINDS = Object.keys(TABLES);
+const OBS2_KINDS = Object.keys(OBS2_TABLES);
+
+// ---------- 설치 점검 ----------
+/**
+ * 편집기 위쪽 함수 목록에서 checkSetup 을 고르고 [실행]을 누르면
+ * 권한 승인을 받고, 시트 탭을 만들고, 실행 로그에 결과를 보여 준다.
+ * 다른 .gs 파일과 이름이 겹치지 않도록 이 앱의 상수는 모두 OBS2_ 로 시작한다.
+ */
+function checkSetup() {
+  const d = bootstrap();
+  const counts = OBS2_KINDS.map((k) => OBS2_TABLES[k].sheet + ' ' + d.tables[k].length + '건').join(', ');
+  const msg = '점검 완료. 연결된 시트: ' + SpreadsheetApp.getActiveSpreadsheet().getName() + ' / ' + counts;
+  Logger.log(msg);
+  return msg;
+}
 
 // ---------- 웹앱 ----------
 function doGet() {
@@ -70,8 +84,8 @@ function doGet() {
 /** 처음 열 때 모든 기록을 한 번에 보냄 */
 function bootstrap() {
   const tables = {};
-  KINDS.forEach((k) => (tables[k] = readAll_(k)));
-  return { app: APP_ID, version: APP_VERSION, tables: tables, sheetUrl: SpreadsheetApp.getActiveSpreadsheet().getUrl() };
+  OBS2_KINDS.forEach((k) => (tables[k] = readAll_(k)));
+  return { app: OBS2_APP, version: OBS2_VERSION, tables: tables, sheetUrl: SpreadsheetApp.getActiveSpreadsheet().getUrl() };
 }
 
 /** 같은 종류의 기록 여러 개를 추가하거나 고침(ID 기준) */
@@ -103,14 +117,14 @@ function removeMany(map) {
 function importAll(tables, mode) {
   if (!tables || typeof tables !== 'object') throw new Error('불러올 데이터가 없습니다.');
   const incoming = {};
-  KINDS.forEach((k) => {
+  OBS2_KINDS.forEach((k) => {
     incoming[k] = (Array.isArray(tables[k]) ? tables[k] : []).map((r) => {
       try { return normalize_(k, r, true); } catch (e) { return null; }
     }).filter(Boolean);
   });
   return withLock_(() => {
     const added = {};
-    KINDS.forEach((k) => {
+    OBS2_KINDS.forEach((k) => {
       let list = incoming[k];
       if (mode === 'merge') {
         const map = new Map(readAll_(k).map((x) => [x.id, x]));
@@ -132,14 +146,14 @@ function importAll(tables, mode) {
 
 function deleteAll() {
   return withLock_(() => {
-    KINDS.forEach((k) => writeAll_(k, []));
+    OBS2_KINDS.forEach((k) => writeAll_(k, []));
     return true;
   });
 }
 
 // ---------- 입력값 검사 ----------
 function checkKind_(kind) {
-  if (!TABLES[kind]) throw new Error('알 수 없는 종류입니다: ' + kind);
+  if (!OBS2_TABLES[kind]) throw new Error('알 수 없는 종류입니다: ' + kind);
 }
 function str_(v) { return v == null ? '' : String(v); }
 function isDate_(v) { return /^\d{4}-\d{2}-\d{2}$/.test(v); }
@@ -149,7 +163,7 @@ function num_(v, d) { const n = Number(v); return isFinite(n) ? n : d; }
 function normalize_(kind, r, importing) {
   if (!r || typeof r !== 'object') throw new Error('기록 형식이 맞지 않습니다.');
   const o = {};
-  TABLES[kind].keys.forEach((k) => (o[k] = r[k]));
+  OBS2_TABLES[kind].keys.forEach((k) => (o[k] = r[k]));
   o.id = str_(o.id).trim();
   if (!o.id) throw new Error('ID가 없는 기록입니다.');
   const now = new Date().toISOString();
@@ -173,8 +187,8 @@ function normalize_(kind, r, importing) {
     case 'obs':
       if (!isDate_(str_(o.date))) throw new Error('관찰 날짜 형식이 맞지 않습니다.');
       if (!o.studentId || !o.classId) throw new Error('관찰 기록의 학생 정보가 없습니다.');
-      o.area = AREAS.indexOf(o.area) >= 0 ? o.area : '기타';
-      o.tone = TONES.indexOf(o.tone) >= 0 ? o.tone : 'normal';
+      o.area = OBS2_AREAS.indexOf(o.area) >= 0 ? o.area : '기타';
+      o.tone = OBS2_TONES.indexOf(o.tone) >= 0 ? o.tone : 'normal';
       ['time', 'classId', 'studentId', 'content', 'feedback'].forEach((k) => (o[k] = str_(o[k])));
       break;
     case 'assessments':
@@ -193,7 +207,7 @@ function normalize_(kind, r, importing) {
       o.assessmentId = str_(o.assessmentId);
       o.studentId = str_(o.studentId);
       if (!o.assessmentId || !o.studentId) throw new Error('채점 기록의 평가 또는 학생 정보가 없습니다.');
-      o.status = STATUSES.indexOf(o.status) >= 0 ? o.status : 'done';
+      o.status = OBS2_STATUSES.indexOf(o.status) >= 0 ? o.status : 'done';
       o.picks = Array.isArray(o.picks) ? o.picks.map((p) => (p == null ? null : num_(p, null))) : [];
       o.total = num_(o.total, 0);
       o.memo = str_(o.memo);
@@ -214,7 +228,7 @@ function normalize_(kind, r, importing) {
 
 // ---------- 시트 다루기 ----------
 function sheet_(kind) {
-  const t = TABLES[kind];
+  const t = OBS2_TABLES[kind];
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   let sh = ss.getSheetByName(t.sheet);
   if (!sh) {
@@ -229,7 +243,7 @@ function sheet_(kind) {
 }
 
 function readAll_(kind) {
-  const t = TABLES[kind];
+  const t = OBS2_TABLES[kind];
   const sh = sheet_(kind);
   const last = sh.getLastRow();
   if (last < 2) return [];
@@ -251,7 +265,7 @@ function readAll_(kind) {
 }
 
 function toRow_(kind, x) {
-  const t = TABLES[kind];
+  const t = OBS2_TABLES[kind];
   return t.keys.map((k) => {
     let v = x[k];
     if (t.json && t.json.indexOf(k) >= 0) v = JSON.stringify(v == null ? [] : v);
@@ -264,7 +278,7 @@ function toRow_(kind, x) {
 function upsertMany_(kind, list) {
   if (!list.length) return;
   list = Array.from(new Map(list.map((x) => [x.id, x])).values()); // 같은 ID가 두 번 오면 마지막 것만
-  const t = TABLES[kind];
+  const t = OBS2_TABLES[kind];
   const sh = sheet_(kind);
   const last = sh.getLastRow();
   const rowOf = new Map();
@@ -297,7 +311,7 @@ function deleteIds_(kind, idSet) {
 }
 
 function writeAll_(kind, list) {
-  const t = TABLES[kind];
+  const t = OBS2_TABLES[kind];
   const sh = sheet_(kind);
   const last = sh.getLastRow();
   if (last >= 2) sh.getRange(2, 1, last - 1, t.keys.length).clearContent();
