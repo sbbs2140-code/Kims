@@ -3,8 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { login, logout, requireAdmin } from "@/lib/exam/auth";
+import { loadTermData, toScheduleInput } from "@/lib/exam/data";
 import { db } from "@/lib/exam/db";
 import { parseTeachers, parseTimetable } from "@/lib/exam/parse";
+import { autoSchedule } from "@/lib/exam/schedule";
 
 export type FormState = {
   ok?: boolean;
@@ -227,4 +229,100 @@ export async function saveSettingsAction(
   if (error) return fail(error);
   revalidatePath("/exam/admin/settings");
   return { ok: true, message: "설정을 저장했습니다." };
+}
+
+// ---------- 불가 교시 ----------
+
+export async function saveUnavailableAction(
+  _: FormState,
+  fd: FormData,
+): Promise<FormState> {
+  await requireAdmin();
+  const termId = text(fd, "term_id");
+  const supabase = db();
+
+  const want = new Map<string, { teacher_id: string; exam_date: string; period: number }>();
+  for (const v of fd.getAll("u")) {
+    const [teacher_id, exam_date, period] = String(v).split("|");
+    if (teacher_id && /^\d{4}-\d{2}-\d{2}$/.test(exam_date) && Number(period) > 0) {
+      want.set(`${teacher_id}|${exam_date}|${period}`, { teacher_id, exam_date, period: Number(period) });
+    }
+  }
+
+  const { data: existing, error: e1 } = await supabase
+    .from("exam_unavailable")
+    .select("id,teacher_id,exam_date,period")
+    .eq("term_id", termId)
+    .limit(5000);
+  if (e1) return fail(e1);
+
+  const have = new Set<string>();
+  const removeIds: string[] = [];
+  for (const r of existing ?? []) {
+    const key = `${r.teacher_id}|${r.exam_date}|${r.period}`;
+    if (want.has(key)) have.add(key);
+    else removeIds.push(r.id);
+  }
+  const add = [...want.entries()]
+    .filter(([k]) => !have.has(k))
+    .map(([, v]) => ({ ...v, term_id: termId }));
+
+  if (add.length) {
+    const { error } = await supabase.from("exam_unavailable").insert(add);
+    if (error) return fail(error);
+  }
+  for (let i = 0; i < removeIds.length; i += 200) {
+    const { error } = await supabase.from("exam_unavailable").delete().in("id", removeIds.slice(i, i + 200));
+    if (error) return fail(error);
+  }
+  revalidatePath(`/exam/admin/timetable/${termId}`);
+  return { ok: true, message: `불가 교시 ${want.size}건을 저장했습니다.` };
+}
+
+// ---------- 자동 편성 ----------
+
+export async function autoAssignAction(
+  _: FormState,
+  fd: FormData,
+): Promise<FormState> {
+  await requireAdmin();
+  const termId = text(fd, "term_id");
+  const data = await loadTermData(termId);
+  if (!data) return { ok: false, message: "시험 정보를 찾을 수 없습니다." };
+  if (!data.slots.length) return { ok: false, message: "먼저 시간표를 입력해 주세요." };
+  if (!data.teachers.length) return { ok: false, message: "배정 대상 교사가 없습니다. 교사 명단을 먼저 입력해 주세요." };
+
+  const result = autoSchedule(toScheduleInput(data));
+  const supabase = db();
+
+  const valid = new Set(result.assignments.map((a) => `${a.slotId}|${a.role}`));
+  const stale = data.assignments.filter((a) => !valid.has(`${a.slot_id}|${a.role}`)).map((a) => a.id);
+  for (let i = 0; i < stale.length; i += 200) {
+    const { error } = await supabase.from("exam_assignments").delete().in("id", stale.slice(i, i + 200));
+    if (error) return fail(error);
+  }
+
+  // 잠긴 칸은 같은 값으로 다시 들어가므로 그대로 유지된다. locked 열은 건드리지 않는다.
+  const payload = result.assignments.map((a) => ({
+    slot_id: a.slotId,
+    role: a.role,
+    teacher_id: a.teacherId,
+  }));
+  for (let i = 0; i < payload.length; i += 500) {
+    const { error } = await supabase
+      .from("exam_assignments")
+      .upsert(payload.slice(i, i + 500), { onConflict: "slot_id,role" });
+    if (error) return fail(error);
+  }
+
+  revalidatePath(`/exam/admin/timetable/${termId}`);
+  const totals = result.stats.map((s) => s.total);
+  const range = totals.length ? Math.max(...totals) - Math.min(...totals) : 0;
+  return {
+    ok: result.unfilled === 0,
+    message:
+      result.unfilled === 0
+        ? `편성을 마쳤습니다. 교사별 점수 차이는 최대 ${range.toFixed(1)}점입니다.`
+        : `편성했지만 빈 자리가 ${result.unfilled}개 남았습니다. 아래 안내를 확인해 주세요.`,
+  };
 }

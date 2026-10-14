@@ -4,7 +4,7 @@ import { StatefulForm } from "@/components/exam/stateful-form";
 import { requireAdmin } from "@/lib/exam/auth";
 import { NEED_PER_CLASS } from "@/lib/exam/config";
 import { db, type Slot } from "@/lib/exam/db";
-import { btnDanger, card, hint, label, textarea } from "@/lib/exam/ui";
+import { btnDanger, btnPrimary, btnSecondary, card, hint, label, textarea } from "@/lib/exam/ui";
 import { clearSlotsAction, importSlotsAction } from "../../../actions";
 
 type Group = {
@@ -70,6 +70,14 @@ export default async function TimetablePage({ params }: PageProps<"/exam/admin/t
         <p className="mt-4 max-w-[40rem] text-base text-text-muted">
           시험 시간표를 엑셀에서 복사해 붙여넣습니다. 같은 칸을 다시 붙여넣으면 내용이 갱신됩니다.
         </p>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Link href={`/exam/admin/timetable/${termId}/unavailable`} className={btnSecondary}>
+            불가 교시 입력
+          </Link>
+          <Link href={`/exam/admin/timetable/${termId}/assign`} className={btnPrimary}>
+            감독 편성
+          </Link>
+        </div>
       </section>
 
       <section className={card} aria-labelledby="paste-slots">
