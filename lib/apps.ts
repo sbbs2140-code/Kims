@@ -142,7 +142,7 @@ export const apps: SchoolApp[] = [
     category: "행정",
     audience: ["교사"],
     status: "준비 중",
-    href: "/exam",
+    href: "https://kims-green.vercel.app/exam",
     icon: "exam",
   },
   {
