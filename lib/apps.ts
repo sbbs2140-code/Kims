@@ -136,6 +136,16 @@ export const apps: SchoolApp[] = [
     icon: "document",
   },
   {
+    id: "exam-supervision",
+    name: "시험 감독 배정",
+    description: "중간·기말고사 감독을 공정하게 배정하고 내 감독표를 확인합니다.",
+    category: "행정",
+    audience: ["교사"],
+    status: "준비 중",
+    href: "/exam",
+    icon: "exam",
+  },
+  {
     id: "supplies",
     name: "물품 신청",
     description: "필요한 물품을 신청하고 처리 상태를 확인합니다.",
