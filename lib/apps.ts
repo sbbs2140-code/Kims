@@ -64,6 +64,16 @@ export const apps: SchoolApp[] = [
     icon: "exam",
   },
   {
+    id: "sunho-vibecoding",
+    name: "선호쌤 바이브코딩",
+    description: "선호쌤 바이브코딩 자료 페이지로 이동합니다.",
+    category: "수업",
+    audience: ["교사"],
+    status: "운영 중",
+    href: "https://sunho-vibecoding-storage.vercel.app/",
+    icon: "package",
+  },
+  {
     id: "unit-quiz",
     name: "단원 퀴즈",
     description: "단원을 마치면 짧은 퀴즈로 이해도를 확인합니다.",
