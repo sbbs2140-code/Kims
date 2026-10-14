@@ -29,6 +29,8 @@ export type ScheduleInput = {
   maxDay: { exam: number; free: number };
   prior: Map<string, number>; // 이전 시험에서 이어받은 점수
   fixed: { slotId: string; role: Role; teacherId: string }[]; // 잠긴 칸
+  // 출제 과목 교사 제외 범위: period = 그 교시 전체, room = 그 과목 시험실만
+  subjectRule?: "period" | "room";
   seed?: number;
   timeLimitMs?: number;
 };
@@ -71,6 +73,7 @@ type Unit = {
   grade: number;
   class_no: number;
   slotIdx: number;
+  subject: string | null;
 };
 
 function rng(seed: number) {
@@ -110,6 +113,7 @@ function build(input: ScheduleInput) {
         grade: s.grade,
         class_no: s.class_no,
         slotIdx,
+        subject: s.kind === "시험" ? (s.subject?.trim() || null) : null,
       });
     }
   });
@@ -125,13 +129,17 @@ function build(input: ScheduleInput) {
       subjectsByTs[tsIdx.get(`${s.exam_date}|${s.period}`)!].add(s.subject.trim());
     }
   }
-  teachers.forEach((t, ti) => {
-    const sub = t.subject?.trim();
-    if (!sub) return;
-    subjectsByTs.forEach((set, ts) => {
-      if (set.has(sub)) excluded[ts][ti] = 1;
+  const rule = input.subjectRule ?? "period";
+  const tSubject = teachers.map((t) => t.subject?.trim() || null);
+  if (rule === "period") {
+    teachers.forEach((t, ti) => {
+      const sub = tSubject[ti];
+      if (!sub) return;
+      subjectsByTs.forEach((set, ts) => {
+        if (set.has(sub)) excluded[ts][ti] = 1;
+      });
     });
-  });
+  }
 
   const unavail: Uint8Array[] = tsKeys.map((k) => {
     const arr = new Uint8Array(n);
@@ -148,7 +156,7 @@ function build(input: ScheduleInput) {
   );
 
   const prior = teachers.map((t) => input.prior.get(t.id) ?? 0);
-  return { n, dates, tsKeys, tIdx, units, tsUnits, excluded, unavail, homeClass, prior, input };
+  return { n, dates, tsKeys, tIdx, units, tsUnits, excluded, unavail, homeClass, prior, input, rule, tSubject };
 }
 
 function score(ctx: Ctx, role: Role) {
@@ -198,6 +206,8 @@ function evaluate(ctx: Ctx, assign: Int32Array, collect: boolean): Eval {
     seen[ti * tsKeys.length + u.ts] = 1;
     if (ctx.excluded[u.ts][ti])
       addHard(() => `${name()}: ${where()} 출제 과목 교사인데 배정됨`);
+    if (ctx.rule === "room" && u.subject && ctx.tSubject[ti] === u.subject)
+      addHard(() => `${name()}: ${where()} 자기 교과 시험실에 배정됨`);
     if (ctx.homeClass[ti] === u.classId)
       addHard(() => `${name()}: 담임 학급(${u.grade}학년 ${u.class_no}반) 감독에 배정됨`);
 
@@ -315,6 +325,7 @@ function greedy(ctx: Ctx, fixedAssign: Int32Array, random: () => number): Int32A
       for (let t = 0; t < n; t++) {
         if (ctx.unavail[ts][t] || ctx.excluded[ts][t] || busy[t * tsKeys.length + ts]) continue;
         if (ctx.homeClass[t] === u.classId) continue;
+        if (ctx.rule === "room" && u.subject && ctx.tSubject[t] === u.subject) continue;
         const e = examLoad[t * nd + u.day];
         const f = freeLoad[t * nd + u.day];
         if (u.role === "free" ? f >= input.maxDay.free : e >= input.maxDay.exam) continue;
