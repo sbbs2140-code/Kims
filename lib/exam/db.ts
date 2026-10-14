@@ -4,8 +4,9 @@ import { createClient } from "@supabase/supabase-js";
 // 서비스 키는 서버에서만 쓴다. 브라우저로 내려가는 코드에 넣지 않는다.
 // Vercel 환경변수: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
 export function db() {
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  // 붙여넣을 때 따라오기 쉬운 공백과 줄바꿈을 지운다.
+  const url = process.env.SUPABASE_URL?.trim();
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
   if (!url || !key) {
     throw new Error("SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY 환경변수가 필요함");
   }

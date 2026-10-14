@@ -6,11 +6,12 @@ import { createTermAction, deleteTermAction } from "../actions";
 
 export default async function TermsPage() {
   await requireAdmin();
-  const { data } = await db()
+  const { data, error } = await db()
     .from("exam_terms")
     .select("*")
     .order("created_at", { ascending: false });
   const terms = (data ?? []) as Term[];
+  const dbError = error?.message;
   const thisYear = new Date().getFullYear();
 
   return (
@@ -21,6 +22,16 @@ export default async function TermsPage() {
           중간고사와 기말고사를 하나씩 만들고, 시험마다 시간표와 감독 배정을 따로 관리합니다.
         </p>
       </section>
+
+      {dbError && (
+        <section role="alert" className="rounded-2xl bg-surface-tint p-6 lg:p-8">
+          <h2 className="text-xl font-semibold">데이터베이스에 연결하지 못했습니다</h2>
+          <p className="mt-2 text-base">오류 내용: {dbError}</p>
+          <p className="mt-2 text-sm text-text-muted">
+            Vercel 환경변수 SUPABASE_URL과 SUPABASE_SERVICE_ROLE_KEY를 확인해 주세요. 서비스 키는 공개용(anon, publishable)이 아니라 service_role 또는 secret 키여야 합니다.
+          </p>
+        </section>
+      )}
 
       <section className={card} aria-labelledby="new-term">
         <h2 id="new-term" className="text-xl font-semibold">
