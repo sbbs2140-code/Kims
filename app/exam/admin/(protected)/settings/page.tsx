@@ -1,6 +1,6 @@
 import { StatefulForm } from "@/components/exam/stateful-form";
 import { requireAdmin } from "@/lib/exam/auth";
-import { DEFAULT_MAX_DAY, DEFAULT_SCORES, LABELS } from "@/lib/exam/config";
+import { DEFAULT_MAX_DAY, DEFAULT_SCORES, DEFAULT_SUBJECT_RULE, LABELS } from "@/lib/exam/config";
 import { db, type Settings } from "@/lib/exam/db";
 import { card, hint, input, label } from "@/lib/exam/ui";
 import { saveSettingsAction } from "../../actions";
@@ -14,9 +14,10 @@ export default async function SettingsPage() {
     score_free: DEFAULT_SCORES.free,
     max_day_exam: DEFAULT_MAX_DAY.exam,
     max_day_free: DEFAULT_MAX_DAY.free,
+    subject_rule: DEFAULT_SUBJECT_RULE,
   };
 
-  const fields: { name: keyof Settings; text: string; step?: string; note: string }[] = [
+  const fields: { name: Exclude<keyof Settings, "subject_rule">; text: string; step?: string; note: string }[] = [
     { name: "score_main", text: `${LABELS.roleMain} 점수`, step: "0.1", note: "1교시를 정감독으로 서면 더해지는 점수" },
     { name: "score_sub", text: `${LABELS.roleSub} 점수`, step: "0.1", note: "정감독보다 같거나 낮아야 함" },
     { name: "score_free", text: `${LABELS.roleFree} 점수`, step: "0.1", note: "부감독보다 같거나 낮아야 함" },
@@ -53,6 +54,18 @@ export default async function SettingsPage() {
                 <p className={hint}>{f.note}</p>
               </div>
             ))}
+          </div>
+          <div>
+            <label htmlFor="subject_rule" className={label}>
+              출제 과목 교사 제외 범위
+            </label>
+            <select id="subject_rule" name="subject_rule" defaultValue={s.subject_rule} className={input}>
+              <option value="period">그 교시 전체에서 제외</option>
+              <option value="room">그 과목을 시험 보는 시험실만 제외</option>
+            </select>
+            <p className={hint}>
+              두 학년이 같은 교시에 시험을 보면 교사가 모자랄 수 있습니다. 편성에 빈 자리가 생기면 시험실만 제외로 바꿔 보세요.
+            </p>
           </div>
         </StatefulForm>
       </section>

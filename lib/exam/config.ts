@@ -11,7 +11,10 @@ export const MAX_PERIOD = 3;
 export const DEFAULT_SCORES = { main: 1.0, sub: 0.8, free: 0.5 };
 
 // 하루 최대 감독 교시 수 처음값
-export const DEFAULT_MAX_DAY = { exam: 2, free: 2 };
+export const DEFAULT_MAX_DAY = { exam: 3, free: 2 };
+
+// 출제 과목 교사 제외 범위 처음값: period = 그 교시 전체, room = 그 과목 시험실만
+export const DEFAULT_SUBJECT_RULE: "period" | "room" = "period";
 
 // 담당자 로그인: 5회 틀리면 10분 동안 막음
 export const LOGIN_MAX_FAILS = 5;

@@ -1,5 +1,5 @@
 import "server-only";
-import { DEFAULT_MAX_DAY, DEFAULT_SCORES } from "./config";
+import { DEFAULT_MAX_DAY, DEFAULT_SCORES, DEFAULT_SUBJECT_RULE } from "./config";
 import { db, type Settings, type Slot, type Teacher, type Term } from "./db";
 import type { Assignment, Role, ScheduleInput } from "./schedule";
 
@@ -71,6 +71,7 @@ export async function loadTermData(termId: string): Promise<TermData | null> {
     score_free: DEFAULT_SCORES.free,
     max_day_exam: DEFAULT_MAX_DAY.exam,
     max_day_free: DEFAULT_MAX_DAY.free,
+    subject_rule: DEFAULT_SUBJECT_RULE,
   };
 
   // 같은 학년도에서 먼저 만든 시험의 점수를 이어받는다.
@@ -117,6 +118,7 @@ export function toScheduleInput(d: TermData, extra: Partial<ScheduleInput> = {})
     unavailable: new Set(d.unavailable.map((u) => `${u.teacher_id}|${u.exam_date}|${u.period}`)),
     scores: { main: d.settings.score_main, sub: d.settings.score_sub, free: d.settings.score_free },
     maxDay: { exam: d.settings.max_day_exam, free: d.settings.max_day_free },
+    subjectRule: d.settings.subject_rule,
     prior: d.prior,
     fixed: d.assignments
       .filter((a) => a.locked && a.teacher_id)

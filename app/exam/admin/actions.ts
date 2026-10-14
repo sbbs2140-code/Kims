@@ -207,6 +207,7 @@ export async function saveSettingsAction(
   const score_free = n("score_free");
   const max_day_exam = n("max_day_exam");
   const max_day_free = n("max_day_free");
+  const subject_rule = text(fd, "subject_rule") === "room" ? "room" : "period";
 
   if ([score_main, score_sub, score_free].some((v) => !(v > 0 && v <= 10)))
     return { ok: false, message: "점수는 0보다 크고 10 이하로 입력해 주세요." };
@@ -223,6 +224,7 @@ export async function saveSettingsAction(
       score_free,
       max_day_exam,
       max_day_free,
+      subject_rule,
       updated_at: new Date().toISOString(),
     })
     .eq("id", 1);

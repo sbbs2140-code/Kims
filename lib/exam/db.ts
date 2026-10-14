@@ -37,6 +37,7 @@ export type Settings = {
   score_free: number;
   max_day_exam: number;
   max_day_free: number;
+  subject_rule: "period" | "room";
 };
 
 export type Slot = {
