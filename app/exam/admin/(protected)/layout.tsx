@@ -15,7 +15,7 @@ export default async function ProtectedLayout({ children }: { children: React.Re
 
   return (
     <>
-      <header className="border-b border-border">
+      <header className="no-print border-b border-border">
         <div className="mx-auto flex min-h-16 max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-2 md:px-8">
           <Link href="/exam/admin" className="font-bold tracking-[-0.01em]">
             {LABELS.appName}

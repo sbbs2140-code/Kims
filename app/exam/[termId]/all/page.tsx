@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PrintButton } from "@/components/exam/print-button";
 import { ScoreTable, TimetableView } from "@/components/exam/schedule-view";
 import { loadPublished } from "@/lib/exam/public";
 
@@ -13,8 +14,9 @@ export default async function AllPage({ params }: PageProps<"/exam/[termId]/all"
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-16 md:px-8 lg:py-24">
-      <Link href={`/exam/${termId}`} className="text-sm font-semibold text-accent hover:underline">{data.term.name}</Link>
+      <Link href={`/exam/${termId}`} className="no-print text-sm font-semibold text-accent hover:underline">{data.term.name}</Link>
       <h1 className="mt-2 text-3xl leading-[1.25] font-bold tracking-[-0.02em] lg:text-4xl">전체 시간표와 점수</h1>
+      <div className="mt-6"><PrintButton /></div>
 
       <section className="mt-12" aria-labelledby="fair">
         <h2 id="fair" className="text-xl font-semibold">교사별 점수</h2>

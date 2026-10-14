@@ -73,6 +73,22 @@ export default async function AssignPage({ params }: PageProps<"/exam/admin/time
         </section>
       )}
 
+      {hasAny && (
+        <section className={card} aria-labelledby="output">
+          <h2 id="output" className="text-xl font-semibold">출력</h2>
+          <p className={hint}>인쇄 화면에서 대상을 PDF로 저장으로 고르면 PDF 파일이 됩니다. 엑셀 파일은 한글 문서에 붙여넣기 쉽게 표 형태로 내려받습니다.</p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link href={`/exam/admin/timetable/${termId}/print`} className={btnSecondary}>전체 시간표 인쇄</Link>
+            <Link href={`/exam/admin/timetable/${termId}/print/teachers`} className={btnSecondary}>교사별 감독표 인쇄</Link>
+          </div>
+          <div className="mt-3 flex flex-wrap gap-3">
+            <a href={`/exam/admin/timetable/${termId}/csv?type=all`} className={btnSecondary}>엑셀 전체 시간표</a>
+            <a href={`/exam/admin/timetable/${termId}/csv?type=teachers`} className={btnSecondary}>엑셀 교사별 일정</a>
+            <a href={`/exam/admin/timetable/${termId}/csv?type=scores`} className={btnSecondary}>엑셀 점수표</a>
+          </div>
+        </section>
+      )}
+
       {result && (
         <>
           {(result.violations.length > 0 || result.warnings.length > 0) && (

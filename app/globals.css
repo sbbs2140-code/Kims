@@ -59,3 +59,48 @@ body {
   word-break: keep-all;
   line-height: 1.7;
 }
+
+/* 인쇄와 PDF 저장: 항상 흰 바탕에 검은 글자로, 메뉴와 버튼은 숨긴다. */
+@page {
+  margin: 12mm;
+}
+
+@media print {
+  :root {
+    color-scheme: light;
+    --color-bg: #ffffff;
+    --color-surface: #ffffff;
+    --color-surface-tint: #f3f3f3;
+    --color-text: #000000;
+    --color-text-muted: #333333;
+    --color-text-subtle: #444444;
+    --color-border: #999999;
+    --color-accent: #000000;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-break {
+    break-after: page;
+  }
+
+  main {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  table {
+    min-width: 0 !important;
+  }
+
+  tr,
+  article {
+    break-inside: avoid;
+  }
+
+  h3 {
+    break-after: avoid;
+  }
+}
