@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { requireTeacher } from "@/lib/exam/auth";
 import { db, type Term } from "@/lib/exam/db";
 import { LABELS } from "@/lib/exam/config";
 import { btnSecondary, card } from "@/lib/exam/ui";
@@ -6,6 +7,7 @@ import { btnSecondary, card } from "@/lib/exam/ui";
 export const dynamic = "force-dynamic";
 
 export default async function ExamHome() {
+  await requireTeacher("/exam");
   const { data } = await db()
     .from("exam_terms")
     .select("*")

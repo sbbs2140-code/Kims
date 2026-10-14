@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { login, logout, requireAdmin } from "@/lib/exam/auth";
+import { login, logout, requireAdmin, safeNext, teacherLogin, teacherLogout } from "@/lib/exam/auth";
 import { currentAssignments, loadTermData, toScheduleInput } from "@/lib/exam/data";
 import { db } from "@/lib/exam/db";
 import { parseTeachers, parseTimetable } from "@/lib/exam/parse";
@@ -28,6 +28,17 @@ export async function loginAction(_: FormState, fd: FormData): Promise<FormState
   const result = await login(String(fd.get("password") ?? ""));
   if (!result.ok) return { ok: false, message: result.message };
   redirect("/exam/admin");
+}
+
+export async function teacherLoginAction(_: FormState, fd: FormData): Promise<FormState> {
+  const result = await teacherLogin(String(fd.get("password") ?? ""));
+  if (!result.ok) return { ok: false, message: result.message };
+  redirect(safeNext(String(fd.get("next") ?? "")));
+}
+
+export async function teacherLogoutAction() {
+  await teacherLogout();
+  redirect("/exam/enter");
 }
 
 export async function logoutAction() {

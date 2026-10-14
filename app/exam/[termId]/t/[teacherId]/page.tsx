@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 export default async function MyPage({ params }: PageProps<"/exam/[termId]/t/[teacherId]">) {
   const { termId, teacherId } = await params;
   assertUuid(teacherId);
-  const { data, result } = await loadPublished(termId);
+  const { data, result } = await loadPublished(termId, `/exam/${termId}/t/${teacherId}`);
   const me = data.teachers.find((t) => t.id === teacherId);
   if (!me) notFound();
 

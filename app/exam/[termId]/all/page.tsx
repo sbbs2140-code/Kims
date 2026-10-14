@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 export default async function AllPage({ params }: PageProps<"/exam/[termId]/all">) {
   const { termId } = await params;
-  const { data, result } = await loadPublished(termId);
+  const { data, result } = await loadPublished(termId, `/exam/${termId}/all`);
   const names = new Map(data.allTeachers.map((t) => [t.id, t.name]));
   const totals = result.stats.map((s) => s.total);
   const range = totals.length ? Math.max(...totals) - Math.min(...totals) : 0;

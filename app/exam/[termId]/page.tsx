@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 export default async function TermPage({ params }: PageProps<"/exam/[termId]">) {
   const { termId } = await params;
-  const { data } = await loadPublished(termId);
+  const { data } = await loadPublished(termId, `/exam/${termId}`);
 
   return (
     <main className="mx-auto max-w-4xl px-4 py-16 md:px-8 lg:py-24">
