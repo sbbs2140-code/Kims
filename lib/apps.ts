@@ -64,6 +64,16 @@ export const apps: SchoolApp[] = [
     icon: "exam",
   },
   {
+    id: "sunho-vibecoding",
+    name: "선호쌤 바이브코딩",
+    description: "선호쌤 바이브코딩 자료 페이지로 이동합니다.",
+    category: "수업",
+    audience: ["교사"],
+    status: "운영 중",
+    href: "https://sunho-vibecoding-storage.vercel.app/",
+    icon: "package",
+  },
+  {
     id: "unit-quiz",
     name: "단원 퀴즈",
     description: "단원을 마치면 짧은 퀴즈로 이해도를 확인합니다.",
@@ -124,6 +134,16 @@ export const apps: SchoolApp[] = [
     status: "운영 중",
     href: "#",
     icon: "document",
+  },
+  {
+    id: "exam-supervision",
+    name: "시험 감독 배정",
+    description: "중간·기말고사 감독을 공정하게 배정하고 내 감독표를 확인합니다.",
+    category: "행정",
+    audience: ["교사"],
+    status: "준비 중",
+    href: "/exam",
+    icon: "exam",
   },
   {
     id: "supplies",
