@@ -24,6 +24,7 @@ export type AssignmentRow = {
   role: Role;
   teacher_id: string | null;
   locked: boolean;
+  changed_after_publish: boolean;
 };
 
 export type TermData = {
@@ -59,7 +60,7 @@ export async function loadTermData(termId: string): Promise<TermData | null> {
     ? await fetchAll<AssignmentRow & { exam_slots: unknown }>((a, b) =>
         supabase
           .from("exam_assignments")
-          .select("id,slot_id,role,teacher_id,locked,exam_slots!inner(term_id)")
+          .select("id,slot_id,role,teacher_id,locked,changed_after_publish,exam_slots!inner(term_id)")
           .eq("exam_slots.term_id", termId)
           .range(a, b),
       )
@@ -104,8 +105,8 @@ export async function loadTermData(termId: string): Promise<TermData | null> {
     teachers: allTeachers.filter((t) => t.is_active),
     allTeachers,
     unavailable,
-    assignments: allAssignments.map(({ id, slot_id, role, teacher_id, locked }) => ({
-      id, slot_id, role, teacher_id, locked,
+    assignments: allAssignments.map(({ id, slot_id, role, teacher_id, locked, changed_after_publish }) => ({
+      id, slot_id, role, teacher_id, locked, changed_after_publish,
     })),
     prior,
   };

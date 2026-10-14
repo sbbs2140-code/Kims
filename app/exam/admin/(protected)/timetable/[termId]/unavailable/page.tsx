@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { StatefulForm } from "@/components/exam/stateful-form";
 import { requireAdmin } from "@/lib/exam/auth";
+import { NEED_PER_CLASS } from "@/lib/exam/config";
 import { loadTermData } from "@/lib/exam/data";
 import { card } from "@/lib/exam/ui";
 import { saveUnavailableAction } from "../../../../actions";
@@ -20,6 +21,19 @@ export default async function UnavailablePage({ params }: PageProps<"/exam/admin
     period: s.period,
   }));
   const checked = new Set(d.unavailable.map((u) => `${u.teacher_id}|${u.exam_date}|${u.period}`));
+  // 저장된 값 기준으로 교시별 필요 인원과 가능 인원을 센다. (출제 과목 제외는 반영하지 않음)
+  const need = new Map<string, number>();
+  for (const s of d.slots) {
+    const k = `${s.exam_date}|${s.period}`;
+    need.set(k, (need.get(k) ?? 0) + NEED_PER_CLASS[s.kind]);
+  }
+  const activeIds = new Set(d.teachers.map((t) => t.id));
+  const away = new Map<string, number>();
+  for (const u of d.unavailable) {
+    if (!activeIds.has(u.teacher_id)) continue;
+    const k = `${u.exam_date}|${u.period}`;
+    away.set(k, (away.get(k) ?? 0) + 1);
+  }
 
   return (
     <div className="space-y-8">
@@ -52,6 +66,18 @@ export default async function UnavailablePage({ params }: PageProps<"/exam/admin
                         <span className="block text-xs font-normal text-text-subtle">{c.period}교시</span>
                       </th>
                     ))}
+                  </tr>
+                  <tr className="border-b border-border text-xs">
+                    <th scope="row" className="sticky left-0 z-20 bg-surface px-4 py-2 text-left font-semibold">가능 / 필요 (저장 기준)</th>
+                    {cols.map((c) => {
+                      const avail = d.teachers.length - (away.get(c.key) ?? 0);
+                      const req = need.get(c.key) ?? 0;
+                      return (
+                        <td key={c.key} className={`px-3 py-2 text-center font-semibold whitespace-nowrap ${avail < req ? "text-accent" : ""}`}>
+                          {avail} / {req}{avail < req ? " 부족" : ""}
+                        </td>
+                      );
+                    })}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">

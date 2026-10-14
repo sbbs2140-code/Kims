@@ -3,10 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { login, logout, requireAdmin } from "@/lib/exam/auth";
-import { loadTermData, toScheduleInput } from "@/lib/exam/data";
+import { currentAssignments, loadTermData, toScheduleInput } from "@/lib/exam/data";
 import { db } from "@/lib/exam/db";
 import { parseTeachers, parseTimetable } from "@/lib/exam/parse";
-import { autoSchedule } from "@/lib/exam/schedule";
+import { autoSchedule, recommend, type Role } from "@/lib/exam/schedule";
 
 export type FormState = {
   ok?: boolean;
@@ -305,11 +305,18 @@ export async function autoAssignAction(
   }
 
   // 잠긴 칸은 같은 값으로 다시 들어가므로 그대로 유지된다. locked 열은 건드리지 않는다.
-  const payload = result.assignments.map((a) => ({
-    slot_id: a.slotId,
-    role: a.role,
-    teacher_id: a.teacherId,
-  }));
+  // 공개된 시험이면 바뀐 칸에 '변경됨' 표시를 남긴다. (모든 행에 같은 열을 넣어야 함)
+  const before = new Map(data.assignments.map((a) => [`${a.slot_id}|${a.role}`, a]));
+  const payload = result.assignments.map((a) => {
+    const old = before.get(`${a.slotId}|${a.role}`);
+    const moved = data.term.published && (old?.teacher_id ?? null) !== a.teacherId;
+    return {
+      slot_id: a.slotId,
+      role: a.role,
+      teacher_id: a.teacherId,
+      changed_after_publish: Boolean(old?.changed_after_publish) || moved,
+    };
+  });
   for (let i = 0; i < payload.length; i += 500) {
     const { error } = await supabase
       .from("exam_assignments")
@@ -327,4 +334,88 @@ export async function autoAssignAction(
         ? `편성을 마쳤습니다. 교사별 점수 차이는 최대 ${range.toFixed(1)}점입니다.`
         : `편성했지만 빈 자리가 ${result.unfilled}개 남았습니다. 아래 안내를 확인해 주세요.`,
   };
+}
+
+// ---------- 칸 수정 · 잠금 · 공개 ----------
+
+export async function setAssignmentAction(
+  _: FormState,
+  fd: FormData,
+): Promise<FormState> {
+  await requireAdmin();
+  const termId = text(fd, "term_id");
+  const slotId = text(fd, "slot_id");
+  const role = text(fd, "role") as Role;
+  const teacherId = text(fd, "teacher_id") || null;
+  const force = fd.get("force") === "on";
+  if (!["main", "sub", "free"].includes(role)) return { ok: false, message: "역할이 올바르지 않습니다." };
+
+  const data = await loadTermData(termId);
+  if (!data) return { ok: false, message: "시험 정보를 찾을 수 없습니다." };
+  const slot = data.slots.find((x) => x.id === slotId);
+  if (!slot) return { ok: false, message: "시간표 칸을 찾을 수 없습니다." };
+
+  if (teacherId && !force) {
+    const input = toScheduleInput(data);
+    const cand = recommend(input, currentAssignments(data), slotId, role).find((c) => c.teacherId === teacherId);
+    if (cand && !cand.ok) {
+      return {
+        ok: false,
+        message: "이 선생님을 배정하면 규칙을 어기게 됩니다. 그래도 배정하려면 아래 확인란을 체크해 주세요.",
+        errors: cand.reasons,
+      };
+    }
+  }
+
+  const old = data.assignments.find((a) => a.slot_id === slotId && a.role === role);
+  const moved = data.term.published && (old?.teacher_id ?? null) !== teacherId;
+  const { error } = await db()
+    .from("exam_assignments")
+    .upsert(
+      {
+        slot_id: slotId,
+        role,
+        teacher_id: teacherId,
+        locked: fd.get("locked") === "on",
+        changed_after_publish: Boolean(old?.changed_after_publish) || moved,
+      },
+      { onConflict: "slot_id,role" },
+    );
+  if (error) return fail(error);
+  revalidatePath(`/exam/admin/timetable/${termId}/assign`);
+  revalidatePath(`/exam/${termId}`, "layout");
+  return { ok: true, message: "저장했습니다." };
+}
+
+export async function lockAllAction(fd: FormData) {
+  await requireAdmin();
+  const termId = text(fd, "term_id");
+  const lock = fd.get("lock") === "1";
+  const data = await loadTermData(termId);
+  if (!data) return;
+  const ids = data.assignments.filter((a) => a.teacher_id && a.locked !== lock).map((a) => a.id);
+  for (let i = 0; i < ids.length; i += 200) {
+    await db().from("exam_assignments").update({ locked: lock }).in("id", ids.slice(i, i + 200));
+  }
+  revalidatePath(`/exam/admin/timetable/${termId}/assign`);
+}
+
+export async function togglePublishAction(fd: FormData) {
+  await requireAdmin();
+  const termId = text(fd, "term_id");
+  const publish = fd.get("publish") === "1";
+  const supabase = db();
+  const { error } = await supabase.from("exam_terms").update({ published: publish }).eq("id", termId);
+  if (error) throw new Error(error.message);
+
+  if (publish) {
+    // 공개를 새로 시작하면 지금 상태가 기준이므로 '변경됨' 표시를 지운다.
+    const data = await loadTermData(termId);
+    const ids = (data?.assignments ?? []).filter((a) => a.changed_after_publish).map((a) => a.id);
+    for (let i = 0; i < ids.length; i += 200) {
+      await supabase.from("exam_assignments").update({ changed_after_publish: false }).in("id", ids.slice(i, i + 200));
+    }
+  }
+  revalidatePath(`/exam/admin/timetable/${termId}/assign`);
+  revalidatePath("/exam", "layout");
 }

@@ -464,3 +464,53 @@ export function checkAssignments(input: ScheduleInput, list: Assignment[]): Sche
   }
   return toResult(ctx, assign);
 }
+
+export type Candidate = {
+  teacherId: string;
+  name: string;
+  ok: boolean; // 새로 어기는 규칙이 없음
+  reasons: string[]; // ok가 아닐 때 어기게 되는 규칙
+  total: number; // 이 칸에 배정했을 때의 점수 합계(이월 포함)
+};
+
+// 한 칸에 다른 교사를 넣으면 규칙을 어기는지 계산해, 점수 합계가 낮은 교사부터 추천한다.
+export function recommend(
+  input: ScheduleInput,
+  list: Assignment[],
+  slotId: string,
+  role: Role,
+): Candidate[] {
+  const ctx = build(input);
+  const index = new Map(ctx.units.map((u, i) => [`${u.slotId}|${u.role}`, i]));
+  const unit = index.get(`${slotId}|${role}`);
+  if (unit === undefined) return [];
+
+  const assign = new Int32Array(ctx.units.length).fill(-1);
+  for (const a of list) {
+    const i = index.get(`${a.slotId}|${a.role}`);
+    const ti = a.teacherId ? ctx.tIdx.get(a.teacherId) : undefined;
+    if (i !== undefined && ti !== undefined) assign[i] = ti;
+  }
+  const base = evaluate(ctx, assign, true);
+  const baseSet = new Set(base.hard);
+  const wasBlank = assign[unit] < 0;
+  const allowed = base.hard.length - (wasBlank ? 1 : 0);
+
+  const out: Candidate[] = [];
+  input.teachers.forEach((t, ti) => {
+    if (ti === assign[unit]) return;
+    const next = assign.slice();
+    next[unit] = ti;
+    const ev = evaluate(ctx, next, true);
+    const reasons = ev.hard.filter((m) => !baseSet.has(m));
+    const total = summarize(ctx, next)[ti].total;
+    out.push({
+      teacherId: t.id,
+      name: t.name,
+      ok: ev.hard.length <= allowed,
+      reasons,
+      total,
+    });
+  });
+  return out.sort((a, b) => Number(b.ok) - Number(a.ok) || a.total - b.total);
+}
